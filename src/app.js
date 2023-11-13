@@ -198,6 +198,7 @@ openBoard(sampleBoardXML);
 
 function handleAnalysis(result) {
   const overlays = modeler.get('overlays');
+  overlays.clear();
   for (const propertyResult of result.property_results) {
     if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
       addOverlaysForUnsafe(propertyResult, overlays);
@@ -218,7 +219,7 @@ function addOverlaysForUnsafe(propertyResult, overlays) {
         bottom: -5,
         left: 0
       },
-      html: '<div class="unsafe-note">Unsafe</div>'
+      html: '<div class="small-note">Unsafe</div>'
     })
   }
 }
@@ -230,7 +231,7 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
         bottom: 50,
         right: -5
       },
-      html: '<div class="proper-completion-note">Consumes two or more end events</div>'
+      html: '<div class="big-note">Consumes two or more end events</div>'
     })
   }
 }
@@ -242,7 +243,7 @@ function addOverLasForNoDeadActivities(propertyResult, overlays) {
         bottom: -5,
         left: 17.5,
       },
-      html: '<div class="proper-completion-note">Dead Activity</div>'
+      html: '<div class="big-note">Dead Activity</div>'
     })
   }
 }
