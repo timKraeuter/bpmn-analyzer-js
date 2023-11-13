@@ -10,13 +10,15 @@ import {
   BpmnPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 
+import AnalysisClientModule from "./analysis";
+
 // modeler instance
 const modeler = new BpmnModeler({
   container: "#canvas",
   keyboard: {
     bindTo: window,
   },
-  additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule],
+  additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, AnalysisClientModule],
 });
 
 /* screen interaction */
