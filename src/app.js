@@ -170,6 +170,7 @@ $(function () {
 
     saveBoard().then(function (result) {
       setEncoded(downloadLink, "bpmn.xml", result.xml);
+      modeler._emit("analysis.required", result);
     });
   }, 500);
 
