@@ -2,38 +2,36 @@
   "name": "bpmn-analyzer-js",
   "version": "0.0.1",
   "description": "bpmn-js including analysis after each save",
+  "main": "app/index.js",
   "scripts": {
-    "all": "run-s lint build",
-    "build": "webpack",
-    "lint": "eslint ",
-    "start": "run-s dev",
-    "dev": "run-p build:watch serve",
-    "build:watch": "webpack -w",
-    "serve": "serve public",
-    "build:github-pages": "webpack --env ghpages"
+    "all": "run-s build",
+    "dev": "run-s build:less watch:js",
+    "start": "run-s build serve",
+    "serve": "sirv public --dev",
+    "build": "run-s build:*",
+    "build:less": "lessc src/app.less public/app.css",
+    "build:js": "webpack -c webpack.config.js",
+    "watch:js": "run-s \"build:js -- --watch\""
   },
   "author": {
     "name": "Tim Kräuter",
     "url": "https://timkraeuter.com/"
   },
   "license": "MIT",
+  "dependencies": {
+    "@bpmn-io/properties-panel": "^3.4.0",
+    "bpmn-js": "^15.1.3",
+    "bpmn-js-properties-panel": "^5.0.0",
+    "jquery": "^3.5.1",
+    "min-dash": "^4.0.0"
+  },
   "devDependencies": {
-    "@babel/preset-env": "^7.23.2",
     "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.8.1",
-    "eslint": "^8.47.0",
-    "eslint-plugin-bpmn-io": "^1.0.0",
+    "less": "^4.1.0",
     "npm-run-all": "^4.1.5",
     "raw-loader": "^4.0.2",
-    "serve": "^14.2.0",
-    "style-loader": "^3.3.1",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
-    "prettier": "^3.0.3"
-  },
-  "dependencies": {
-    "bpmn-js": "^15.1.3",
-    "inherits": "^2.0.4",
-    "jquery": "^3.7.0"
+    "sirv-cli": "^2.0.0",
+    "webpack": "^5.16.0",
+    "webpack-cli": "^5.0.0"
   }
 }
