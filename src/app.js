@@ -1,101 +1,145 @@
 import $ from "jquery";
+
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
-import { debounce } from "min-dash";
+import emptyBoardXML from "../resources/initial.bpmn";
+import sampleBoardXML from "../resources/initial.bpmn";
 
 import {
   BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 
-import diagramXML from "../resources/newDiagram.bpmn";
-
-var container = $("#js-drop-zone");
-
-var canvas = $("#js-canvas");
-
-var bpmnModeler = new BpmnModeler({
-  container: canvas,
-  propertiesPanel: {
-    parent: "#js-properties-panel",
+// modeler instance
+const modeler = new BpmnModeler({
+  container: "#canvas",
+  keyboard: {
+    bindTo: window,
   },
   additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule],
 });
-container.removeClass("with-diagram");
 
-function createNewDiagram() {
-  openDiagram(diagramXML);
-}
-
-async function openDiagram(xml) {
-  try {
-    await bpmnModeler.importXML(xml);
-
-    container.removeClass("with-error").addClass("with-diagram");
-  } catch (err) {
-    container.removeClass("with-diagram").addClass("with-error");
-
-    container.find(".error pre").text(err.message);
-
-    console.error(err);
+/* screen interaction */
+function enterFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
   }
 }
 
-function registerFileDrop(container, callback) {
-  function handleFileSelect(e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    var files = e.dataTransfer.files;
-
-    var file = files[0];
-
-    var reader = new FileReader();
-
-    reader.onload = function (e) {
-      var xml = e.target.result;
-
-      callback(xml);
-    };
-
-    reader.readAsText(file);
+function exitFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
   }
-
-  function handleDragOver(e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    e.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
-  }
-
-  container.get(0).addEventListener("dragover", handleDragOver, false);
-  container.get(0).addEventListener("drop", handleFileSelect, false);
 }
 
-////// file drag / drop ///////////////////////
-
-// check file api availability
-if (!window.FileList || !window.FileReader) {
-  window.alert(
-    "Looks like you use an older browser that does not support drag and drop. " +
-      "Try using Chrome, Firefox or the Internet Explorer > 10.",
-  );
-} else {
-  registerFileDrop(container, openDiagram);
-}
-
-// bootstrap diagram functions
-
-$(function () {
-  $("#js-create-diagram").click(function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    createNewDiagram();
+const state = {
+  fullScreen: false,
+  keyboardHelp: false,
+};
+document
+  .getElementById("js-toggle-fullscreen")
+  .addEventListener("click", function () {
+    state.fullScreen = !state.fullScreen;
+    if (state.fullScreen) {
+      enterFullscreen(document.documentElement);
+    } else {
+      exitFullscreen();
+    }
+  });
+document
+  .getElementById("js-toggle-keyboard-help")
+  .addEventListener("click", function () {
+    state.keyboardHelp = !state.keyboardHelp;
+    let displayProp = "none";
+    if (state.keyboardHelp) {
+      displayProp = "block";
+    }
+    document.getElementById("io-dialog-main").style.display = displayProp;
+  });
+document
+  .getElementById("io-dialog-main")
+  .addEventListener("click", function () {
+    state.keyboardHelp = !state.keyboardHelp;
+    let displayProp = "none";
+    if (!state.keyboardHelp) {
+      document.getElementById("io-dialog-main").style.display = displayProp;
+    }
   });
 
-  var downloadLink = $("#js-download-diagram");
-  var downloadSvgLink = $("#js-download-svg");
+/* file functions */
+function openFile(file, callback) {
+  // check file api availability
+  if (!window.FileReader) {
+    return window.alert(
+      "Looks like you use an older browser that does not support drag and drop. " +
+        "Try using a modern browser such as Chrome, Firefox or Internet Explorer > 10.",
+    );
+  }
+
+  // no file chosen
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    const xml = e.target.result;
+
+    callback(xml);
+  };
+
+  reader.readAsText(file);
+}
+
+const fileInput = $('<input type="file" />')
+  .appendTo(document.body)
+  .css({
+    width: 1,
+    height: 1,
+    display: "none",
+    overflow: "hidden",
+  })
+  .on("change", function (e) {
+    openFile(e.target.files[0], openBoard);
+  });
+
+function openBoard(xml) {
+  // import board
+  modeler.importXML(xml).catch(function (err) {
+    if (err) {
+      return console.error("could not import od board", err);
+    }
+  });
+}
+
+function saveSVG() {
+  return modeler.saveSVG();
+}
+
+function saveBoard() {
+  return modeler.saveXML({ format: true });
+}
+
+// bootstrap board functions
+$(function () {
+  const downloadLink = $("#js-download-board");
+  const downloadSvgLink = $("#js-download-svg");
+
+  const openNew = $("#js-open-new");
+  const openExistingBoard = $("#js-open-board");
 
   $(".buttons a").click(function (e) {
     if (!$(this).is(".active")) {
@@ -105,11 +149,11 @@ $(function () {
   });
 
   function setEncoded(link, name, data) {
-    var encodedData = encodeURIComponent(data);
+    const encodedData = encodeURIComponent(data);
 
     if (data) {
       link.addClass("active").attr({
-        href: "data:application/bpmn20-xml;charset=UTF-8," + encodedData,
+        href: "data:application/xml;charset=UTF-8," + encodedData,
         download: name,
       });
     } else {
@@ -117,27 +161,44 @@ $(function () {
     }
   }
 
-  var exportArtifacts = debounce(async function () {
-    try {
-      const { svg } = await bpmnModeler.saveSVG();
+  const exportArtifacts = debounce(function () {
+    saveSVG().then(function (result) {
+      setEncoded(downloadSvgLink, "bpmn.svg", result.svg);
+    });
 
-      setEncoded(downloadSvgLink, "diagram.svg", svg);
-    } catch (err) {
-      console.error("Error happened saving SVG: ", err);
-
-      setEncoded(downloadSvgLink, "diagram.svg", null);
-    }
-
-    try {
-      const { xml } = await bpmnModeler.saveXML({ format: true });
-
-      setEncoded(downloadLink, "diagram.bpmn", xml);
-    } catch (err) {
-      console.log("Error happened saving XML: ", err);
-
-      setEncoded(downloadLink, "diagram.bpmn", null);
-    }
+    saveBoard().then(function (result) {
+      setEncoded(downloadLink, "bpmn.xml", result.xml);
+    });
   }, 500);
 
-  bpmnModeler.on("commandStack.changed", exportArtifacts);
+  modeler.on("commandStack.changed", exportArtifacts);
+  modeler.on("import.done", exportArtifacts);
+
+  openNew.on("click", function () {
+    openBoard(emptyBoardXML);
+  });
+
+  openExistingBoard.on("click", function () {
+    const input = $(fileInput);
+
+    // clear input so that previously selected file can be reopened
+    input.val("");
+    input.trigger("click");
+  });
 });
+
+openBoard(sampleBoardXML);
+
+// helpers //////////////////////
+
+function debounce(fn, timeout) {
+  let timer;
+
+  return function () {
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(fn, timeout);
+  };
+}

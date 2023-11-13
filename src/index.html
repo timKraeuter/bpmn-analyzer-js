@@ -1,55 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>bpmn-analyzer js</title>
+<!doctype html>
+<html lang="EN">
+  <head>
+    <title>BPMN Analyzer js</title>
 
-  <link rel="stylesheet" href="vendor/bpmn-js/assets/diagram-js.css" />
-  <link rel="stylesheet" href="vendor/bpmn-js/assets/bpmn-js.css" />
-  <link rel="stylesheet" href="vendor/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" />
-  <link rel="stylesheet" href="vendor/@bpmn-io/properties-panel/assets/properties-panel.css" />
-
-  <link rel="stylesheet" href="app.css" />
-</head>
-<body>
-<div class="content with-diagram" id="js-drop-zone">
-
-  <div class="message intro">
-    <div class="note">
-      Drop BPMN diagram from your desktop or <a id="js-create-diagram" href>create a new diagram</a> to get started.
-    </div>
-  </div>
-
-  <div class="message error">
-    <div class="note">
-      <p>Ooops, we could not display the BPMN 2.0 diagram.</p>
-
-      <div class="details">
-        <span>Import Error Details</span>
-        <pre></pre>
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="vendor/bpmn-js/assets/diagram-js.css" />
+    <link rel="stylesheet" href="vendor/bpmn-js/assets/bpmn-js.css" />
+    <link rel="stylesheet" href="vendor/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" />
+    <link rel="stylesheet" href="vendor/@bpmn-io/properties-panel/assets/properties-panel.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div
+      id="io-dialog-main"
+      class="pjs-io-dialog pjs-io-dialog-open keybindings-dialog"
+    >
+      <div class="pjs-io-dialog-content">
+        <h1>Keyboard Shortcuts</h1>
+        <table>
+          <tbody>
+            <tr>
+              <td>Undo</td>
+              <td class="binding">⌘ + Z</td>
+            </tr>
+            <tr>
+              <td>Redo</td>
+              <td class="binding">⌘ + ⇧ + Z</td>
+            </tr>
+            <tr>
+              <td>Select All</td>
+              <td class="binding">⌘ + A</td>
+            </tr>
+            <tr>
+              <td>Zooming</td>
+              <td class="binding">ctrl + Scrolling</td>
+            </tr>
+            <!-- <tr>
+        <td>Scrolling (Vertical)</td>
+        <td class="binding">⌥ + Scrolling</td>
+      </tr>
+      <tr>
+        <td>Scrolling (Horizontal)</td>
+        <td class="binding">⌥ + ⇧ + Scrolling</td>
+      </tr>-->
+            <tr>
+              <td>Direct Editing</td>
+              <td class="binding">E</td>
+            </tr>
+            <tr>
+              <td>Hand Tool</td>
+              <td class="binding">H</td>
+            </tr>
+            <tr>
+              <td>Lasso Tool</td>
+              <td class="binding">L</td>
+            </tr>
+            <tr>
+              <td>Space Tool</td>
+              <td class="binding">S</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-  </div>
 
-  <div class="canvas" id="js-canvas"></div>
-  <div class="properties-panel-parent" id="js-properties-panel"></div>
-</div>
+    <div id="canvas"></div>
 
-<ul class="buttons">
-  <li>
-    download
-  </li>
-  <li>
-    <a id="js-download-diagram" href title="download BPMN diagram">
-      BPMN diagram
-    </a>
-  </li>
-  <li>
-    <a id="js-download-svg" href title="download as SVG image">
-      SVG image
-    </a>
-  </li>
-</ul>
+    <div id="io-editing-tools-buttons" class="pjs-buttons">
+      <ul class="pjs-horizontal">
+        <li>
+          <button
+            id="js-toggle-keyboard-help"
+            class="pjs-buttons-active"
+            title="Toggle keyboard shortcuts overlay"
+          >
+            <span class="icon-keyboard pjs-general-icon"> </span>
+          </button>
+        </li>
+        <li>
+          <button
+            id="js-toggle-fullscreen"
+            class="pjs-buttons-active"
+            title="Toggle Fullscreen"
+          >
+            <span class="icon-resize-full pjs-general-icon"> </span>
+          </button>
+        </li>
+      </ul>
+    </div>
 
-<script src="app.js"></script>
+    <div class="bottom-buttons pjs-buttons">
+      <ul>
+        <li>open</li>
+        <li>
+          <button
+            id="js-open-board"
+            class="pjs-buttons-active"
+            title="open XML board"
+          >
+            BPMN file
+          </button>
+        </li>
+        <li>
+          <button
+            id="js-open-new"
+            href
+            class="pjs-buttons-active"
+            title="open new board"
+          >
+            New diagram
+          </button>
+        </li>
+      </ul>
+
+      <ul>
+        <li>download</li>
+        <li>
+          <a id="js-download-board" href title="download XML board">
+            BPMN file
+          </a>
+        </li>
+        <li>
+          <a id="js-download-svg" href title="download as SVG image">
+            SVG image
+          </a>
+        </li>
+      </ul>
+    </div>
+  </body>
+  <script src="app.js"></script>
 </html>

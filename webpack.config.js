@@ -1,37 +1,71 @@
-var CopyPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
 
-var path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = {
-  mode: "development",
-  entry: "./src/app.js",
-  output: {
-    path: path.resolve(__dirname, "public"),
-    filename: "app.js",
-  },
-  module: {
-    rules: [
-      {
-        test: /\.bpmn$/,
-        use: {
-          loader: "raw-loader",
-        },
-      },
-    ],
-  },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        { from: "src/index.html", to: "." },
+const SOURCE_VERSION =
+    process.env.SOURCE_VERSION || process.env.npm_package_gitHead || "dev";
+
+module.exports = (env) => {
+  let outputPath = __dirname + "/public";
+  let path = "src";
+  if (env.ghpages) {
+    // GitHub pages expects static files here.
+    outputPath = __dirname + "/../docs";
+  }
+  return {
+    entry: {
+      bundle: [`./${path}/app.js`],
+    },
+    output: {
+      path: outputPath,
+      filename: "app.js",
+    },
+    module: {
+      rules: [
         {
-          from: "node_modules/bpmn-js/dist/assets",
-          to: "vendor/bpmn-js/assets",
+          test: /\.bpmn$/,
+          use: "raw-loader",
         },
         {
-          from: "node_modules/@bpmn-io/properties-panel/dist/assets",
-          to: "vendor/@bpmn-io/properties-panel/assets",
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
+        {
+          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+          type: "asset/resource",
+          generator: {
+            filename: "[name][ext]",
+          },
         },
       ],
-    }),
-  ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "**/*.{html,css,woff,ttf,eot,svg,woff2,ico}",
+            context: `${path}/`,
+          },
+        ],
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: "src/index.html", to: "." },
+          {
+            from: "node_modules/bpmn-js/dist/assets",
+            to: "vendor/bpmn-js/assets",
+          },
+          {
+            from: "node_modules/@bpmn-io/properties-panel/dist/assets",
+            to: "vendor/@bpmn-io/properties-panel/assets",
+          },
+        ],
+      }),
+      new webpack.DefinePlugin({
+        "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION || null),
+      }),
+    ],
+    mode: "development",
+    devtool: "source-map",
+  };
 };
