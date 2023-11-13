@@ -18,7 +18,8 @@ const modeler = new BpmnModeler({
   keyboard: {
     bindTo: window,
   },
-  additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, AnalysisClientModule],
+  additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule,
+    AnalysisClientModule],
 });
 
 /* screen interaction */
@@ -51,41 +52,42 @@ const state = {
   keyboardHelp: false,
 };
 document
-  .getElementById("js-toggle-fullscreen")
-  .addEventListener("click", function () {
-    state.fullScreen = !state.fullScreen;
-    if (state.fullScreen) {
-      enterFullscreen(document.documentElement);
-    } else {
-      exitFullscreen();
-    }
-  });
+.getElementById("js-toggle-fullscreen")
+.addEventListener("click", function () {
+  state.fullScreen = !state.fullScreen;
+  if (state.fullScreen) {
+    enterFullscreen(document.documentElement);
+  } else {
+    exitFullscreen();
+  }
+});
 document
-  .getElementById("js-toggle-keyboard-help")
-  .addEventListener("click", function () {
-    state.keyboardHelp = !state.keyboardHelp;
-    let displayProp = "none";
-    if (state.keyboardHelp) {
-      displayProp = "block";
-    }
+.getElementById("js-toggle-keyboard-help")
+.addEventListener("click", function () {
+  state.keyboardHelp = !state.keyboardHelp;
+  let displayProp = "none";
+  if (state.keyboardHelp) {
+    displayProp = "block";
+  }
+  document.getElementById("io-dialog-main").style.display = displayProp;
+});
+document
+.getElementById("io-dialog-main")
+.addEventListener("click", function () {
+  state.keyboardHelp = !state.keyboardHelp;
+  let displayProp = "none";
+  if (!state.keyboardHelp) {
     document.getElementById("io-dialog-main").style.display = displayProp;
-  });
-document
-  .getElementById("io-dialog-main")
-  .addEventListener("click", function () {
-    state.keyboardHelp = !state.keyboardHelp;
-    let displayProp = "none";
-    if (!state.keyboardHelp) {
-      document.getElementById("io-dialog-main").style.display = displayProp;
-    }
-  });
+  }
+});
 
 /* file functions */
 function openFile(file, callback) {
   // check file api availability
   if (!window.FileReader) {
     return window.alert(
-      "Looks like you use an older browser that does not support drag and drop. " +
+        "Looks like you use an older browser that does not support drag and drop. "
+        +
         "Try using a modern browser such as Chrome, Firefox or Internet Explorer > 10.",
     );
   }
@@ -107,16 +109,16 @@ function openFile(file, callback) {
 }
 
 const fileInput = $('<input type="file" />')
-  .appendTo(document.body)
-  .css({
-    width: 1,
-    height: 1,
-    display: "none",
-    overflow: "hidden",
-  })
-  .on("change", function (e) {
-    openFile(e.target.files[0], openBoard);
-  });
+.appendTo(document.body)
+.css({
+  width: 1,
+  height: 1,
+  display: "none",
+  overflow: "hidden",
+})
+.on("change", function (e) {
+  openFile(e.target.files[0], openBoard);
+});
 
 function openBoard(xml) {
   // import board
@@ -132,7 +134,7 @@ function saveSVG() {
 }
 
 function saveBoard() {
-  return modeler.saveXML({ format: true });
+  return modeler.saveXML({format: true});
 }
 
 // bootstrap board functions
@@ -177,6 +179,8 @@ $(function () {
   modeler.on("commandStack.changed", exportArtifacts);
   modeler.on("import.done", exportArtifacts);
 
+  modeler.on("analysis.done", handleAnalysis)
+
   openNew.on("click", function () {
     openBoard(emptyBoardXML);
   });
@@ -191,6 +195,45 @@ $(function () {
 });
 
 openBoard(sampleBoardXML);
+
+function handleAnalysis(result) {
+  const overlays = modeler.get('overlays');
+  for (const propertyResult of result.property_results) {
+    if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
+      for (const problematicElement of propertyResult.problematic_elements) {
+        overlays.add(problematicElement, 'note', {
+          position: {
+            bottom: -5,
+            left: 0
+          },
+          html: '<div class="unsafe-note">Unsafe</div>'
+        })
+      }
+    }
+    if (propertyResult.property === "ProperCompletion" && !propertyResult.fulfilled) {
+      for (const problematicElement of propertyResult.problematic_elements) {
+        overlays.add(problematicElement, 'note', {
+          position: {
+            bottom: 50,
+            right: -5
+          },
+          html: '<div class="proper-completion-note">Consumes two or more end events</div>'
+        })
+      }
+    }
+    if (propertyResult.property === "NoDeadActivities" && !propertyResult.fulfilled) {
+      for (const problematicElement of propertyResult.problematic_elements) {
+        overlays.add(problematicElement, 'note', {
+          position: {
+            bottom: -5,
+            left: 20,
+          },
+          html: '<div class="proper-completion-note">Dead Activity</div>'
+        })
+      }
+    }
+  }
+}
 
 // helpers //////////////////////
 

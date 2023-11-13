@@ -433,3 +433,27 @@ textarea {
   opacity: 1;
   box-shadow: 0px 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
+
+.unsafe-note {
+  background-color: rgba(255, 76, 48, 1);
+  color: White;
+  border-radius: 5px;
+  font-family: Arial;
+  font-size: 12px;
+  padding: 5px;
+  min-height: 16px;
+  width: 40px;
+  text-align: center;
+}
+
+.proper-completion-note {
+  background-color: rgba(255, 76, 48, 1);
+  color: White;
+  border-radius: 5px;
+  font-family: Arial;
+  font-size: 12px;
+  padding: 5px;
+  min-height: 16px;
+  width: 60px;
+  text-align: center;
+}
