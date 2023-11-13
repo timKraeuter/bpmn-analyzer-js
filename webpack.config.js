@@ -10,7 +10,7 @@ module.exports = (env) => {
   let path = "src";
   if (env.ghpages) {
     // GitHub pages expects static files here.
-    outputPath = __dirname + "/../docs";
+    outputPath = __dirname + "/docs";
   }
   return {
     entry: {
