@@ -172,7 +172,7 @@ $(function () {
 
     saveBoard().then(function (result) {
       setEncoded(downloadLink, "bpmn.xml", result.xml);
-      modeler._emit("analysis.required", result);
+      modeler._emit("analysis.start", result);
     });
   }, 500);
 
@@ -240,7 +240,7 @@ function addOverLasForNoDeadActivities(propertyResult, overlays) {
     overlays.add(problematicElement, 'note', {
       position: {
         bottom: -5,
-        left: 20,
+        left: 17.5,
       },
       html: '<div class="proper-completion-note">Dead Activity</div>'
     })

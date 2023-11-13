@@ -1,6 +1,6 @@
 const websocket_url = "ws://localhost:8071/debug";
 export default function AnalysisClient(eventBus) {
-  eventBus.on("analysis.required", (diagramXML) => {
+  eventBus.on("analysis.start", (diagramXML) => {
     fetch("http://localhost:3001/check_bpmn", {
       method: "POST",
       body: JSON.stringify({
