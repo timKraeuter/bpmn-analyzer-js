@@ -200,38 +200,50 @@ function handleAnalysis(result) {
   const overlays = modeler.get('overlays');
   for (const propertyResult of result.property_results) {
     if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
-      for (const problematicElement of propertyResult.problematic_elements) {
-        overlays.add(problematicElement, 'note', {
-          position: {
-            bottom: -5,
-            left: 0
-          },
-          html: '<div class="unsafe-note">Unsafe</div>'
-        })
-      }
+      addOverlaysForUnsafe(propertyResult, overlays);
     }
     if (propertyResult.property === "ProperCompletion" && !propertyResult.fulfilled) {
-      for (const problematicElement of propertyResult.problematic_elements) {
-        overlays.add(problematicElement, 'note', {
-          position: {
-            bottom: 50,
-            right: -5
-          },
-          html: '<div class="proper-completion-note">Consumes two or more end events</div>'
-        })
-      }
+      addOverlaysForProperCompletion(propertyResult, overlays);
     }
     if (propertyResult.property === "NoDeadActivities" && !propertyResult.fulfilled) {
-      for (const problematicElement of propertyResult.problematic_elements) {
-        overlays.add(problematicElement, 'note', {
-          position: {
-            bottom: -5,
-            left: 20,
-          },
-          html: '<div class="proper-completion-note">Dead Activity</div>'
-        })
-      }
+      addOverLasForNoDeadActivities(propertyResult, overlays);
     }
+  }
+}
+
+function addOverlaysForUnsafe(propertyResult, overlays) {
+  for (const problematicElement of propertyResult.problematic_elements) {
+    overlays.add(problematicElement, 'note', {
+      position: {
+        bottom: -5,
+        left: 0
+      },
+      html: '<div class="unsafe-note">Unsafe</div>'
+    })
+  }
+}
+
+function addOverlaysForProperCompletion(propertyResult, overlays) {
+  for (const problematicElement of propertyResult.problematic_elements) {
+    overlays.add(problematicElement, 'note', {
+      position: {
+        bottom: 50,
+        right: -5
+      },
+      html: '<div class="proper-completion-note">Consumes two or more end events</div>'
+    })
+  }
+}
+
+function addOverLasForNoDeadActivities(propertyResult, overlays) {
+  for (const problematicElement of propertyResult.problematic_elements) {
+    overlays.add(problematicElement, 'note', {
+      position: {
+        bottom: -5,
+        left: 20,
+      },
+      html: '<div class="proper-completion-note">Dead Activity</div>'
+    })
   }
 }
 
