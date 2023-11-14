@@ -199,17 +199,46 @@ openBoard(sampleBoardXML);
 function handleAnalysis(result) {
   const overlays = modeler.get('overlays');
   overlays.clear();
+  if (!result) {
+    console.log("Should reset everything");
+    return;
+  }
+
   for (const propertyResult of result.property_results) {
+    var {elementById, elementIconById} = setPropertyColorAndIcon(propertyResult);
+
     if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
       addOverlaysForUnsafe(propertyResult, overlays);
     }
-    if (propertyResult.property === "ProperCompletion" && !propertyResult.fulfilled) {
+    if (propertyResult.property === "ProperCompletion"
+        && !propertyResult.fulfilled) {
       addOverlaysForProperCompletion(propertyResult, overlays);
     }
-    if (propertyResult.property === "NoDeadActivities" && !propertyResult.fulfilled) {
+    if (propertyResult.property === "NoDeadActivities"
+        && !propertyResult.fulfilled) {
       addOverlaysForNoDeadActivities(propertyResult, overlays);
     }
   }
+}
+
+function setPropertyColorAndIcon(propertyResult) {
+  // Set the property somehow with jquery
+  var elementById = $(`#${propertyResult.property}`);
+  var elementIconById = $(`#${propertyResult.property}-icon`);
+  if (propertyResult.fulfilled) {
+    elementById.removeClass("red");
+    elementById.addClass("green");
+
+    elementIconById.removeClass("icon-question icon-xmark red");
+    elementIconById.addClass("icon-check green");
+  } else {
+    elementById.removeClass("green");
+    elementById.addClass("red");
+
+    elementIconById.removeClass("icon-question icon-check green");
+    elementIconById.addClass("icon-xmark red");
+  }
+  return {elementById, elementIconById};
 }
 
 function addOverlaysForUnsafe(propertyResult, overlays) {
