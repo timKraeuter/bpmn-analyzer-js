@@ -207,7 +207,7 @@ function handleAnalysis(result) {
       addOverlaysForProperCompletion(propertyResult, overlays);
     }
     if (propertyResult.property === "NoDeadActivities" && !propertyResult.fulfilled) {
-      addOverLasForNoDeadActivities(propertyResult, overlays);
+      addOverlaysForNoDeadActivities(propertyResult, overlays);
     }
   }
 }
@@ -236,7 +236,7 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
   }
 }
 
-function addOverLasForNoDeadActivities(propertyResult, overlays) {
+function addOverlaysForNoDeadActivities(propertyResult, overlays) {
   for (const problematicElement of propertyResult.problematic_elements) {
     overlays.add(problematicElement, 'note', {
       position: {
