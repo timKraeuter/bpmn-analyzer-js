@@ -30,13 +30,6 @@ module.exports = (env) => {
           test: /\.css$/i,
           use: ["style-loader", "css-loader"],
         },
-        {
-          test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-          type: "asset/resource",
-          generator: {
-            filename: "[name][ext]",
-          },
-        },
       ],
     },
     plugins: [
@@ -53,11 +46,11 @@ module.exports = (env) => {
           { from: "src/index.html", to: "." },
           {
             from: "node_modules/bpmn-js/dist/assets",
-            to: "vendor/bpmn-js/assets",
+            to: ".",
           },
           {
             from: "node_modules/@bpmn-io/properties-panel/dist/assets",
-            to: "vendor/@bpmn-io/properties-panel/assets",
+            to: ".",
           },
         ],
       }),
