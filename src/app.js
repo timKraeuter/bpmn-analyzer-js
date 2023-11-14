@@ -196,9 +196,13 @@ $(function () {
 
 openBoard(sampleBoardXML);
 
+const ANALYSIS_NOTE_TYPE = 'analysis-note';
+
 function handleAnalysis(result) {
   const overlays = modeler.get('overlays');
-  overlays.clear();
+  overlays.remove({
+    type: ANALYSIS_NOTE_TYPE
+  });
   if (!result) {
     console.error("Should reset all properties");
     return;
@@ -243,7 +247,7 @@ function setPropertyColorAndIcon(propertyResult) {
 
 function addOverlaysForUnsafe(propertyResult, overlays) {
   for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, 'note', {
+    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position: {
         bottom: -5,
         left: 0
@@ -255,7 +259,7 @@ function addOverlaysForUnsafe(propertyResult, overlays) {
 
 function addOverlaysForProperCompletion(propertyResult, overlays) {
   for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, 'note', {
+    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position: {
         bottom: 50,
         right: -5
@@ -267,7 +271,7 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
 
 function addOverlaysForNoDeadActivities(propertyResult, overlays) {
   for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, 'note', {
+    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position: {
         bottom: -5,
         left: 17.5,
