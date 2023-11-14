@@ -200,7 +200,7 @@ function handleAnalysis(result) {
   const overlays = modeler.get('overlays');
   overlays.clear();
   if (!result) {
-    console.log("Should reset everything");
+    console.error("Should reset all properties");
     return;
   }
 
