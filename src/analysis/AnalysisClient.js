@@ -8,12 +8,12 @@ export default function AnalysisClient(eventBus) {
   });
 }
 
-AnalysisClient.prototype.$inject = ["eventBus"];
+AnalysisClient.$inject = ["eventBus"];
 
 function getCheckerPort() {
   const port = window.location.port;
   // We assume the checker function is served at the same server with port + 1.
-  return parseInt(port) + 1;
+  return parseInt(port) + 2;
 }
 
 function startAnalysis(checker_port, diagramXML, eventBus) {
