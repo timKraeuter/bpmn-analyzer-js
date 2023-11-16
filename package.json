@@ -11,7 +11,7 @@
     "dev": "run-p build:watch serve",
     "build:watch": "webpack -w",
     "serve": "serve public",
-    "build:github-pages": "webpack --env ghpages"
+    "build:rust": "webpack --env rust"
   },
   "author": {
     "name": "Tim Kräuter",

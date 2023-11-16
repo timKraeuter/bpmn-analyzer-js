@@ -8,9 +8,10 @@ const SOURCE_VERSION =
 module.exports = (env) => {
   let outputPath = __dirname + "/public";
   let path = "src";
-  if (env.ghpages) {
-    // GitHub pages expects static files here.
-    outputPath = __dirname + "/docs";
+  let mode = "development"
+  if (env.rust) {
+    outputPath = __dirname + "/../RustBPMNAnalyzer/public";
+    mode = "production";
   }
   return {
     entry: {
@@ -58,7 +59,7 @@ module.exports = (env) => {
         "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION || null),
       }),
     ],
-    mode: "development",
+    mode,
     devtool: "source-map",
   };
 };
