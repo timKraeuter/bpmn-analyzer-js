@@ -108,15 +108,12 @@ function openFile(file, callback) {
   reader.readAsText(file);
 }
 
-const fileInput = $('<input type="file" />')
-.appendTo(document.body)
-.css({
-  width: 1,
-  height: 1,
-  display: "none",
-  overflow: "hidden",
-})
-.on("change", function (e) {
+const fileInput = document.createElement('input');
+fileInput.setAttribute("type", "file");
+fileInput.style.display = "none";
+document.body.appendChild(fileInput);
+document.addEventListener("change", function (e) {
+  console.log(e);
   openFile(e.target.files[0], openBoard);
 });
 
@@ -142,8 +139,8 @@ $(function () {
   const downloadLink = document.getElementById("js-download-board");
   const downloadSvgLink = document.getElementById("js-download-svg");
 
-  const openNew = $("#js-open-new");
-  const openExistingBoard = $("#js-open-board");
+  const openNew = document.getElementById("js-open-new");
+  const openExistingBoard = document.getElementById("js-open-board");
 
   function setEncoded(link, name, data) {
     const encodedData = encodeURIComponent(data);
@@ -176,16 +173,14 @@ $(function () {
 
   modeler.on("analysis.done", handleAnalysis)
 
-  openNew.on("click", function () {
+  openNew.addEventListener("click", function () {
     openBoard(emptyBoardXML);
   });
 
-  openExistingBoard.on("click", function () {
-    const input = $(fileInput);
-
+  openExistingBoard.addEventListener("click", function () {
     // clear input so that previously selected file can be reopened
-    input.val("");
-    input.trigger("click");
+    fileInput.value = "";
+    fileInput.click();
   });
 });
 
