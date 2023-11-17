@@ -1,5 +1,3 @@
-import $ from "jquery";
-
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/initial.bpmn";
@@ -18,8 +16,11 @@ const modeler = new BpmnModeler({
   keyboard: {
     bindTo: window,
   },
-  additionalModules: [BpmnPropertiesPanelModule, BpmnPropertiesProviderModule,
-    AnalysisClientModule],
+  additionalModules: [
+    BpmnPropertiesPanelModule,
+    BpmnPropertiesProviderModule,
+    AnalysisClientModule,
+  ],
 });
 
 /* screen interaction */
@@ -52,42 +53,41 @@ const state = {
   keyboardHelp: false,
 };
 document
-.getElementById("js-toggle-fullscreen")
-.addEventListener("click", function () {
-  state.fullScreen = !state.fullScreen;
-  if (state.fullScreen) {
-    enterFullscreen(document.documentElement);
-  } else {
-    exitFullscreen();
-  }
-});
+  .getElementById("js-toggle-fullscreen")
+  .addEventListener("click", function () {
+    state.fullScreen = !state.fullScreen;
+    if (state.fullScreen) {
+      enterFullscreen(document.documentElement);
+    } else {
+      exitFullscreen();
+    }
+  });
 document
-.getElementById("js-toggle-keyboard-help")
-.addEventListener("click", function () {
-  state.keyboardHelp = !state.keyboardHelp;
-  let displayProp = "none";
-  if (state.keyboardHelp) {
-    displayProp = "block";
-  }
-  document.getElementById("io-dialog-main").style.display = displayProp;
-});
-document
-.getElementById("io-dialog-main")
-.addEventListener("click", function () {
-  state.keyboardHelp = !state.keyboardHelp;
-  let displayProp = "none";
-  if (!state.keyboardHelp) {
+  .getElementById("js-toggle-keyboard-help")
+  .addEventListener("click", function () {
+    state.keyboardHelp = !state.keyboardHelp;
+    let displayProp = "none";
+    if (state.keyboardHelp) {
+      displayProp = "block";
+    }
     document.getElementById("io-dialog-main").style.display = displayProp;
-  }
-});
+  });
+document
+  .getElementById("io-dialog-main")
+  .addEventListener("click", function () {
+    state.keyboardHelp = !state.keyboardHelp;
+    let displayProp = "none";
+    if (!state.keyboardHelp) {
+      document.getElementById("io-dialog-main").style.display = displayProp;
+    }
+  });
 
 /* file functions */
 function openFile(file, callback) {
   // check file api availability
   if (!window.FileReader) {
     return window.alert(
-        "Looks like you use an older browser that does not support drag and drop. "
-        +
+      "Looks like you use an older browser that does not support drag and drop. " +
         "Try using a modern browser such as Chrome, Firefox or Internet Explorer > 10.",
     );
   }
@@ -108,7 +108,7 @@ function openFile(file, callback) {
   reader.readAsText(file);
 }
 
-const fileInput = document.createElement('input');
+const fileInput = document.createElement("input");
 fileInput.setAttribute("type", "file");
 fileInput.style.display = "none";
 document.body.appendChild(fileInput);
@@ -131,67 +131,65 @@ function saveSVG() {
 }
 
 function saveBoard() {
-  return modeler.saveXML({format: true});
+  return modeler.saveXML({ format: true });
 }
 
 // bootstrap board functions
-$(function () {
-  const downloadLink = document.getElementById("js-download-board");
-  const downloadSvgLink = document.getElementById("js-download-svg");
+const downloadLink = document.getElementById("js-download-board");
+const downloadSvgLink = document.getElementById("js-download-svg");
 
-  const openNew = document.getElementById("js-open-new");
-  const openExistingBoard = document.getElementById("js-open-board");
+const openNew = document.getElementById("js-open-new");
+const openExistingBoard = document.getElementById("js-open-board");
 
-  function setEncoded(link, name, data) {
-    const encodedData = encodeURIComponent(data);
+function setEncoded(link, name, data) {
+  const encodedData = encodeURIComponent(data);
 
-    if (data) {
-      link.classList.add("active");
-      link.setAttribute(
-          "href",
-          "data:application/xml;charset=UTF-8," + encodedData,
-      );
-      link.setAttribute("download", name);
-    } else {
-      link.classList.removeClass("active");
-    }
+  if (data) {
+    link.classList.add("active");
+    link.setAttribute(
+      "href",
+      "data:application/xml;charset=UTF-8," + encodedData,
+    );
+    link.setAttribute("download", name);
+  } else {
+    link.classList.removeClass("active");
   }
+}
 
-  const exportArtifacts = debounce(function () {
-    saveSVG().then(function (result) {
-      setEncoded(downloadSvgLink, "bpmn.svg", result.svg);
-    });
-
-    saveBoard().then(function (result) {
-      setEncoded(downloadLink, "bpmn.xml", result.xml);
-      modeler._emit("analysis.start", result);
-    });
-  }, 500);
-
-  modeler.on("commandStack.changed", exportArtifacts);
-  modeler.on("import.done", exportArtifacts);
-
-  modeler.on("analysis.done", handleAnalysis)
-
-  openNew.addEventListener("click", function () {
-    openBoard(emptyBoardXML);
+const exportArtifacts = debounce(function () {
+  saveSVG().then(function (result) {
+    setEncoded(downloadSvgLink, "bpmn.svg", result.svg);
   });
 
-  openExistingBoard.addEventListener("click", function () {
-    // clear input so that previously selected file can be reopened
-    fileInput.value = "";
-    fileInput.click();
+  saveBoard().then(function (result) {
+    setEncoded(downloadLink, "bpmn.xml", result.xml);
+    modeler._emit("analysis.start", result);
   });
+}, 500);
+
+modeler.on("commandStack.changed", exportArtifacts);
+modeler.on("import.done", exportArtifacts);
+
+modeler.on("analysis.done", handleAnalysis);
+
+openNew.addEventListener("click", function () {
+  openBoard(emptyBoardXML);
+});
+
+openExistingBoard.addEventListener("click", function () {
+  // clear input so that previously selected file can be reopened
+  fileInput.value = "";
+  fileInput.click();
 });
 
 openBoard(sampleBoardXML);
 
-const ANALYSIS_NOTE_TYPE = 'analysis-note';
+const ANALYSIS_NOTE_TYPE = "analysis-note";
 
 function handleAnalysis(result) {
-  const overlays = modeler.get('overlays');
+  const overlays = modeler.get("overlays");
   overlays.remove({
-    type: ANALYSIS_NOTE_TYPE
+    type: ANALYSIS_NOTE_TYPE,
   });
   if (!result) {
     console.error("Should reset all properties");
@@ -204,12 +202,16 @@ function handleAnalysis(result) {
     if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
       addOverlaysForUnsafe(propertyResult, overlays);
     }
-    if (propertyResult.property === "ProperCompletion"
-        && !propertyResult.fulfilled) {
+    if (
+      propertyResult.property === "ProperCompletion" &&
+      !propertyResult.fulfilled
+    ) {
       addOverlaysForProperCompletion(propertyResult, overlays);
     }
-    if (propertyResult.property === "NoDeadActivities"
-        && !propertyResult.fulfilled) {
+    if (
+      propertyResult.property === "NoDeadActivities" &&
+      !propertyResult.fulfilled
+    ) {
       addOverlaysForNoDeadActivities(propertyResult, overlays);
     }
   }
@@ -219,7 +221,8 @@ function setPropertyColorAndIcon(propertyResult) {
   // Set the property somehow with jquery
   let elementById = document.getElementById(`${propertyResult.property}`);
   let elementIconById = document.getElementById(
-      `${propertyResult.property}-icon`);
+    `${propertyResult.property}-icon`,
+  );
   if (propertyResult.fulfilled) {
     elementById.classList.remove("red");
     elementById.classList.add("green");
@@ -240,10 +243,10 @@ function addOverlaysForUnsafe(propertyResult, overlays) {
     overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position: {
         bottom: -5,
-        left: 0
+        left: 0,
       },
-      html: '<div class="small-note">Unsafe</div>'
-    })
+      html: '<div class="small-note">Unsafe</div>',
+    });
   }
 }
 
@@ -252,10 +255,10 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
     overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position: {
         bottom: 50,
-        right: -5
+        right: -5,
       },
-      html: '<div class="big-note">Consumes two or more end events</div>'
-    })
+      html: '<div class="big-note">Consumes two or more end events</div>',
+    });
   }
 }
 
@@ -266,8 +269,8 @@ function addOverlaysForNoDeadActivities(propertyResult, overlays) {
         bottom: -5,
         left: 17.5,
       },
-      html: '<div class="big-note">Dead Activity</div>'
-    })
+      html: '<div class="big-note">Dead Activity</div>',
+    });
   }
 }
 

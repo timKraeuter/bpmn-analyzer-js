@@ -25,15 +25,15 @@ function startAnalysis(checker_port, diagramXML, eventBus) {
         "Safeness",
         "OptionToComplete",
         "ProperCompletion",
-        "NoDeadActivities"
-      ]
+        "NoDeadActivities",
+      ],
     }),
     headers: {
-      "Content-type": "application/json; charset=UTF-8"
-    }
+      "Content-type": "application/json; charset=UTF-8",
+    },
   })
-  .then((response) => response.json())
-  .then((json) => {
-    eventBus.fire("analysis.done", json)
-  });
+    .then((response) => response.json())
+    .then((json) => {
+      eventBus.fire("analysis.done", json);
+    });
 }

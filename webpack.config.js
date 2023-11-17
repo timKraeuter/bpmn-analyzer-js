@@ -3,12 +3,12 @@ const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 
 const SOURCE_VERSION =
-    process.env.SOURCE_VERSION || process.env.npm_package_gitHead || "dev";
+  process.env.SOURCE_VERSION || process.env.npm_package_gitHead || "dev";
 
 module.exports = (env) => {
   let outputPath = __dirname + "/public";
   let path = "src";
-  let mode = "development"
+  let mode = "development";
   if (env.rust) {
     outputPath = __dirname + "/../RustBPMNAnalyzer/public";
     mode = "production";
