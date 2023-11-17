@@ -113,7 +113,6 @@ fileInput.setAttribute("type", "file");
 fileInput.style.display = "none";
 document.body.appendChild(fileInput);
 document.addEventListener("change", function (e) {
-  console.log(e);
   openFile(e.target.files[0], openBoard);
 });
 
