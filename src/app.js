@@ -139,29 +139,24 @@ function saveBoard() {
 
 // bootstrap board functions
 $(function () {
-  const downloadLink = $("#js-download-board");
-  const downloadSvgLink = $("#js-download-svg");
+  const downloadLink = document.getElementById("js-download-board");
+  const downloadSvgLink = document.getElementById("js-download-svg");
 
   const openNew = $("#js-open-new");
   const openExistingBoard = $("#js-open-board");
-
-  $(".buttons a").click(function (e) {
-    if (!$(this).is(".active")) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  });
 
   function setEncoded(link, name, data) {
     const encodedData = encodeURIComponent(data);
 
     if (data) {
-      link.addClass("active").attr({
-        href: "data:application/xml;charset=UTF-8," + encodedData,
-        download: name,
-      });
+      link.classList.add("active");
+      link.setAttribute(
+          "href",
+          "data:application/xml;charset=UTF-8," + encodedData,
+      );
+      link.setAttribute("download", name);
     } else {
-      link.removeClass("active");
+      link.classList.removeClass("active");
     }
   }
 
@@ -209,7 +204,7 @@ function handleAnalysis(result) {
   }
 
   for (const propertyResult of result.property_results) {
-    var {elementById, elementIconById} = setPropertyColorAndIcon(propertyResult);
+    setPropertyColorAndIcon(propertyResult);
 
     if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
       addOverlaysForUnsafe(propertyResult, overlays);
@@ -227,22 +222,22 @@ function handleAnalysis(result) {
 
 function setPropertyColorAndIcon(propertyResult) {
   // Set the property somehow with jquery
-  var elementById = $(`#${propertyResult.property}`);
-  var elementIconById = $(`#${propertyResult.property}-icon`);
+  let elementById = document.getElementById(`${propertyResult.property}`);
+  let elementIconById = document.getElementById(
+      `${propertyResult.property}-icon`);
   if (propertyResult.fulfilled) {
-    elementById.removeClass("red");
-    elementById.addClass("green");
+    elementById.classList.remove("red");
+    elementById.classList.add("green");
 
-    elementIconById.removeClass("icon-question icon-xmark red");
-    elementIconById.addClass("icon-check green");
+    elementIconById.classList.remove("icon-question", "icon-xmark", "red");
+    elementIconById.classList.add("icon-check", "green");
   } else {
-    elementById.removeClass("green");
-    elementById.addClass("red");
+    elementById.classList.remove("green");
+    elementById.classList.add("red");
 
-    elementIconById.removeClass("icon-question icon-check green");
-    elementIconById.addClass("icon-xmark red");
+    elementIconById.classList.remove("icon-question", "icon-check", "green");
+    elementIconById.classList.add("icon-xmark", "red");
   }
-  return {elementById, elementIconById};
 }
 
 function addOverlaysForUnsafe(propertyResult, overlays) {
