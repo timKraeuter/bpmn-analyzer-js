@@ -64,18 +64,6 @@ function findAllPrecedingParallelGateways(inFlow, pgs) {
   return pgs;
 }
 
-function findUnsafeCause(ex_gateway) {
-  const preceding_pgs = ex_gateway.incoming.map((inFlow) =>
-    findAllPrecedingParallelGateways(inFlow, []),
-  );
-  for (const pg of preceding_pgs[0]) {
-    if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
-      return pg;
-    }
-  }
-  return undefined;
-}
-
 function addQuickFixUnsafeIfPossible(
   elementID,
   propertyResult,
@@ -116,13 +104,29 @@ function addParallelToExclusiveGatewayQuickFix(overlays, gateway, bpmnReplace) {
     },
     html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to replace with exclusive gateway to fix Safeness.</span>
+               <span class="tooltiptext">Click to change gateway to exclusive to fix Safeness.</span>
            </div>`,
   });
 
   document.getElementById(gateway.id).addEventListener("click", () => {
     replaceWithExclusiveGateway(gateway, bpmnReplace);
   });
+}
+
+function findUnsafeCause(ex_gateway) {
+  const preceding_pgs = ex_gateway.incoming.map((inFlow) =>
+    findAllPrecedingParallelGateways(inFlow, []),
+  );
+  return findCommonPG(preceding_pgs);
+}
+
+function findCommonPG(preceding_pgs) {
+  for (const pg of preceding_pgs[0]) {
+    if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
+      return pg;
+    }
+  }
+  return undefined;
 }
 
 function addExclusiveToParallelGatewayQuickFix(overlays, gateway, bpmnReplace) {
@@ -133,7 +137,7 @@ function addExclusiveToParallelGatewayQuickFix(overlays, gateway, bpmnReplace) {
     },
     html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to replace with parallel gateway to fix Safeness.</span>
+               <span class="tooltiptext">Click to change gateway to parallel to fix Safeness.</span>
            </div>`,
   });
 
