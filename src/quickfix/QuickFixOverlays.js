@@ -58,6 +58,9 @@ function addQuickFixUnsafeIfPossible(
   bpmnReplace,
   overlays,
 ) {
+  overlays.remove({
+    type: QUICK_FIX_NOTE_TYPE,
+  });
   const element = elementRegistry.get(elementID);
   if (!element) {
     return;
