@@ -65,8 +65,17 @@ function addQuickFixUnsafeIfPossible(
   if (!element) {
     return;
   }
-  const gateway = findUnsafeMerge(element, propertyResult.problematic_elements);
-  // TODO: Could check that this really fixes the error here and then add the overlay.
+  const ex_gateway = findUnsafeMerge(
+    element,
+    propertyResult.problematic_elements,
+  );
+  if (ex_gateway) {
+    // TODO: Could check that this really fixes the error here and then add the overlay.
+    addExclusiveToParallelGatewayQuickFix(overlays, ex_gateway, bpmnReplace);
+  }
+}
+
+function addExclusiveToParallelGatewayQuickFix(overlays, gateway, bpmnReplace) {
   overlays.add(gateway, QUICK_FIX_NOTE_TYPE, {
     position: {
       top: -45,

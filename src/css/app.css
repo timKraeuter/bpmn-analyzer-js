@@ -527,9 +527,8 @@ textarea {
   padding: 5px 0;
 
   /* Position the tooltip */
-  bottom: 100%;
-  left: 50%;
-  margin-left: -50px;
+  top: -15px;
+  left: 105%;
   position: absolute;
   z-index: 1;
 }
