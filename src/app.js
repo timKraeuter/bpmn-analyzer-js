@@ -9,6 +9,7 @@ import {
 } from "bpmn-js-properties-panel";
 
 import AnalysisClientModule from "./analysis";
+import QuickFixModule from "./quickfix";
 
 // modeler instance
 const modeler = new BpmnModeler({
@@ -20,6 +21,7 @@ const modeler = new BpmnModeler({
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
     AnalysisClientModule,
+    QuickFixModule,
   ],
 });
 
