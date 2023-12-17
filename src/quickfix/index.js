@@ -1,6 +1,6 @@
-import QuickFixProvider from "./QuickFixProvider";
+import QuickFixOverlays from "./QuickFixOverlays";
 
 export default {
-  __init__: ["quickFixProvider"],
-  quickFixProvider: ["type", QuickFixProvider],
+  __init__: ["quickFixOverlays"],
+  quickFixOverlays: ["type", QuickFixOverlays],
 };
