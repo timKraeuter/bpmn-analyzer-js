@@ -491,6 +491,7 @@ textarea {
 .quick-fix-note {
   background-color: green;
   width: 25px;
+  cursor: pointer;
 }
 
 .big-note {

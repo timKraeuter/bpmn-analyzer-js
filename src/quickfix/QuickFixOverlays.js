@@ -51,6 +51,20 @@ function findUnsafeMerge(element, problematic_elements) {
   return undefined;
 }
 
+function findUnsafeCause(ex_gateway) {
+  for (const inFlow of ex_gateway.incoming) {
+    const source = inFlow.source;
+    if (source.type === "bpmn:ParallelGateway") {
+      return source;
+    }
+    const cause = findUnsafeCause(source);
+    if (cause) {
+      return cause;
+    }
+  }
+  return undefined;
+}
+
 function addQuickFixUnsafeIfPossible(
   elementID,
   propertyResult,
@@ -72,7 +86,32 @@ function addQuickFixUnsafeIfPossible(
   if (ex_gateway) {
     // TODO: Could check that this really fixes the error here and then add the overlay.
     addExclusiveToParallelGatewayQuickFix(overlays, ex_gateway, bpmnReplace);
+    const parallel_gateway = findUnsafeCause(ex_gateway, elementRegistry);
+    if (parallel_gateway) {
+      addParallelToExclusiveGatewayQuickFix(
+        overlays,
+        parallel_gateway,
+        bpmnReplace,
+      );
+    }
   }
+}
+
+function addParallelToExclusiveGatewayQuickFix(overlays, gateway, bpmnReplace) {
+  overlays.add(gateway, QUICK_FIX_NOTE_TYPE, {
+    position: {
+      top: -45,
+      left: 7.5,
+    },
+    html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to replace with exclusive gateway to fix Safeness.</span>
+           </div>`,
+  });
+
+  document.getElementById(gateway.id).addEventListener("click", () => {
+    replaceWithExclusiveGateway(gateway, bpmnReplace);
+  });
 }
 
 function addExclusiveToParallelGatewayQuickFix(overlays, gateway, bpmnReplace) {
@@ -83,14 +122,20 @@ function addExclusiveToParallelGatewayQuickFix(overlays, gateway, bpmnReplace) {
     },
     html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to replace with parallel gateway to fix Soundness.</span>
+               <span class="tooltiptext">Click to replace with parallel gateway to fix Safeness.</span>
            </div>`,
   });
 
   document.getElementById(gateway.id).addEventListener("click", () => {
-    // Other possible resolution is to change the split to an exclusive gateway.
     replaceWithParallelGateway(gateway, bpmnReplace);
   });
+}
+
+function replaceWithExclusiveGateway(gateway, bpmnReplace) {
+  const targetElement = {
+    type: "bpmn:ExclusiveGateway",
+  };
+  bpmnReplace.replaceElement(gateway, targetElement);
 }
 
 function replaceWithParallelGateway(gateway, bpmnReplace) {

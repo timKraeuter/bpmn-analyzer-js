@@ -163,7 +163,7 @@ const exportArtifacts = debounce(function () {
   });
 
   saveBoard().then(function (result) {
-    setEncoded(downloadLink, "bpmn.xml", result.xml);
+    setEncoded(downloadLink, "bpmn.bpmn", result.xml);
     modeler._emit("analysis.start", result);
   });
 }, 500);
