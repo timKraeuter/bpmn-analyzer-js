@@ -51,15 +51,26 @@ function findUnsafeMerge(element, problematic_elements) {
   return undefined;
 }
 
-function findUnsafeCause(ex_gateway) {
-  for (const inFlow of ex_gateway.incoming) {
-    const source = inFlow.source;
-    if (source.type === "bpmn:ParallelGateway") {
-      return source;
+function findAllPrecedingParallelGateways(inFlow, pgs) {
+  const source = inFlow.source;
+  if (source.type === "bpmn:ParallelGateway") {
+    pgs.push(source);
+  }
+  if (source.incoming) {
+    for (const inFlow of source.incoming) {
+      findAllPrecedingParallelGateways(inFlow, pgs);
     }
-    const cause = findUnsafeCause(source);
-    if (cause) {
-      return cause;
+  }
+  return pgs;
+}
+
+function findUnsafeCause(ex_gateway) {
+  const preceding_pgs = ex_gateway.incoming.map((inFlow) =>
+    findAllPrecedingParallelGateways(inFlow, []),
+  );
+  for (const pg of preceding_pgs[0]) {
+    if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
+      return pg;
     }
   }
   return undefined;
