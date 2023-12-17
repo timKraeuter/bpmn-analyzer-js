@@ -246,7 +246,7 @@ function addOverlaysForUnsafe(propertyResult, overlays) {
         bottom: -5,
         left: 0,
       },
-      html: '<div class="small-note">Unsafe</div>',
+      html: '<div class="small-note property-note">Unsafe</div>',
     });
   }
 }
@@ -258,7 +258,7 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
         bottom: 50,
         right: -5,
       },
-      html: '<div class="big-note">Consumes two or more end events</div>',
+      html: '<div class="big-note property-note">Consumes two or more end events</div>',
     });
   }
 }
@@ -270,7 +270,7 @@ function addOverlaysForNoDeadActivities(propertyResult, overlays) {
         bottom: -5,
         left: 17.5,
       },
-      html: '<div class="big-note">Dead Activity</div>',
+      html: '<div class="big-note property-note">Dead Activity</div>',
     });
   }
 }
