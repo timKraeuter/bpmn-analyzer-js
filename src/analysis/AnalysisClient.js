@@ -1,5 +1,3 @@
-const websocket_url = "ws://localhost:8071/debug";
-
 export default function AnalysisClient(eventBus) {
   let checker_port = getCheckerPort();
 
