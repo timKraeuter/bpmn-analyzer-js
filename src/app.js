@@ -1,7 +1,7 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/initial.bpmn";
-import sampleBoardXML from "../resources/initial.bpmn";
+import sampleBoardXML from "../resources/taskMerge.bpmn";
 
 import {
   BpmnPropertiesPanelModule,

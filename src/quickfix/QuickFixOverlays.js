@@ -1,18 +1,24 @@
+import { is, isAny } from "bpmn-js/lib/util/ModelUtil";
+import { getMid } from "diagram-js/lib/layout/LayoutUtil";
+
 export default function QuickFixOverlays(
   bpmnReplace,
   elementRegistry,
   eventBus,
   overlays,
+  modeling,
 ) {
   eventBus.on("analysis.done", (result) => {
     for (const propertyResult of result.property_results) {
       if (propertyResult.property === "Safeness") {
+        // TODO: Move stuff inside so the injected fields are always accessible.
         addQuickFixUnsafeIfPossible(
           propertyResult.problematic_elements[0],
           propertyResult,
           elementRegistry,
           bpmnReplace,
           overlays,
+          modeling,
         );
       } else {
       }
@@ -24,6 +30,7 @@ QuickFixOverlays.$inject = [
   "elementRegistry",
   "eventBus",
   "overlays",
+  "modeling",
 ];
 
 const QUICK_FIX_NOTE_TYPE = "quick-fix-note";
@@ -37,7 +44,7 @@ function noUnsafeIncFlow(source, problematic_elements) {
 function findUnsafeMerge(element, problematic_elements) {
   const source = element.source;
   if (
-    source.type === "bpmn:ExclusiveGateway" &&
+    isAny(source, ["bpmn:ExclusiveGateway", "bpmn:Activity"]) &&
     noUnsafeIncFlow(source, problematic_elements)
   ) {
     return source;
@@ -70,6 +77,7 @@ function addQuickFixUnsafeIfPossible(
   elementRegistry,
   bpmnReplace,
   overlays,
+  modeling,
 ) {
   overlays.remove({
     type: QUICK_FIX_NOTE_TYPE,
@@ -78,21 +86,65 @@ function addQuickFixUnsafeIfPossible(
   if (!element) {
     return;
   }
-  const ex_gateway = findUnsafeMerge(
+  const unsafeMerge = findUnsafeMerge(
     element,
     propertyResult.problematic_elements,
   );
-  if (ex_gateway) {
-    // TODO: Could check that this really fixes the error here and then add the overlay.
-    addExclusiveToParallelGatewayQuickFix(overlays, ex_gateway, bpmnReplace);
-    const parallel_gateway = findUnsafeCause(ex_gateway, elementRegistry);
-    if (parallel_gateway) {
-      addParallelToExclusiveGatewayQuickFix(
-        overlays,
-        parallel_gateway,
-        bpmnReplace,
-      );
+  if (unsafeMerge) {
+    addUnsafeMergeFix(unsafeMerge, overlays, bpmnReplace, modeling);
+    const unsafeCause = findUnsafeCause(unsafeMerge, elementRegistry);
+    if (unsafeCause) {
+      addUnsafeCauseFix(unsafeCause, overlays, bpmnReplace);
     }
+  }
+}
+
+function addUnsafeMergeFix(unsafeMerge, overlays, bpmnReplace, modeling) {
+  if (is(unsafeMerge, "bpmn:ExclusiveGateway")) {
+    addExclusiveToParallelGatewayQuickFix(overlays, unsafeMerge, bpmnReplace);
+  } else {
+    // Must be an activity
+    overlays.add(unsafeMerge, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: 30,
+      },
+      html: `<div id=${unsafeMerge.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to add preceding parallel gateway to fix Safeness.</span>
+           </div>`,
+    });
+
+    document.getElementById(unsafeMerge.id).addEventListener("click", () => {
+      // reposition everything nicely. Maybe implement similar to the lasso tool
+      // Move everything at unsafeMerge x + 50 on x.
+
+      // Create parallel gateway
+      const pg = modeling.createShape(
+        { type: "bpmn:ParallelGateway" },
+        {
+          x: unsafeMerge.x - 50,
+          y: getMid(unsafeMerge).y,
+        },
+        unsafeMerge.parent,
+      );
+      // Change incoming sfs
+      const inFlows = unsafeMerge.incoming.map((sf) => sf);
+      for (const inFlow of inFlows) {
+        modeling.reconnectEnd(inFlow, pg, getMid(pg)); // Only reason why we include diagram-js atm.
+      }
+      // Add new sf between pg and activity.
+      modeling.connect(pg, unsafeMerge);
+    });
+  }
+}
+
+function addUnsafeCauseFix(unsafeCause, overlays, bpmnReplace) {
+  if (is(unsafeCause, "bpmn:ParallelGateway")) {
+    addParallelToExclusiveGatewayQuickFix(overlays, unsafeCause, bpmnReplace);
+  } else {
+    // Must be an activity
+    // TODO: Add fix for task.
   }
 }
 
