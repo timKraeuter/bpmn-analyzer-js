@@ -21,6 +21,7 @@ export default function QuickFixOverlays(
           propertyResult,
         );
       } else {
+        // TODO: Add quick fixes for other soundness properties.
       }
     }
   });
@@ -84,40 +85,63 @@ export default function QuickFixOverlays(
     if (is(unsafeMerge, "bpmn:ExclusiveGateway")) {
       addExclusiveToParallelGatewayQuickFix(unsafeMerge);
     } else {
-      // Must be an activity
-      overlays.add(unsafeMerge, QUICK_FIX_NOTE_TYPE, {
-        position: {
-          top: -45,
-          left: 30,
-        },
-        html: `<div id=${unsafeMerge.id} class="small-note quick-fix-note tooltip">
+      addPrecedingParallelGatewayQuickFix(unsafeMerge);
+    }
+  }
+
+  function getAllFollowingShapes(startShape, shapes) {
+    startShape.outgoing.forEach((sf) => {
+      const target = sf.target;
+      if (target.x > startShape.x && !shapes.includes(target)) {
+        shapes.push(target);
+        getAllFollowingShapes(target, shapes);
+      }
+    });
+    return shapes;
+  }
+
+  function addPrecedingParallelGatewayQuickFix(unsafeMerge) {
+    overlays.add(unsafeMerge, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: 30,
+      },
+      html: `<div id=${unsafeMerge.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
                <span class="tooltiptext">Click to add preceding parallel gateway to fix Safeness.</span>
            </div>`,
-      });
+    });
 
-      document.getElementById(unsafeMerge.id).addEventListener("click", () => {
-        // reposition everything nicely. Maybe implement similar to the lasso tool
-        // Move everything at unsafeMerge x + 50 on x.
-
-        // Create parallel gateway
-        const pg = modeling.createShape(
-          { type: "bpmn:ParallelGateway" },
-          {
-            x: unsafeMerge.x - 50,
-            y: getMid(unsafeMerge).y,
-          },
-          unsafeMerge.parent,
-        );
-        // Change incoming sfs
-        const inFlows = unsafeMerge.incoming.map((sf) => sf);
-        for (const inFlow of inFlows) {
-          modeling.reconnectEnd(inFlow, pg, getMid(pg)); // Only reason why we include diagram-js atm.
-        }
-        // Add new sf between pg and activity.
-        modeling.connect(pg, unsafeMerge);
-      });
-    }
+    document.getElementById(unsafeMerge.id).addEventListener("click", () => {
+      // Create parallel gateway
+      const pg = modeling.createShape(
+        { type: "bpmn:ParallelGateway" },
+        {
+          x: unsafeMerge.x,
+          y: getMid(unsafeMerge).y,
+        },
+        unsafeMerge.parent,
+      );
+      // Move everything at unsafeMerge to the right to make space for the pg.
+      const shapesToBeMoved = getAllFollowingShapes(unsafeMerge, [unsafeMerge]);
+      spaceTool.makeSpace(
+        shapesToBeMoved, // Move these elements
+        [], // Dont resize anything
+        {
+          x: 75, // Shift x by 75
+          y: 0,
+        },
+        "e", // Move east
+        0,
+      );
+      // Change incoming sfs
+      const inFlows = unsafeMerge.incoming.map((sf) => sf);
+      for (const inFlow of inFlows) {
+        modeling.reconnectEnd(inFlow, pg, getMid(pg)); // Only reason why we include diagram-js atm.
+      }
+      // Add new sf between pg and activity.
+      modeling.connect(pg, unsafeMerge);
+    });
   }
 
   function addUnsafeCauseFix(unsafeCause) {
