@@ -123,7 +123,7 @@ export default function QuickFixOverlays(
         },
         unsafeMerge.parent,
       );
-      // Move everything at unsafeMerge to the right to make space for the pg.
+      // Move everything after unsafeMerge to the right to make space for the pg.
       const shapesToBeMoved = getAllFollowingShapes(unsafeMerge, [unsafeMerge]);
       spaceTool.makeSpace(
         shapesToBeMoved, // Move these elements
@@ -168,7 +168,7 @@ export default function QuickFixOverlays(
         },
         unsafeCause.parent,
       );
-      // Move everything at unsafeMerge to the right to make space for the eg.
+      // Move everything after unsafeCause to the right to make space for the eg.
       const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
       spaceTool.makeSpace(
         shapesToBeMoved, // Move these elements
