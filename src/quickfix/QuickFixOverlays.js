@@ -47,17 +47,17 @@ export default function QuickFixOverlays(
     return undefined;
   }
 
-  function findAllPrecedingParallelGateways(inFlow, pgs) {
+  function findAllPrecedingSFSplits(inFlow, splits) {
     const source = inFlow.source;
-    if (source.type === "bpmn:ParallelGateway") {
-      pgs.push(source);
+    if (source.outgoing.length > 1 && source.type !== "bpmn:ExclusiveGateway") {
+      splits.push(source);
     }
     if (source.incoming) {
       for (const inFlow of source.incoming) {
-        findAllPrecedingParallelGateways(inFlow, pgs);
+        findAllPrecedingSFSplits(inFlow, splits);
       }
     }
-    return pgs;
+    return splits;
   }
 
   function addQuickFixUnsafeIfPossible(elementID, propertyResult) {
@@ -138,10 +138,55 @@ export default function QuickFixOverlays(
       // Change incoming sfs
       const inFlows = unsafeMerge.incoming.map((sf) => sf);
       for (const inFlow of inFlows) {
-        modeling.reconnectEnd(inFlow, pg, getMid(pg)); // Only reason why we include diagram-js atm.
+        modeling.reconnectEnd(inFlow, pg, getMid(pg));
       }
       // Add new sf between pg and activity.
       modeling.connect(pg, unsafeMerge);
+    });
+  }
+
+  function addPrecedingExclusiveGatewayQuickFix(unsafeCause) {
+    overlays.add(unsafeCause, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: unsafeCause.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
+      },
+      html: `<div id=${unsafeCause.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to add subsequent exclusive gateway to fix Safeness.</span>
+           </div>`,
+    });
+
+    document.getElementById(unsafeCause.id).addEventListener("click", () => {
+      // TODO: Undo should undo all these commands.
+      // Create exclusive gateway
+      const eg = modeling.createShape(
+        { type: "bpmn:ExclusiveGateway" },
+        {
+          x: unsafeCause.x + unsafeCause.width + 75,
+          y: getMid(unsafeCause).y,
+        },
+        unsafeCause.parent,
+      );
+      // Move everything at unsafeMerge to the right to make space for the eg.
+      const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
+      spaceTool.makeSpace(
+        shapesToBeMoved, // Move these elements
+        [], // Dont resize anything
+        {
+          x: 75, // Shift x by 75
+          y: 0,
+        },
+        "e", // Move east
+        0,
+      );
+      // Change outgoing sfs
+      const outFlows = unsafeCause.outgoing.map((sf) => sf);
+      for (const outFlow of outFlows) {
+        modeling.reconnectStart(outFlow, eg, getMid(eg));
+      }
+      // Add new sf between eg and flow node.
+      modeling.connect(unsafeCause, eg);
     });
   }
 
@@ -149,8 +194,8 @@ export default function QuickFixOverlays(
     if (is(unsafeCause, "bpmn:ParallelGateway")) {
       addParallelToExclusiveGatewayQuickFix(unsafeCause);
     } else {
-      // Must be an activity
-      // TODO: Add fix for task.
+      // Other flow node
+      addPrecedingExclusiveGatewayQuickFix(unsafeCause);
     }
   }
 
@@ -172,13 +217,13 @@ export default function QuickFixOverlays(
   }
 
   function findUnsafeCause(ex_gateway) {
-    const preceding_pgs = ex_gateway.incoming.map((inFlow) =>
-      findAllPrecedingParallelGateways(inFlow, []),
+    const preceding_splits = ex_gateway.incoming.map((inFlow) =>
+      findAllPrecedingSFSplits(inFlow, []),
     );
-    return findCommonPG(preceding_pgs);
+    return findCommonSplit(preceding_splits);
   }
 
-  function findCommonPG(preceding_pgs) {
+  function findCommonSplit(preceding_pgs) {
     for (const pg of preceding_pgs[0]) {
       if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
         return pg;
