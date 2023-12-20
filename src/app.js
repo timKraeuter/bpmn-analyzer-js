@@ -5,6 +5,7 @@ import emptyBoardXML from "../resources/empty.bpmn";
 import showcase from "../resources/showcase.bpmn";
 import taskSplit from "../resources/taskSplit.bpmn";
 import taskMerge from "../resources/taskMerge.bpmn";
+import unsafeGateways from "../resources/unsafe-gateways.bpmn";
 
 const initialBoardXML = taskSplit;
 
@@ -20,6 +21,7 @@ const example_boards = {
   taskSplit: taskSplit,
   taskMerge: taskMerge,
   showcase: showcase,
+  unsafeGateways: unsafeGateways,
 };
 
 // modeler instance
