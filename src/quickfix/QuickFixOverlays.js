@@ -113,6 +113,7 @@ export default function QuickFixOverlays(
     });
 
     document.getElementById(unsafeMerge.id).addEventListener("click", () => {
+      // TODO: Undo should undo all these commands.
       // Create parallel gateway
       const pg = modeling.createShape(
         { type: "bpmn:ParallelGateway" },
