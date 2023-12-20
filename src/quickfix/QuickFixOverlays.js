@@ -33,7 +33,7 @@ export default function QuickFixOverlays(
   function findUnsafeMerge(element, problematic_elements) {
     const source = element.source;
     if (
-      isAny(source, ["bpmn:ExclusiveGateway", "bpmn:Activity"]) &&
+      isAny(source, ["bpmn:ExclusiveGateway", "bpmn:FlowNode"]) &&
       noUnsafeIncFlow(source, problematic_elements)
     ) {
       return source;
@@ -104,7 +104,7 @@ export default function QuickFixOverlays(
     overlays.add(unsafeMerge, QUICK_FIX_NOTE_TYPE, {
       position: {
         top: -45,
-        left: 30,
+        left: unsafeMerge.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
       },
       html: `<div id=${unsafeMerge.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>

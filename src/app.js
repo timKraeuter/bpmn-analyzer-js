@@ -127,7 +127,7 @@ const fileInput = document.createElement("input");
 fileInput.setAttribute("type", "file");
 fileInput.style.display = "none";
 document.body.appendChild(fileInput);
-fileInput.addEventListener("click", function (e) {
+fileInput.addEventListener("change", function (e) {
   openFile(e.target.files[0], openBoard);
 });
 
