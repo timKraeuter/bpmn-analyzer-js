@@ -1,7 +1,12 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
-import emptyBoardXML from "../resources/initial.bpmn";
-import sampleBoardXML from "../resources/taskMerge.bpmn";
+import emptyBoardXML from "../resources/empty.bpmn";
+
+import showcase from "../resources/showcase.bpmn";
+import taskSplit from "../resources/taskSplit.bpmn";
+import taskMerge from "../resources/taskMerge.bpmn";
+
+const initialBoardXML = taskSplit;
 
 import {
   BpmnPropertiesPanelModule,
@@ -10,6 +15,12 @@ import {
 
 import AnalysisClientModule from "./analysis";
 import QuickFixModule from "./quickfix";
+
+const example_boards = {
+  taskSplit: taskSplit,
+  taskMerge: taskMerge,
+  showcase: showcase,
+};
 
 // modeler instance
 const modeler = new BpmnModeler({
@@ -114,7 +125,7 @@ const fileInput = document.createElement("input");
 fileInput.setAttribute("type", "file");
 fileInput.style.display = "none";
 document.body.appendChild(fileInput);
-document.addEventListener("change", function (e) {
+fileInput.addEventListener("click", function (e) {
   openFile(e.target.files[0], openBoard);
 });
 
@@ -183,7 +194,7 @@ openExistingBoard.addEventListener("click", function () {
   fileInput.click();
 });
 
-openBoard(sampleBoardXML);
+openBoard(initialBoardXML);
 
 const ANALYSIS_NOTE_TYPE = "analysis-note";
 
@@ -275,6 +286,12 @@ function addOverlaysForNoDeadActivities(propertyResult, overlays) {
   }
 }
 
+document
+  .getElementById("example-select")
+  .addEventListener("change", (event) => {
+    const value = event.currentTarget.value;
+    openBoard(example_boards[value]);
+  });
 // helpers //////////////////////
 
 function debounce(fn, timeout) {
