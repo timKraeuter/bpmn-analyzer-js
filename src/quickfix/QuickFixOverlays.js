@@ -18,24 +18,21 @@ export default function QuickFixOverlays(
       type: QUICK_FIX_NOTE_TYPE,
     });
     for (const propertyResult of result.property_results) {
-      if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
+      if (propertyResult.fulfilled) {
+        continue;
+      }
+      if (propertyResult.property === "Safeness") {
         addQuickFixUnsafeIfPossible(
           propertyResult.problematic_elements[0],
           propertyResult,
         );
       }
-      if (
-        propertyResult.property === "ProperCompletion" &&
-        !propertyResult.fulfilled
-      ) {
+      if (propertyResult.property === "ProperCompletion") {
         addQuickFixProperCompletionIfPossible(
           propertyResult.problematic_elements[0],
         );
       }
-      if (
-        propertyResult.property === "OptionToComplete" &&
-        !propertyResult.fulfilled
-      ) {
+      if (propertyResult.property === "OptionToComplete") {
         addQuickFixOptionToCompleteIfPossible(propertyResult);
       } else {
         // TODO: Add quick fixe for dead activities.
@@ -61,6 +58,7 @@ export default function QuickFixOverlays(
             flowNode.incoming.length > 1,
         );
       if (blockingPGs.length === 1) {
+        // TODO: Refactor and add changing the causing gateway to parallel.
         const problematicPG = blockingPGs.pop();
         overlays.add(problematicPG, QUICK_FIX_NOTE_TYPE, {
           position: {
