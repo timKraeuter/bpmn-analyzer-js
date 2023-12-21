@@ -18,18 +18,24 @@ export default function QuickFixOverlays(
       type: QUICK_FIX_NOTE_TYPE,
     });
     for (const propertyResult of result.property_results) {
-      if (propertyResult.property === "Safeness") {
+      if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
         addQuickFixUnsafeIfPossible(
           propertyResult.problematic_elements[0],
           propertyResult,
         );
       }
-      if (propertyResult.property === "ProperCompletion") {
+      if (
+        propertyResult.property === "ProperCompletion" &&
+        !propertyResult.fulfilled
+      ) {
         addQuickFixProperCompletionIfPossible(
           propertyResult.problematic_elements[0],
         );
       }
-      if (propertyResult.property === "OptionToComplete") {
+      if (
+        propertyResult.property === "OptionToComplete" &&
+        !propertyResult.fulfilled
+      ) {
         addQuickFixOptionToCompleteIfPossible(propertyResult);
       } else {
         // TODO: Add quick fixe for dead activities.
@@ -41,14 +47,43 @@ export default function QuickFixOverlays(
       .slice(-1)
       .pop();
     if (lastTransition) {
-      console.log(lastTransition.next_state);
-      // TODO: Need to change the backend to return a proper counter example not strings.
+      const lastState = lastTransition.next_state;
+      if (lastState.snapshots.length !== 1) {
+        console.error("Not dealing with more than one snapshot yet!");
+        return;
+      }
+      const tokens = lastState.snapshots[0].tokens;
+      const blockingPGs = Object.keys(tokens)
+        .map((id) => elementRegistry.get(id).target)
+        .filter(
+          (flowNode) =>
+            flowNode.type === "bpmn:ParallelGateway" &&
+            flowNode.incoming.length > 1,
+        );
+      if (blockingPGs.length === 1) {
+        const problematicPG = blockingPGs.pop();
+        overlays.add(problematicPG, QUICK_FIX_NOTE_TYPE, {
+          position: {
+            top: -45,
+            left: 7.5,
+          },
+          html: `<div id=${problematicPG.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to change gateway to exclusive to fix Option To Complete.</span>
+           </div>`,
+        });
+        document
+          .getElementById(problematicPG.id)
+          .addEventListener("click", () => {
+            replaceWithExclusiveGateway(problematicPG);
+          });
+      }
     }
   }
 
   function addQuickFixProperCompletionIfPossible(problematicElementId) {
     const problematicEndEvent = elementRegistry.get(problematicElementId);
-    if (!problematicEndEvent || problematicEndEvent.incoming.length <= 1) {
+    if (problematicEndEvent.incoming.length <= 1) {
       // Unsafe
       return;
     }
@@ -126,9 +161,6 @@ export default function QuickFixOverlays(
 
   function addQuickFixUnsafeIfPossible(elementID, propertyResult) {
     const element = elementRegistry.get(elementID);
-    if (!element) {
-      return;
-    }
     const unsafeMerge = findUnsafeMerge(
       element,
       propertyResult.problematic_elements,
