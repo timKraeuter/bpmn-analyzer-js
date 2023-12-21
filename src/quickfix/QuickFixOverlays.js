@@ -14,20 +14,67 @@ export default function QuickFixOverlays(
   spaceTool,
 ) {
   eventBus.on("analysis.done", (result) => {
+    overlays.remove({
+      type: QUICK_FIX_NOTE_TYPE,
+    });
     for (const propertyResult of result.property_results) {
       if (propertyResult.property === "Safeness") {
         addQuickFixUnsafeIfPossible(
           propertyResult.problematic_elements[0],
           propertyResult,
         );
+      }
+      if (propertyResult.property === "ProperCompletion") {
+        addQuickFixProperCompletionIfPossible(
+          propertyResult.problematic_elements[0],
+        );
       } else {
         // TODO: Add quick fixes for other soundness properties.
       }
     }
   });
+  function addQuickFixProperCompletionIfPossible(problematicElementId) {
+    const problematicEndEvent = elementRegistry.get(problematicElementId);
+    if (!problematicEndEvent || problematicEndEvent.incoming.length <= 1) {
+      // Unsafe
+      return;
+    }
+    overlays.add(problematicEndEvent, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: 0,
+      },
+      html: `<div id=${problematicEndEvent.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to create an additional end event to fix Proper Completion.</span>
+           </div>`,
+    });
 
-  function noUnsafeIncFlow(source, problematic_elements) {
-    return !source.incoming.some((sf) => problematic_elements.includes(sf.id));
+    document
+      .getElementById(problematicEndEvent.id)
+      .addEventListener("click", () => {
+        // Create a new end event for each incoming flow and reconnect the flow.
+        let oldMid = getMid(problematicEndEvent);
+        const inFlows = problematicEndEvent.incoming.slice(1);
+        inFlows.forEach((inFlow) => {
+          const endEvent = modeling.createShape(
+            { type: "bpmn:EndEvent" },
+            {
+              x: oldMid.x,
+              y: oldMid.y + 110, // Same as auto append
+            },
+            problematicEndEvent.parent,
+          );
+          modeling.reconnectEnd(inFlow, endEvent, {
+            x: endEvent.x,
+            y: endEvent.y,
+          });
+          modeling.layoutConnection(inFlow, {
+            waypoints: [], // Forces new layout of the waypoints
+          });
+          oldMid = getMid(endEvent);
+        });
+      });
   }
 
   function findUnsafeMerge(element, problematic_elements) {
@@ -47,6 +94,10 @@ export default function QuickFixOverlays(
     return undefined;
   }
 
+  function noUnsafeIncFlow(source, problematic_elements) {
+    return !source.incoming.some((sf) => problematic_elements.includes(sf.id));
+  }
+
   function findAllPrecedingSFSplits(inFlow, splits) {
     const source = inFlow.source;
     if (source.outgoing.length > 1 && source.type !== "bpmn:ExclusiveGateway") {
@@ -61,9 +112,6 @@ export default function QuickFixOverlays(
   }
 
   function addQuickFixUnsafeIfPossible(elementID, propertyResult) {
-    overlays.remove({
-      type: QUICK_FIX_NOTE_TYPE,
-    });
     const element = elementRegistry.get(elementID);
     if (!element) {
       return;
