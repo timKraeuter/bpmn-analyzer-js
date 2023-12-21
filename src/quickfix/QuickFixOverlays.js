@@ -39,6 +39,24 @@ export default function QuickFixOverlays(
       }
     }
   });
+
+  function addOptionToCompleteParallelQuickFix(exgCause) {
+    // TODO: Make this a function and use it everywhere.
+    overlays.add(exgCause, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: 7.5,
+      },
+      html: `<div id=${exgCause.id} class="small-note quick-fix-note tooltip">
+               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
+               <span class="tooltiptext">Click to change gateway to parallel to fix Option To Complete.</span>
+           </div>`,
+    });
+    document.getElementById(exgCause.id).addEventListener("click", () => {
+      replaceWithParallelGateway(exgCause);
+    });
+  }
+
   function addQuickFixOptionToCompleteIfPossible(propertyResult) {
     const lastTransition = propertyResult.counter_example.transitions
       .slice(-1)
@@ -58,25 +76,31 @@ export default function QuickFixOverlays(
             flowNode.incoming.length > 1,
         );
       if (blockingPGs.length === 1) {
-        // TODO: Refactor and add changing the causing gateway to parallel.
         const problematicPG = blockingPGs.pop();
-        overlays.add(problematicPG, QUICK_FIX_NOTE_TYPE, {
-          position: {
-            top: -45,
-            left: 7.5,
-          },
-          html: `<div id=${problematicPG.id} class="small-note quick-fix-note tooltip">
+        addOptionToCompleteExclusiveQuickFix(problematicPG);
+
+        const exgCause = findProperCompletionChoiceCause(problematicPG);
+        if (exgCause) {
+          addOptionToCompleteParallelQuickFix(exgCause);
+        }
+      }
+    }
+  }
+
+  function addOptionToCompleteExclusiveQuickFix(problematicPG) {
+    overlays.add(problematicPG, QUICK_FIX_NOTE_TYPE, {
+      position: {
+        top: -45,
+        left: 7.5,
+      },
+      html: `<div id=${problematicPG.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
                <span class="tooltiptext">Click to change gateway to exclusive to fix Option To Complete.</span>
            </div>`,
-        });
-        document
-          .getElementById(problematicPG.id)
-          .addEventListener("click", () => {
-            replaceWithExclusiveGateway(problematicPG);
-          });
-      }
-    }
+    });
+    document.getElementById(problematicPG.id).addEventListener("click", () => {
+      replaceWithExclusiveGateway(problematicPG);
+    });
   }
 
   function addQuickFixProperCompletionIfPossible(problematicElementId) {
@@ -144,7 +168,22 @@ export default function QuickFixOverlays(
     return !source.incoming.some((sf) => problematic_elements.includes(sf.id));
   }
 
+  function findAllPrecedingSFChoices(inFlow, choices) {
+    // TODO: Cycles!
+    const source = inFlow.source;
+    if (source.outgoing.length > 1 && source.type === "bpmn:ExclusiveGateway") {
+      choices.push(source);
+    }
+    if (source.incoming) {
+      for (const inFlow of source.incoming) {
+        findAllPrecedingSFChoices(inFlow, choices);
+      }
+    }
+    return choices;
+  }
+
   function findAllPrecedingSFSplits(inFlow, splits) {
+    // TODO: Cycles!
     const source = inFlow.source;
     if (source.outgoing.length > 1 && source.type !== "bpmn:ExclusiveGateway") {
       splits.push(source);
@@ -307,14 +346,21 @@ export default function QuickFixOverlays(
     });
   }
 
+  function findProperCompletionChoiceCause(pg) {
+    const preceding_choices = pg.incoming.map((inFlow) =>
+      findAllPrecedingSFChoices(inFlow, []),
+    );
+    return findCommonSplitOrChoice(preceding_choices);
+  }
+
   function findUnsafeCause(ex_gateway) {
     const preceding_splits = ex_gateway.incoming.map((inFlow) =>
       findAllPrecedingSFSplits(inFlow, []),
     );
-    return findCommonSplit(preceding_splits);
+    return findCommonSplitOrChoice(preceding_splits);
   }
 
-  function findCommonSplit(preceding_pgs) {
+  function findCommonSplitOrChoice(preceding_pgs) {
     for (const pg of preceding_pgs[0]) {
       if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
         return pg;
