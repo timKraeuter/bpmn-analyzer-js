@@ -1,4 +1,4 @@
-import { is, isAny } from "bpmn-js/lib/util/ModelUtil";
+import { is } from "bpmn-js/lib/util/ModelUtil";
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 
 const QUICK_FIX_NOTE_TYPE = "quick-fix-note";
@@ -33,7 +33,7 @@ export default function QuickFixOverlays(
   function findUnsafeMerge(element, problematic_elements) {
     const source = element.source;
     if (
-      isAny(source, ["bpmn:ExclusiveGateway", "bpmn:FlowNode"]) &&
+      source.incoming.length > 1 &&
       noUnsafeIncFlow(source, problematic_elements)
     ) {
       return source;

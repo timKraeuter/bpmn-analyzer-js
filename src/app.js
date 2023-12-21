@@ -6,8 +6,9 @@ import showcase from "../resources/showcase.bpmn";
 import taskSplit from "../resources/taskSplit.bpmn";
 import taskMerge from "../resources/taskMerge.bpmn";
 import unsafeGateways from "../resources/unsafe-gateways.bpmn";
+import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 
-const initialBoardXML = taskSplit;
+const initialBoardXML = reusedEndEvent;
 
 import {
   BpmnPropertiesPanelModule,
@@ -22,6 +23,7 @@ const example_boards = {
   taskMerge: taskMerge,
   showcase: showcase,
   unsafeGateways: unsafeGateways,
+  reusedEndEvent: reusedEndEvent,
 };
 
 // modeler instance
