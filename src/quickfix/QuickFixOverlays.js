@@ -28,11 +28,24 @@ export default function QuickFixOverlays(
         addQuickFixProperCompletionIfPossible(
           propertyResult.problematic_elements[0],
         );
+      }
+      if (propertyResult.property === "OptionToComplete") {
+        addQuickFixOptionToCompleteIfPossible(propertyResult);
       } else {
-        // TODO: Add quick fixes for other soundness properties.
+        // TODO: Add quick fixe for dead activities.
       }
     }
   });
+  function addQuickFixOptionToCompleteIfPossible(propertyResult) {
+    const lastTransition = propertyResult.counter_example.transitions
+      .slice(-1)
+      .pop();
+    if (lastTransition) {
+      console.log(lastTransition.next_state);
+      // TODO: Need to change the backend to return a proper counter example not strings.
+    }
+  }
+
   function addQuickFixProperCompletionIfPossible(problematicElementId) {
     const problematicEndEvent = elementRegistry.get(problematicElementId);
     if (!problematicEndEvent || problematicEndEvent.incoming.length <= 1) {
