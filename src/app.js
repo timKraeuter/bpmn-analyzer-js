@@ -273,7 +273,7 @@ function addOverlaysForProperCompletion(propertyResult, overlays) {
         bottom: 50,
         right: -5,
       },
-      html: '<div class="big-note property-note">Consumes two or more end events</div>',
+      html: '<div class="big-note property-note">Consumes two or more tokens</div>',
     });
   }
 }
