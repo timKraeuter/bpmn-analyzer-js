@@ -1,7 +1,7 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
-import { getMid } from "diagram-js/lib/layout/LayoutUtil";
-import { AddSubsequentExclusiveGatewayCommand } from "./AddSubsequentExclusiveGatewayCommand";
-import { AddPrecedingParallelGatewayCommand } from "./AddPrecedingParallelGatewayCommand";
+import { AddSubsequentExclusiveGatewayCommand } from "./commands/AddSubsequentExclusiveGatewayCommand";
+import { AddPrecedingParallelGatewayCommand } from "./commands/AddPrecedingParallelGatewayCommand";
+import { AddEndEventsForEachIncFlowCommand } from "./commands/AddEndEventsForEachIncFlowCommand";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -18,7 +18,6 @@ export default function AnalysisQuickFixes(
   eventBus,
   overlays,
   modeling,
-  spaceTool,
   commandStack,
 ) {
   commandStack.registerHandler(
@@ -28,6 +27,10 @@ export default function AnalysisQuickFixes(
   commandStack.registerHandler(
     "addPrecedingParallelGatewayCommand",
     AddPrecedingParallelGatewayCommand,
+  );
+  commandStack.registerHandler(
+    "addEndEventsForEachIncFlowCommand",
+    AddEndEventsForEachIncFlowCommand,
   );
 
   eventBus.on(
@@ -138,35 +141,11 @@ export default function AnalysisQuickFixes(
       },
       "Click to create an additional end event to fix Proper Completion.",
       () => {
-        makeEndEventForEachIncomingFlow(problematicEndEvent);
+        commandStack.execute("addEndEventsForEachIncFlowCommand", {
+          problematicEndEvent,
+        });
       },
     );
-  }
-
-  /**
-   * @param {Shape} problematicEndEvent
-   */
-  function makeEndEventForEachIncomingFlow(problematicEndEvent) {
-    let oldMid = getMid(problematicEndEvent);
-    const inFlows = problematicEndEvent.incoming.slice(1);
-    inFlows.forEach((inFlow) => {
-      const endEvent = modeling.createShape(
-        { type: "bpmn:EndEvent" },
-        {
-          x: oldMid.x,
-          y: oldMid.y + 110, // Same as auto append
-        },
-        problematicEndEvent.parent,
-      );
-      modeling.reconnectEnd(inFlow, endEvent, {
-        x: endEvent.x,
-        y: endEvent.y,
-      });
-      modeling.layoutConnection(inFlow, {
-        waypoints: [], // Forces new layout of the waypoints
-      });
-      oldMid = getMid(endEvent);
-    });
   }
 
   /**
@@ -423,6 +402,5 @@ AnalysisQuickFixes.$inject = [
   "eventBus",
   "overlays",
   "modeling",
-  "spaceTool",
   "commandStack",
 ];

@@ -9,7 +9,7 @@ import unsafeGateways from "../resources/unsafe-gateways.bpmn";
 import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 import stuck from "../resources/stuck.bpmn";
 
-const initialBoardXML = stuck;
+const initialBoardXML = reusedEndEvent;
 
 import {
   BpmnPropertiesPanelModule,
