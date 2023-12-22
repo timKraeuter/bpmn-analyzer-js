@@ -40,21 +40,18 @@ export default function QuickFixOverlays(
     }
   });
 
-  function addOptionToCompleteParallelQuickFix(exgCause) {
-    // TODO: Make this a function and use it everywhere.
-    overlays.add(exgCause, QUICK_FIX_NOTE_TYPE, {
-      position: {
+  function addOptionToCompleteParallelQuickFix(exclusiveGateway) {
+    addQuickFixForElement(
+      exclusiveGateway,
+      {
         top: -45,
         left: 7.5,
       },
-      html: `<div id=${exgCause.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to change gateway to parallel to fix Option To Complete.</span>
-           </div>`,
-    });
-    document.getElementById(exgCause.id).addEventListener("click", () => {
-      replaceWithParallelGateway(exgCause);
-    });
+      "Click to change gateway to parallel to fix Option To Complete.",
+      () => {
+        replaceWithParallelGateway(exclusiveGateway);
+      },
+    );
   }
 
   function addQuickFixOptionToCompleteIfPossible(propertyResult) {
@@ -88,63 +85,59 @@ export default function QuickFixOverlays(
   }
 
   function addOptionToCompleteExclusiveQuickFix(problematicPG) {
-    overlays.add(problematicPG, QUICK_FIX_NOTE_TYPE, {
-      position: {
+    addQuickFixForElement(
+      problematicPG,
+      {
         top: -45,
         left: 7.5,
       },
-      html: `<div id=${problematicPG.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to change gateway to exclusive to fix Option To Complete.</span>
-           </div>`,
-    });
-    document.getElementById(problematicPG.id).addEventListener("click", () => {
-      replaceWithExclusiveGateway(problematicPG);
-    });
+      "Click to change gateway to exclusive to fix Option To Complete.",
+      () => {
+        replaceWithExclusiveGateway(problematicPG);
+      },
+    );
   }
 
   function addQuickFixProperCompletionIfPossible(problematicElementId) {
     const problematicEndEvent = elementRegistry.get(problematicElementId);
     if (problematicEndEvent.incoming.length <= 1) {
-      // Unsafe
+      // Unsafe is the cause which has other quick fixes.
       return;
     }
-    overlays.add(problematicEndEvent, QUICK_FIX_NOTE_TYPE, {
-      position: {
+    addQuickFixForElement(
+      problematicEndEvent,
+      {
         top: -45,
         left: 0,
       },
-      html: `<div id=${problematicEndEvent.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to create an additional end event to fix Proper Completion.</span>
-           </div>`,
-    });
+      "Click to create an additional end event to fix Proper Completion.",
+      () => {
+        makeEndEventForEachIcomingFlow(problematicEndEvent);
+      },
+    );
+  }
 
-    document
-      .getElementById(problematicEndEvent.id)
-      .addEventListener("click", () => {
-        // Create a new end event for each incoming flow and reconnect the flow.
-        let oldMid = getMid(problematicEndEvent);
-        const inFlows = problematicEndEvent.incoming.slice(1);
-        inFlows.forEach((inFlow) => {
-          const endEvent = modeling.createShape(
-            { type: "bpmn:EndEvent" },
-            {
-              x: oldMid.x,
-              y: oldMid.y + 110, // Same as auto append
-            },
-            problematicEndEvent.parent,
-          );
-          modeling.reconnectEnd(inFlow, endEvent, {
-            x: endEvent.x,
-            y: endEvent.y,
-          });
-          modeling.layoutConnection(inFlow, {
-            waypoints: [], // Forces new layout of the waypoints
-          });
-          oldMid = getMid(endEvent);
-        });
+  function makeEndEventForEachIcomingFlow(problematicEndEvent) {
+    let oldMid = getMid(problematicEndEvent);
+    const inFlows = problematicEndEvent.incoming.slice(1);
+    inFlows.forEach((inFlow) => {
+      const endEvent = modeling.createShape(
+        { type: "bpmn:EndEvent" },
+        {
+          x: oldMid.x,
+          y: oldMid.y + 110, // Same as auto append
+        },
+        problematicEndEvent.parent,
+      );
+      modeling.reconnectEnd(inFlow, endEvent, {
+        x: endEvent.x,
+        y: endEvent.y,
       });
+      modeling.layoutConnection(inFlow, {
+        waypoints: [], // Forces new layout of the waypoints
+      });
+      oldMid = getMid(endEvent);
+    });
   }
 
   function findUnsafeMerge(element, problematic_elements) {
@@ -231,119 +224,118 @@ export default function QuickFixOverlays(
   }
 
   function addPrecedingParallelGatewayQuickFix(unsafeMerge) {
-    overlays.add(unsafeMerge, QUICK_FIX_NOTE_TYPE, {
-      position: {
+    addQuickFixForElement(
+      unsafeMerge,
+      {
         top: -45,
         left: unsafeMerge.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
       },
-      html: `<div id=${unsafeMerge.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to add preceding parallel gateway to fix Safeness.</span>
-           </div>`,
-    });
-
-    document.getElementById(unsafeMerge.id).addEventListener("click", () => {
-      // TODO: Undo should undo all these commands.
-      // Create parallel gateway
-      const pg = modeling.createShape(
-        { type: "bpmn:ParallelGateway" },
-        {
-          x: unsafeMerge.x,
-          y: getMid(unsafeMerge).y,
-        },
-        unsafeMerge.parent,
-      );
-      // Move everything after unsafeMerge to the right to make space for the pg.
-      const shapesToBeMoved = getAllFollowingShapes(unsafeMerge, [unsafeMerge]);
-      spaceTool.makeSpace(
-        shapesToBeMoved, // Move these elements
-        [], // Dont resize anything
-        {
-          x: 75, // Shift x by 75
-          y: 0,
-        },
-        "e", // Move east
-        0,
-      );
-      // Change incoming sfs
-      const inFlows = unsafeMerge.incoming.map((sf) => sf);
-      for (const inFlow of inFlows) {
-        modeling.reconnectEnd(inFlow, pg, getMid(pg));
-      }
-      // Add new sf between pg and activity.
-      modeling.connect(pg, unsafeMerge);
-    });
+      "Click to add preceding parallel gateway to fix Safeness.",
+      () => {
+        addPrecedingParallelGateway(unsafeMerge);
+      },
+    );
   }
 
-  function addPrecedingExclusiveGatewayQuickFix(unsafeCause) {
-    overlays.add(unsafeCause, QUICK_FIX_NOTE_TYPE, {
-      position: {
+  function addPrecedingParallelGateway(unsafeMerge) {
+    // TODO: Undo should undo all these commands.
+    // Create parallel gateway
+    const pg = modeling.createShape(
+      { type: "bpmn:ParallelGateway" },
+      {
+        x: unsafeMerge.x,
+        y: getMid(unsafeMerge).y,
+      },
+      unsafeMerge.parent,
+    );
+    // Move everything after unsafeMerge to the right to make space for the pg.
+    const shapesToBeMoved = getAllFollowingShapes(unsafeMerge, [unsafeMerge]);
+    spaceTool.makeSpace(
+      shapesToBeMoved, // Move these elements
+      [], // Dont resize anything
+      {
+        x: 75, // Shift x by 75
+        y: 0,
+      },
+      "e", // Move east
+      0,
+    );
+    // Change incoming sfs
+    const inFlows = unsafeMerge.incoming.map((sf) => sf);
+    for (const inFlow of inFlows) {
+      modeling.reconnectEnd(inFlow, pg, getMid(pg));
+    }
+    // Add new sf between pg and activity.
+    modeling.connect(pg, unsafeMerge);
+  }
+
+  function addSubsequentExclusiveGatewayQuickFix(unsafeCause) {
+    addQuickFixForElement(
+      unsafeCause,
+      {
         top: -45,
         left: unsafeCause.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
       },
-      html: `<div id=${unsafeCause.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to add subsequent exclusive gateway to fix Safeness.</span>
-           </div>`,
-    });
+      "Click to add subsequent exclusive gateway to fix Safeness.",
+      () => {
+        addSubsequentExclusiveGateway(unsafeCause);
+      },
+    );
+  }
 
-    document.getElementById(unsafeCause.id).addEventListener("click", () => {
-      // TODO: Undo should undo all these commands.
-      // Create exclusive gateway
-      const eg = modeling.createShape(
-        { type: "bpmn:ExclusiveGateway" },
-        {
-          x: unsafeCause.x + unsafeCause.width + 75,
-          y: getMid(unsafeCause).y,
-        },
-        unsafeCause.parent,
-      );
-      // Move everything after unsafeCause to the right to make space for the eg.
-      const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
-      spaceTool.makeSpace(
-        shapesToBeMoved, // Move these elements
-        [], // Dont resize anything
-        {
-          x: 75, // Shift x by 75
-          y: 0,
-        },
-        "e", // Move east
-        0,
-      );
-      // Change outgoing sfs
-      const outFlows = unsafeCause.outgoing.map((sf) => sf);
-      for (const outFlow of outFlows) {
-        modeling.reconnectStart(outFlow, eg, getMid(eg));
-      }
-      // Add new sf between eg and flow node.
-      modeling.connect(unsafeCause, eg);
-    });
+  function addSubsequentExclusiveGateway(unsafeCause) {
+    // TODO: Undo should undo all these commands.
+    // Create exclusive gateway
+    const eg = modeling.createShape(
+      { type: "bpmn:ExclusiveGateway" },
+      {
+        x: unsafeCause.x + unsafeCause.width + 75,
+        y: getMid(unsafeCause).y,
+      },
+      unsafeCause.parent,
+    );
+    // Move everything after unsafeCause to the right to make space for the eg.
+    const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
+    spaceTool.makeSpace(
+      shapesToBeMoved, // Move these elements
+      [], // Dont resize anything
+      {
+        x: 75, // Shift x by 75
+        y: 0,
+      },
+      "e", // Move east
+      0,
+    );
+    // Change outgoing sfs
+    const outFlows = unsafeCause.outgoing.map((sf) => sf);
+    for (const outFlow of outFlows) {
+      modeling.reconnectStart(outFlow, eg, getMid(eg));
+    }
+    // Add new sf between eg and flow node.
+    modeling.connect(unsafeCause, eg);
   }
 
   function addUnsafeCauseFix(unsafeCause) {
     if (is(unsafeCause, "bpmn:ParallelGateway")) {
-      addParallelToExclusiveGatewayQuickFix(unsafeCause);
+      addParallelToExclusiveGatewaySafenessQuickFix(unsafeCause);
     } else {
-      // Other flow node
-      addPrecedingExclusiveGatewayQuickFix(unsafeCause);
+      // Other flow node such as an Activity
+      addSubsequentExclusiveGatewayQuickFix(unsafeCause);
     }
   }
 
-  function addParallelToExclusiveGatewayQuickFix(gateway) {
-    overlays.add(gateway, QUICK_FIX_NOTE_TYPE, {
-      position: {
+  function addParallelToExclusiveGatewaySafenessQuickFix(gateway) {
+    addQuickFixForElement(
+      gateway,
+      {
         top: -45,
         left: 7.5,
       },
-      html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
-               <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to change gateway to exclusive to fix Safeness.</span>
-           </div>`,
-    });
-
-    document.getElementById(gateway.id).addEventListener("click", () => {
-      replaceWithExclusiveGateway(gateway, bpmnReplace);
-    });
+      "Click to change gateway to exclusive to fix Safeness.",
+      () => {
+        replaceWithExclusiveGateway(gateway);
+      },
+    );
   }
 
   function findProperCompletionChoiceCause(pg) {
@@ -369,21 +361,32 @@ export default function QuickFixOverlays(
     return undefined;
   }
 
-  function addExclusiveToParallelGatewayQuickFix(gateway) {
-    overlays.add(gateway, QUICK_FIX_NOTE_TYPE, {
-      position: {
+  function addExclusiveToParallelGatewayQuickFix(exclusiveGateway) {
+    addQuickFixForElement(
+      exclusiveGateway,
+      {
         top: -45,
         left: 7.5,
       },
-      html: `<div id=${gateway.id} class="small-note quick-fix-note tooltip">
+      "Click to change gateway to parallel to fix Safeness.",
+      () => {
+        replaceWithParallelGateway(exclusiveGateway);
+      },
+    );
+  }
+
+  function addQuickFixForElement(element, position, text, applyFunction) {
+    overlays.add(element, QUICK_FIX_NOTE_TYPE, {
+      position,
+      html: `<div id=${element.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">Click to change gateway to parallel to fix Safeness.</span>
+               <span class="tooltiptext">${text}</span>
            </div>`,
     });
 
-    document.getElementById(gateway.id).addEventListener("click", () => {
-      replaceWithParallelGateway(gateway);
-    });
+    document
+      .getElementById(element.id)
+      .addEventListener("click", applyFunction);
   }
 
   function replaceWithExclusiveGateway(gateway) {
