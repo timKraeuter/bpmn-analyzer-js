@@ -1,6 +1,11 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 
+/**
+ * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
+ * @typedef {import('diagram-js/lib/model/Types').Connection} Connection
+ */
+
 const QUICK_FIX_NOTE_TYPE = "quick-fix-note";
 const LIGHT_BULB_BASE64 =
   "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiB3aWR0aD0iMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNNDgwLTgwcS0zMyAwLTU2LjUtMjMuNVQ0MDAtMTYwaDE2MHEwIDMzLTIzLjUgNTYuNVQ0ODAtODBaTTMyMC0yMDB2LTgwaDMyMHY4MEgzMjBabTEwLTEyMHEtNjktNDEtMTA5LjUtMTEwVDE4MC01ODBxMC0xMjUgODcuNS0yMTIuNVQ0ODAtODgwcTEyNSAwIDIxMi41IDg3LjVUNzgwLTU4MHEwIDgxLTQwLjUgMTUwVDYzMC0zMjBIMzMwWm0yNC04MGgyNTJxNDUtMzIgNjkuNS03OVQ3MDAtNTgwcTAtOTItNjQtMTU2dC0xNTYtNjRxLTkyIDAtMTU2IDY0dC02NCAxNTZxMCA1NCAyNC41IDEwMXQ2OS41IDc5Wm0xMjYgMFoiLz48L3N2Zz4=";
@@ -13,32 +18,35 @@ export default function AnalysisQuickFixes(
   modeling,
   spaceTool,
 ) {
-  eventBus.on("analysis.done", (result) => {
-    overlays.remove({
-      type: QUICK_FIX_NOTE_TYPE,
-    });
-    for (const propertyResult of result.property_results) {
-      if (propertyResult.fulfilled) {
-        continue;
+  eventBus.on(
+    "analysis.done",
+    (/** @param {CheckingResponse} result */ result) => {
+      overlays.remove({
+        type: QUICK_FIX_NOTE_TYPE,
+      });
+      for (const propertyResult of result.property_results) {
+        if (propertyResult.fulfilled) {
+          continue;
+        }
+        if (propertyResult.property === "Safeness") {
+          addQuickFixUnsafeIfPossible(
+            propertyResult.problematic_elements[0],
+            propertyResult,
+          );
+        }
+        if (propertyResult.property === "ProperCompletion") {
+          addQuickFixProperCompletionIfPossible(
+            propertyResult.problematic_elements[0],
+          );
+        }
+        if (propertyResult.property === "OptionToComplete") {
+          addQuickFixOptionToCompleteIfPossible(propertyResult);
+        } else {
+          // TODO: Add quick fixes for dead activities.
+        }
       }
-      if (propertyResult.property === "Safeness") {
-        addQuickFixUnsafeIfPossible(
-          propertyResult.problematic_elements[0],
-          propertyResult,
-        );
-      }
-      if (propertyResult.property === "ProperCompletion") {
-        addQuickFixProperCompletionIfPossible(
-          propertyResult.problematic_elements[0],
-        );
-      }
-      if (propertyResult.property === "OptionToComplete") {
-        addQuickFixOptionToCompleteIfPossible(propertyResult);
-      } else {
-        // TODO: Add quick fixe for dead activities.
-      }
-    }
-  });
+    },
+  );
 
   function addOptionToCompleteParallelQuickFix(exclusiveGateway) {
     addQuickFixForElement(
@@ -54,6 +62,9 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {PropertyResult} propertyResult
+   */
   function addQuickFixOptionToCompleteIfPossible(propertyResult) {
     const lastTransition = propertyResult.counter_example.transitions
       .slice(-1)
@@ -98,6 +109,9 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {string} problematicElementId
+   */
   function addQuickFixProperCompletionIfPossible(problematicElementId) {
     const problematicEndEvent = elementRegistry.get(problematicElementId);
     if (problematicEndEvent.incoming.length <= 1) {
@@ -112,12 +126,15 @@ export default function AnalysisQuickFixes(
       },
       "Click to create an additional end event to fix Proper Completion.",
       () => {
-        makeEndEventForEachIcomingFlow(problematicEndEvent);
+        makeEndEventForEachIncomingFlow(problematicEndEvent);
       },
     );
   }
 
-  function makeEndEventForEachIcomingFlow(problematicEndEvent) {
+  /**
+   * @param {Shape} problematicEndEvent
+   */
+  function makeEndEventForEachIncomingFlow(problematicEndEvent) {
     let oldMid = getMid(problematicEndEvent);
     const inFlows = problematicEndEvent.incoming.slice(1);
     inFlows.forEach((inFlow) => {
@@ -140,6 +157,11 @@ export default function AnalysisQuickFixes(
     });
   }
 
+  /**
+   * @param {Connection} element
+   * @param {string[]} problematic_elements
+   * @returns {Shape | undefined}
+   */
   function findUnsafeMerge(element, problematic_elements) {
     const source = element.source;
     if (
@@ -157,10 +179,19 @@ export default function AnalysisQuickFixes(
     return undefined;
   }
 
+  /**
+   * @param {Shape} source
+   * @param {string[]} problematic_elements
+   * @returns {boolean}
+   */
   function noUnsafeIncFlow(source, problematic_elements) {
     return !source.incoming.some((sf) => problematic_elements.includes(sf.id));
   }
 
+  /**
+   * @param {Connection} inFlow
+   * @param {Shape[]} choices
+   */
   function findAllPrecedingSFChoices(inFlow, choices) {
     // TODO: Cycles!
     const source = inFlow.source;
@@ -175,6 +206,10 @@ export default function AnalysisQuickFixes(
     return choices;
   }
 
+  /**
+   * @param {Connection} inFlow
+   * @param {Shape[]} splits
+   */
   function findAllPrecedingSFSplits(inFlow, splits) {
     // TODO: Cycles!
     const source = inFlow.source;
@@ -189,6 +224,10 @@ export default function AnalysisQuickFixes(
     return splits;
   }
 
+  /**
+   * @param {string} elementID
+   * @param {PropertyResult} propertyResult
+   */
   function addQuickFixUnsafeIfPossible(elementID, propertyResult) {
     const element = elementRegistry.get(elementID);
     const unsafeMerge = findUnsafeMerge(
@@ -204,6 +243,9 @@ export default function AnalysisQuickFixes(
     }
   }
 
+  /**
+   * @param {Shape} unsafeMerge
+   */
   function addUnsafeMergeFix(unsafeMerge) {
     if (is(unsafeMerge, "bpmn:ExclusiveGateway")) {
       addExclusiveToParallelGatewayQuickFix(unsafeMerge);
@@ -212,6 +254,10 @@ export default function AnalysisQuickFixes(
     }
   }
 
+  /**
+   * @param {Shape} startShape
+   * @param {Shape[]} shapes
+   */
   function getAllFollowingShapes(startShape, shapes) {
     startShape.outgoing.forEach((sf) => {
       const target = sf.target;
@@ -223,6 +269,9 @@ export default function AnalysisQuickFixes(
     return shapes;
   }
 
+  /**
+   * @param {Shape} unsafeMerge
+   */
   function addPrecedingParallelGatewayQuickFix(unsafeMerge) {
     addQuickFixForElement(
       unsafeMerge,
@@ -237,6 +286,9 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {Shape} unsafeMerge
+   */
   function addPrecedingParallelGateway(unsafeMerge) {
     // TODO: Undo should undo all these commands.
     // Create parallel gateway
@@ -283,6 +335,9 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {Shape} unsafeCause
+   */
   function addSubsequentExclusiveGateway(unsafeCause) {
     // TODO: Undo should undo all these commands.
     // Create exclusive gateway
@@ -294,7 +349,7 @@ export default function AnalysisQuickFixes(
       },
       unsafeCause.parent,
     );
-    // Move everything after unsafeCause to the right to make space for the eg.
+    // Move everything after unsafeCause to the right to make space for the ex g
     const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
     spaceTool.makeSpace(
       shapesToBeMoved, // Move these elements
@@ -311,10 +366,13 @@ export default function AnalysisQuickFixes(
     for (const outFlow of outFlows) {
       modeling.reconnectStart(outFlow, eg, getMid(eg));
     }
-    // Add new sf between eg and flow node.
+    // Add new sf between ex g and flow node.
     modeling.connect(unsafeCause, eg);
   }
 
+  /**
+   * @param {Shape} unsafeCause
+   */
   function addUnsafeCauseFix(unsafeCause) {
     if (is(unsafeCause, "bpmn:ParallelGateway")) {
       addParallelToExclusiveGatewaySafenessQuickFix(unsafeCause);
@@ -324,6 +382,9 @@ export default function AnalysisQuickFixes(
     }
   }
 
+  /**
+   * @param {Shape} gateway
+   */
   function addParallelToExclusiveGatewaySafenessQuickFix(gateway) {
     addQuickFixForElement(
       gateway,
@@ -338,6 +399,9 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {Shape} pg
+   */
   function findProperCompletionChoiceCause(pg) {
     const preceding_choices = pg.incoming.map((inFlow) =>
       findAllPrecedingSFChoices(inFlow, []),
@@ -345,6 +409,9 @@ export default function AnalysisQuickFixes(
     return findCommonSplitOrChoice(preceding_choices);
   }
 
+  /**
+   * @param {Shape} ex_gateway
+   */
   function findUnsafeCause(ex_gateway) {
     const preceding_splits = ex_gateway.incoming.map((inFlow) =>
       findAllPrecedingSFSplits(inFlow, []),
@@ -352,6 +419,9 @@ export default function AnalysisQuickFixes(
     return findCommonSplitOrChoice(preceding_splits);
   }
 
+  /**
+   * @param {Shape[][]} preceding_pgs
+   */
   function findCommonSplitOrChoice(preceding_pgs) {
     for (const pg of preceding_pgs[0]) {
       if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
@@ -361,6 +431,9 @@ export default function AnalysisQuickFixes(
     return undefined;
   }
 
+  /**
+   * @param {Shape} exclusiveGateway
+   */
   function addExclusiveToParallelGatewayQuickFix(exclusiveGateway) {
     addQuickFixForElement(
       exclusiveGateway,
@@ -375,6 +448,12 @@ export default function AnalysisQuickFixes(
     );
   }
 
+  /**
+   * @param {Shape} element
+   * @param position
+   * @param {string} text
+   * @param applyFunction
+   */
   function addQuickFixForElement(element, position, text, applyFunction) {
     overlays.add(element, QUICK_FIX_NOTE_TYPE, {
       position,
@@ -389,6 +468,9 @@ export default function AnalysisQuickFixes(
       .addEventListener("click", applyFunction);
   }
 
+  /**
+   * @param {Shape} gateway
+   */
   function replaceWithExclusiveGateway(gateway) {
     const targetElement = {
       type: "bpmn:ExclusiveGateway",
@@ -396,6 +478,9 @@ export default function AnalysisQuickFixes(
     bpmnReplace.replaceElement(gateway, targetElement);
   }
 
+  /**
+   * @param {Shape} gateway
+   */
   function replaceWithParallelGateway(gateway) {
     const targetElement = {
       type: "bpmn:ParallelGateway",
