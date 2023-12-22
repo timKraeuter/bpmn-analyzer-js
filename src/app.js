@@ -16,7 +16,8 @@ import {
   BpmnPropertiesProviderModule,
 } from "bpmn-js-properties-panel";
 
-import AnalysisClientModule from "./analysis";
+import AnalysisClientModule from "./analysis-client";
+import AnalysisOverlaysModule from "./analysis-overlays";
 import QuickFixModule from "./quickfix";
 
 const example_boards = {
@@ -39,6 +40,7 @@ const modeler = new BpmnModeler({
     BpmnPropertiesProviderModule,
     AnalysisClientModule,
     QuickFixModule,
+    AnalysisOverlaysModule,
   ],
 });
 
@@ -188,8 +190,6 @@ const exportArtifacts = debounce(function () {
 modeler.on("commandStack.changed", exportArtifacts);
 modeler.on("import.done", exportArtifacts);
 
-modeler.on("analysis.done", handleAnalysis);
-
 openNew.addEventListener("click", function () {
   openBoard(emptyBoardXML);
 });
@@ -201,96 +201,6 @@ openExistingBoard.addEventListener("click", function () {
 });
 
 openBoard(initialBoardXML);
-
-const ANALYSIS_NOTE_TYPE = "analysis-note";
-
-function handleAnalysis(result) {
-  const overlays = modeler.get("overlays");
-  overlays.remove({
-    type: ANALYSIS_NOTE_TYPE,
-  });
-  if (!result) {
-    console.error("Should reset all properties");
-    return;
-  }
-
-  for (const propertyResult of result.property_results) {
-    setPropertyColorAndIcon(propertyResult);
-
-    if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
-      addOverlaysForUnsafe(propertyResult, overlays);
-    }
-    if (
-      propertyResult.property === "ProperCompletion" &&
-      !propertyResult.fulfilled
-    ) {
-      addOverlaysForProperCompletion(propertyResult, overlays);
-    }
-    if (
-      propertyResult.property === "NoDeadActivities" &&
-      !propertyResult.fulfilled
-    ) {
-      addOverlaysForNoDeadActivities(propertyResult, overlays);
-    }
-  }
-}
-
-function setPropertyColorAndIcon(propertyResult) {
-  // Set the property somehow with jquery
-  let elementById = document.getElementById(`${propertyResult.property}`);
-  let elementIconById = document.getElementById(
-    `${propertyResult.property}-icon`,
-  );
-  if (propertyResult.fulfilled) {
-    elementById.classList.remove("red");
-    elementById.classList.add("green");
-
-    elementIconById.classList.remove("icon-question", "icon-xmark", "red");
-    elementIconById.classList.add("icon-check", "green");
-  } else {
-    elementById.classList.remove("green");
-    elementById.classList.add("red");
-
-    elementIconById.classList.remove("icon-question", "icon-check", "green");
-    elementIconById.classList.add("icon-xmark", "red");
-  }
-}
-
-function addOverlaysForUnsafe(propertyResult, overlays) {
-  for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-      position: {
-        bottom: -5,
-        left: 0,
-      },
-      html: '<div class="small-note property-note">Unsafe</div>',
-    });
-  }
-}
-
-function addOverlaysForProperCompletion(propertyResult, overlays) {
-  for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-      position: {
-        bottom: 50,
-        right: -5,
-      },
-      html: '<div class="big-note property-note">Consumes two or more tokens</div>',
-    });
-  }
-}
-
-function addOverlaysForNoDeadActivities(propertyResult, overlays) {
-  for (const problematicElement of propertyResult.problematic_elements) {
-    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-      position: {
-        bottom: -5,
-        left: 17.5,
-      },
-      html: '<div class="big-note property-note">Dead Activity</div>',
-    });
-  }
-}
 
 document
   .getElementById("example-select")
