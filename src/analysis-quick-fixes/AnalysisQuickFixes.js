@@ -1,7 +1,10 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
 import { AddSubsequentExclusiveGatewayCommand } from "./commands/AddSubsequentExclusiveGatewayCommand";
 import { AddPrecedingParallelGatewayCommand } from "./commands/AddPrecedingParallelGatewayCommand";
-import { AddEndEventsForEachIncFlowCommand } from "./commands/AddEndEventsForEachIncFlowCommand";
+import {
+  AddEndEventsForEachIncFlowCommand,
+  previewAddedEndEvents,
+} from "./commands/AddEndEventsForEachIncFlowCommand";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -217,6 +220,14 @@ export default function AnalysisQuickFixes(
         commandStack.execute("addEndEventsForEachIncFlowCommand", {
           problematicEndEvent,
         });
+      },
+      () => {
+        previewAddedEndEvents(
+          problematicEndEvent,
+          complexPreview,
+          elementFactory,
+          layouter,
+        );
       },
     );
   }

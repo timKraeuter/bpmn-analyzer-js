@@ -26,3 +26,38 @@ export function AddEndEventsForEachIncFlowCommand(modeling) {
   };
   // execute and revert not needed.
 }
+
+export function previewAddedEndEvents(
+  problematicEndEvent,
+  complexPreview,
+  elementFactory,
+  layouter,
+) {
+  let previousEndEvent = problematicEndEvent;
+  const inFlows = problematicEndEvent.incoming.slice(1);
+  const created = [];
+  inFlows.forEach((inFlow) => {
+    // Add end event preview
+    const endEvent = elementFactory.createShape({
+      type: "bpmn:EndEvent",
+    });
+    endEvent.x = previousEndEvent.x;
+    endEvent.y = previousEndEvent.y + 110;
+    previousEndEvent = endEvent;
+    created.push(endEvent);
+    // Add connection preview
+    const connection = elementFactory.createConnection({
+      type: "bpmn:SequenceFlow",
+    });
+    connection.waypoints = layouter.layoutConnection(connection, {
+      source: inFlow.source,
+      target: endEvent,
+    });
+    created.push(connection);
+  });
+
+  complexPreview.create({
+    created,
+    removed: inFlows,
+  });
+}
