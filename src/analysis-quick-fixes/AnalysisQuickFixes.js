@@ -5,7 +5,7 @@ const QUICK_FIX_NOTE_TYPE = "quick-fix-note";
 const LIGHT_BULB_BASE64 =
   "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiB3aWR0aD0iMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNNDgwLTgwcS0zMyAwLTU2LjUtMjMuNVQ0MDAtMTYwaDE2MHEwIDMzLTIzLjUgNTYuNVQ0ODAtODBaTTMyMC0yMDB2LTgwaDMyMHY4MEgzMjBabTEwLTEyMHEtNjktNDEtMTA5LjUtMTEwVDE4MC01ODBxMC0xMjUgODcuNS0yMTIuNVQ0ODAtODgwcTEyNSAwIDIxMi41IDg3LjVUNzgwLTU4MHEwIDgxLTQwLjUgMTUwVDYzMC0zMjBIMzMwWm0yNC04MGgyNTJxNDUtMzIgNjkuNS03OVQ3MDAtNTgwcTAtOTItNjQtMTU2dC0xNTYtNjRxLTkyIDAtMTU2IDY0dC02NCAxNTZxMCA1NCAyNC41IDEwMXQ2OS41IDc5Wm0xMjYgMFoiLz48L3N2Zz4=";
 
-export default function QuickFixOverlays(
+export default function AnalysisQuickFixes(
   bpmnReplace,
   elementRegistry,
   eventBus,
@@ -403,7 +403,7 @@ export default function QuickFixOverlays(
     bpmnReplace.replaceElement(gateway, targetElement);
   }
 }
-QuickFixOverlays.$inject = [
+AnalysisQuickFixes.$inject = [
   "bpmnReplace",
   "elementRegistry",
   "eventBus",

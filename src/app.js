@@ -18,7 +18,7 @@ import {
 
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
-import QuickFixModule from "./quickfix";
+import AnalysisQuickFixesModule from "./analysis-quick-fixes";
 
 const example_boards = {
   taskSplit: taskSplit,
@@ -39,8 +39,8 @@ const modeler = new BpmnModeler({
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
     AnalysisClientModule,
-    QuickFixModule,
     AnalysisOverlaysModule,
+    AnalysisQuickFixesModule,
   ],
 });
 
