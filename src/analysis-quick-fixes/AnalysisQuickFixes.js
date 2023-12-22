@@ -1,6 +1,9 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
 import { AddSubsequentExclusiveGatewayCommand } from "./commands/AddSubsequentExclusiveGatewayCommand";
-import { AddPrecedingParallelGatewayCommand } from "./commands/AddPrecedingParallelGatewayCommand";
+import {
+  AddPrecedingParallelGatewayCommand,
+  previewPrecedingParallelGateway,
+} from "./commands/AddPrecedingParallelGatewayCommand";
 import {
   AddEndEventsForEachIncFlowCommand,
   previewAddedEndEvents,
@@ -348,6 +351,14 @@ export default function AnalysisQuickFixes(
         commandStack.execute("addPrecedingParallelGatewayCommand", {
           unsafeMerge,
         }),
+      () => {
+        previewPrecedingParallelGateway(
+          unsafeMerge,
+          complexPreview,
+          elementFactory,
+          layouter,
+        );
+      },
     );
   }
 
