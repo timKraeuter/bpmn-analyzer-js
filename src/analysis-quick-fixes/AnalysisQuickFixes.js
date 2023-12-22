@@ -19,6 +19,9 @@ export default function AnalysisQuickFixes(
   overlays,
   modeling,
   commandStack,
+  complexPreview,
+  elementFactory,
+  layouter,
 ) {
   commandStack.registerHandler(
     "addSubsequentExclusiveGatewayCommand",
@@ -115,6 +118,18 @@ export default function AnalysisQuickFixes(
           "Click to add incoming sequence flow to fix dead Activity.",
           () => {
             modeling.connect(nearestFlowNode, activity);
+          },
+          () => {
+            const connection = elementFactory.createConnection({
+              type: "bpmn:SequenceFlow",
+            });
+            connection.waypoints = layouter.layoutConnection(connection, {
+              source: nearestFlowNode,
+              target: activity,
+            });
+            complexPreview.create({
+              created: [connection],
+            });
           },
         );
       }
@@ -423,8 +438,15 @@ export default function AnalysisQuickFixes(
    * @param position
    * @param {string} text
    * @param applyFunction
+   * @param previewFunction
    */
-  function addQuickFixForShape(shape, position, text, applyFunction) {
+  function addQuickFixForShape(
+    shape,
+    position,
+    text,
+    applyFunction,
+    previewFunction,
+  ) {
     if (quickFixExistsAtShape(shape)) {
       return;
     }
@@ -436,7 +458,18 @@ export default function AnalysisQuickFixes(
            </div>`,
     });
 
-    document.getElementById(shape.id).addEventListener("click", applyFunction);
+    document.getElementById(shape.id).addEventListener("click", () => {
+      complexPreview.cleanUp();
+      applyFunction();
+    });
+    if (previewFunction) {
+      document.getElementById(shape.id).addEventListener("mouseenter", () => {
+        previewFunction();
+      });
+      document.getElementById(shape.id).addEventListener("mouseleave", () => {
+        complexPreview.cleanUp();
+      });
+    }
   }
 
   /**
@@ -478,4 +511,7 @@ AnalysisQuickFixes.$inject = [
   "overlays",
   "modeling",
   "commandStack",
+  "complexPreview",
+  "elementFactory",
+  "layouter",
 ];
