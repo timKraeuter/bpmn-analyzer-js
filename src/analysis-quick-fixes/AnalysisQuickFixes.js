@@ -1,5 +1,6 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
+import { AddSubsequentExclusiveGatewayCommand } from "./AddSubsequentExclusiveGatewayCommand";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -17,7 +18,13 @@ export default function AnalysisQuickFixes(
   overlays,
   modeling,
   spaceTool,
+  commandStack,
 ) {
+  commandStack.registerHandler(
+    "addSubsequentExclusiveGatewayCommand",
+    AddSubsequentExclusiveGatewayCommand,
+  );
+
   eventBus.on(
     "analysis.done",
     (/** @param {CheckingResponse} result */ result) => {
@@ -255,21 +262,6 @@ export default function AnalysisQuickFixes(
   }
 
   /**
-   * @param {Shape} startShape
-   * @param {Shape[]} shapes
-   */
-  function getAllFollowingShapes(startShape, shapes) {
-    startShape.outgoing.forEach((sf) => {
-      const target = sf.target;
-      if (target.x > startShape.x && !shapes.includes(target)) {
-        shapes.push(target);
-        getAllFollowingShapes(target, shapes);
-      }
-    });
-    return shapes;
-  }
-
-  /**
    * @param {Shape} unsafeMerge
    */
   function addPrecedingParallelGatewayQuickFix(unsafeMerge) {
@@ -329,45 +321,11 @@ export default function AnalysisQuickFixes(
         left: unsafeCause.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
       },
       "Click to add subsequent exclusive gateway to fix Safeness.",
-      () => {
-        addSubsequentExclusiveGateway(unsafeCause);
-      },
+      () =>
+        commandStack.execute("addSubsequentExclusiveGatewayCommand", {
+          unsafeCause,
+        }),
     );
-  }
-
-  /**
-   * @param {Shape} unsafeCause
-   */
-  function addSubsequentExclusiveGateway(unsafeCause) {
-    // TODO: Undo should undo all these commands.
-    // Create exclusive gateway
-    const eg = modeling.createShape(
-      { type: "bpmn:ExclusiveGateway" },
-      {
-        x: unsafeCause.x + unsafeCause.width + 75,
-        y: getMid(unsafeCause).y,
-      },
-      unsafeCause.parent,
-    );
-    // Move everything after unsafeCause to the right to make space for the ex g
-    const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
-    spaceTool.makeSpace(
-      shapesToBeMoved, // Move these elements
-      [], // Dont resize anything
-      {
-        x: 75, // Shift x by 75
-        y: 0,
-      },
-      "e", // Move east
-      0,
-    );
-    // Change outgoing sfs
-    const outFlows = unsafeCause.outgoing.map((sf) => sf);
-    for (const outFlow of outFlows) {
-      modeling.reconnectStart(outFlow, eg, getMid(eg));
-    }
-    // Add new sf between ex g and flow node.
-    modeling.connect(unsafeCause, eg);
   }
 
   /**
@@ -495,4 +453,5 @@ AnalysisQuickFixes.$inject = [
   "overlays",
   "modeling",
   "spaceTool",
+  "commandStack",
 ];
