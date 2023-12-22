@@ -39,39 +39,87 @@ export default function AnalysisQuickFixes(
       overlays.remove({
         type: QUICK_FIX_NOTE_TYPE,
       });
-      for (const propertyResult of result.property_results) {
-        if (propertyResult.fulfilled) {
-          continue;
-        }
-        if (propertyResult.property === "Safeness") {
-          addQuickFixUnsafeIfPossible(
-            propertyResult.problematic_elements[0],
-            propertyResult,
-          );
-        }
-        if (propertyResult.property === "ProperCompletion") {
-          addQuickFixProperCompletionIfPossible(
-            propertyResult.problematic_elements[0],
-          );
-        }
-        if (propertyResult.property === "OptionToComplete") {
-          addQuickFixOptionToCompleteIfPossible(propertyResult);
-        } else {
-          addQuickFixForDeadActivities(propertyResult);
-        }
-      }
+      result.property_results
+        .filter((property) => !property.fulfilled)
+        .forEach((propertyResult) => {
+          if (propertyResult.property === "Safeness") {
+            addQuickFixUnsafeIfPossible(
+              propertyResult.problematic_elements[0],
+              propertyResult,
+            );
+          }
+          if (propertyResult.property === "ProperCompletion") {
+            addQuickFixProperCompletionIfPossible(
+              propertyResult.problematic_elements[0],
+            );
+          }
+          if (propertyResult.property === "OptionToComplete") {
+            addQuickFixOptionToCompleteIfPossible(propertyResult);
+          }
+          if (propertyResult.property === "NoDeadActivities") {
+            addQuickFixForDeadActivities(propertyResult);
+          }
+        });
     },
   );
+
+  /**
+   *
+   * @param {Shape} activity
+   * @returns {Shape | undefined}
+   */
+  function findNearestFlowNode(activity) {
+    let nearest = undefined;
+    activity.parent.children
+      .filter(
+        (child) =>
+          is(child, "bpmn:FlowNode") &&
+          child.x < activity.x &&
+          isStartOrConnected(child),
+      )
+      .forEach((flowNode) => {
+        if (!nearest) {
+          nearest = flowNode;
+        } else {
+          const distanceNearest = activity.x - nearest.x;
+          const distanceFlowNode = activity.x - flowNode.x;
+          if (distanceFlowNode < distanceNearest) {
+            nearest = flowNode;
+          }
+        }
+      });
+    return nearest;
+  }
+
+  function isStartOrConnected(child) {
+    return is(child, "bpmn:StartEvent") || child.incoming.length > 0;
+  }
 
   /**
    * @param {PropertyResult} propertyResult
    */
   function addQuickFixForDeadActivities(propertyResult) {
-    console.log(propertyResult.problematic_elements);
+    propertyResult.problematic_elements.forEach((deadActivityId) => {
+      const activity = elementRegistry.get(deadActivityId);
+      const nearestFlowNode = findNearestFlowNode(activity);
+      if (nearestFlowNode) {
+        addQuickFixForShape(
+          activity,
+          {
+            top: -45,
+            left: getLeftPositionForShape(activity),
+          },
+          "Click to add incoming sequence flow to fix dead Activity.",
+          () => {
+            modeling.connect(nearestFlowNode, activity);
+          },
+        );
+      }
+    });
   }
 
   function addOptionToCompleteParallelQuickFix(exclusiveGateway) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       exclusiveGateway,
       {
         top: -45,
@@ -118,7 +166,7 @@ export default function AnalysisQuickFixes(
   }
 
   function addOptionToCompleteExclusiveQuickFix(problematicPG) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       problematicPG,
       {
         top: -45,
@@ -140,7 +188,7 @@ export default function AnalysisQuickFixes(
       // Unsafe is the cause which has other quick fixes.
       return;
     }
-    addQuickFixForElement(
+    addQuickFixForShape(
       problematicEndEvent,
       {
         top: -45,
@@ -252,15 +300,19 @@ export default function AnalysisQuickFixes(
     }
   }
 
+  function getLeftPositionForShape(unsafeMerge) {
+    return unsafeMerge.width / 2 - 17; // 17 is roughly half the size of the note (40 / 2)
+  }
+
   /**
    * @param {Shape} unsafeMerge
    */
   function addPrecedingParallelGatewayQuickFix(unsafeMerge) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       unsafeMerge,
       {
         top: -45,
-        left: unsafeMerge.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
+        left: getLeftPositionForShape(unsafeMerge),
       },
       "Click to add preceding parallel gateway to fix Safeness.",
       () =>
@@ -271,11 +323,11 @@ export default function AnalysisQuickFixes(
   }
 
   function addSubsequentExclusiveGatewayQuickFix(unsafeCause) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       unsafeCause,
       {
         top: -45,
-        left: unsafeCause.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
+        left: getLeftPositionForShape(unsafeCause),
       },
       "Click to add subsequent exclusive gateway to fix Safeness.",
       () =>
@@ -301,7 +353,7 @@ export default function AnalysisQuickFixes(
    * @param {Shape} gateway
    */
   function addParallelToExclusiveGatewaySafenessQuickFix(gateway) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       gateway,
       {
         top: -45,
@@ -350,7 +402,7 @@ export default function AnalysisQuickFixes(
    * @param {Shape} exclusiveGateway
    */
   function addExclusiveToParallelGatewayQuickFix(exclusiveGateway) {
-    addQuickFixForElement(
+    addQuickFixForShape(
       exclusiveGateway,
       {
         top: -45,
@@ -364,23 +416,36 @@ export default function AnalysisQuickFixes(
   }
 
   /**
-   * @param {Shape} element
+   * @param {Shape} shape
    * @param position
    * @param {string} text
    * @param applyFunction
    */
-  function addQuickFixForElement(element, position, text, applyFunction) {
-    overlays.add(element, QUICK_FIX_NOTE_TYPE, {
+  function addQuickFixForShape(shape, position, text, applyFunction) {
+    if (quickFixExistsAtShape(shape)) {
+      return;
+    }
+    overlays.add(shape, QUICK_FIX_NOTE_TYPE, {
       position,
-      html: `<div id=${element.id} class="small-note quick-fix-note tooltip">
+      html: `<div id=${shape.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
                <span class="tooltiptext">${text}</span>
            </div>`,
     });
 
-    document
-      .getElementById(element.id)
-      .addEventListener("click", applyFunction);
+    document.getElementById(shape.id).addEventListener("click", applyFunction);
+  }
+
+  /**
+   * @param {Shape} shape
+   * @returns {boolean}
+   */
+  function quickFixExistsAtShape(shape) {
+    const existingQuickFixes = overlays.get({
+      element: shape,
+      type: QUICK_FIX_NOTE_TYPE,
+    });
+    return existingQuickFixes.length > 0;
   }
 
   /**
