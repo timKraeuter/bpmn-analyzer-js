@@ -1,5 +1,4 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
-import { getAllFollowingShapes } from "./AddSubsequentExclusiveGatewayCommand";
 
 export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
@@ -43,6 +42,7 @@ export function previewPrecedingParallelGateway(
   elementFactory,
   layouter,
 ) {
+  // TODO: Refactor this together with the other previews
   const created = [];
   const pg = elementFactory.createShape({
     type: "bpmn:ParallelGateway",
