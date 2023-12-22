@@ -101,6 +101,9 @@ export default function AnalysisQuickFixes(
   function addQuickFixForDeadActivities(propertyResult) {
     propertyResult.problematic_elements.forEach((deadActivityId) => {
       const activity = elementRegistry.get(deadActivityId);
+      if (activity.incoming.length > 0) {
+        return;
+      }
       const nearestFlowNode = findNearestFlowNode(activity);
       if (nearestFlowNode) {
         addQuickFixForShape(
