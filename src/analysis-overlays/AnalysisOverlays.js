@@ -16,19 +16,19 @@ export default function AnalysisOverlays(eventBus, overlays) {
       setPropertyColorAndIcon(propertyResult);
 
       if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
-        addOverlaysForUnsafe(propertyResult, overlays);
+        addOverlaysForUnsafe(propertyResult);
       }
       if (
         propertyResult.property === "ProperCompletion" &&
         !propertyResult.fulfilled
       ) {
-        addOverlaysForProperCompletion(propertyResult, overlays);
+        addOverlaysForProperCompletion(propertyResult);
       }
       if (
         propertyResult.property === "NoDeadActivities" &&
         !propertyResult.fulfilled
       ) {
-        addOverlaysForNoDeadActivities(propertyResult, overlays);
+        addOverlaysForNoDeadActivities(propertyResult);
       }
     }
   }
@@ -54,40 +54,58 @@ export default function AnalysisOverlays(eventBus, overlays) {
     }
   }
 
-  function addOverlaysForUnsafe(propertyResult, overlays) {
+  function addOverlaysForUnsafe(propertyResult) {
     for (const problematicElement of propertyResult.problematic_elements) {
-      overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-        position: {
+      addSmallOverlay(
+        problematicElement,
+        {
           bottom: -5,
-          left: 0,
+          left: 5,
         },
-        html: '<div class="small-note property-note">Unsafe</div>',
-      });
+        "Unsafe",
+      );
     }
   }
 
-  function addOverlaysForProperCompletion(propertyResult, overlays) {
+  function addOverlaysForProperCompletion(propertyResult) {
     for (const problematicElement of propertyResult.problematic_elements) {
-      overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-        position: {
+      addBigOverlay(
+        problematicElement,
+        {
           bottom: 50,
           right: -5,
         },
-        html: '<div class="big-note property-note">Consumes two or more tokens</div>',
-      });
+        "Consumes two or more tokens",
+      );
     }
   }
 
-  function addOverlaysForNoDeadActivities(propertyResult, overlays) {
+  function addOverlaysForNoDeadActivities(propertyResult) {
     for (const problematicElement of propertyResult.problematic_elements) {
-      overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
-        position: {
+      addBigOverlay(
+        problematicElement,
+        {
           bottom: -5,
           left: 17.5,
         },
-        html: '<div class="big-note property-note">Dead Activity</div>',
-      });
+        "Dead Activity",
+      );
     }
+  }
+
+  function addSmallOverlay(problematicElement, position, text) {
+    addPropertyOverlay(problematicElement, position, text, "small-note");
+  }
+
+  function addBigOverlay(problematicElement, position, text) {
+    addPropertyOverlay(problematicElement, position, text, "big-note");
+  }
+
+  function addPropertyOverlay(problematicElement, position, text, cssClass) {
+    overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
+      position,
+      html: `<div class="property-note ${cssClass}">${text}</div>`,
+    });
   }
 }
 
