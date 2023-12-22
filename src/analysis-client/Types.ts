@@ -10,11 +10,11 @@ export interface PropertyResult {
 }
 
 export interface CounterExample {
-  start_state: StartState;
+  start_state: State;
   transitions: Transition[];
 }
 
-export interface StartState {
+export interface State {
   snapshots: Snapshot[];
 }
 
@@ -23,13 +23,11 @@ export interface Snapshot {
   tokens: Tokens;
 }
 
-export interface Tokens {}
+export interface Tokens {
+  [key: string]: number;
+}
 
 export interface Transition {
   label: string;
   next_state: State;
-}
-
-export interface State {
-  snapshots: Snapshot[];
 }
