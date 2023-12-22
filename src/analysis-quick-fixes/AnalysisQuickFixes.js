@@ -1,5 +1,8 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
-import { AddSubsequentExclusiveGatewayCommand } from "./commands/AddSubsequentExclusiveGatewayCommand";
+import {
+  AddSubsequentExclusiveGatewayCommand,
+  previewSubsequentExclusiveGateway,
+} from "./commands/AddSubsequentExclusiveGatewayCommand";
 import {
   AddPrecedingParallelGatewayCommand,
   previewPrecedingParallelGateway,
@@ -374,6 +377,14 @@ export default function AnalysisQuickFixes(
         commandStack.execute("addSubsequentExclusiveGatewayCommand", {
           unsafeCause,
         }),
+      () => {
+        previewSubsequentExclusiveGateway(
+          unsafeCause,
+          complexPreview,
+          elementFactory,
+          layouter,
+        );
+      },
     );
   }
 

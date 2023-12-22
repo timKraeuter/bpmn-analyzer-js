@@ -81,7 +81,7 @@ export function previewPrecedingParallelGateway(
   });
 
   const delta = {
-    x: -xShift, // TODO: slightly off here and above at -75
+    x: -xShift,
     y: 0,
   };
   const shapesAndFlows = getAllPrecedingShapes(unsafeMerge, []);

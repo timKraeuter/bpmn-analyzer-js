@@ -49,3 +49,73 @@ export function getAllFollowingShapes(startShape, shapes) {
   });
   return shapes;
 }
+
+export function previewSubsequentExclusiveGateway(
+  unsafeCause,
+  complexPreview,
+  elementFactory,
+  layouter,
+) {
+  const created = [];
+  const exG = elementFactory.createShape({
+    type: "bpmn:ExclusiveGateway",
+  });
+  const xShift = 75;
+  exG.x = unsafeCause.x + unsafeCause.width + xShift - exG.width / 2;
+  exG.y = getMid(unsafeCause).y - exG.height / 2;
+  created.push(exG);
+  // New connection from the gateway
+  const connection = elementFactory.createConnection({
+    type: "bpmn:SequenceFlow",
+  });
+  connection.waypoints = layouter.layoutConnection(connection, {
+    source: unsafeCause,
+    target: exG,
+  });
+  created.push(connection);
+  // for each incoming
+  unsafeCause.outgoing.forEach((outFlow) => {
+    const replaceConnection = elementFactory.createConnection({
+      type: "bpmn:SequenceFlow",
+    });
+
+    replaceConnection.waypoints = outFlow.waypoints.map((waypoint) => {
+      if (waypoint.x === getMid(unsafeCause).x) {
+        if (waypoint.y === unsafeCause.y + unsafeCause.height) {
+          return {
+            x: waypoint.x + unsafeCause.width - exG.width + xShift,
+            y: exG.y + exG.height,
+          };
+        }
+        return {
+          x: waypoint.x + unsafeCause.width - exG.width + xShift,
+          y: waypoint.y,
+        };
+      }
+      return {
+        x: waypoint.x + xShift,
+        y: waypoint.y,
+      };
+    });
+    created.push(replaceConnection);
+  });
+
+  const delta = {
+    x: +xShift,
+    y: 0,
+  };
+  const shapesAndFlows = getAllFollowingShapes(unsafeCause, []);
+  shapesAndFlows.forEach((shape) =>
+    shape.outgoing.forEach((inflow) => shapesAndFlows.push(inflow)),
+  );
+  const moved = shapesAndFlows.map((element) => ({
+    element,
+    delta,
+  }));
+
+  complexPreview.create({
+    created,
+    moved,
+    removed: unsafeCause.outgoing,
+  });
+}
