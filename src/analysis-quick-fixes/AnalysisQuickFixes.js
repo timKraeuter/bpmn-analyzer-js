@@ -57,11 +57,18 @@ export default function AnalysisQuickFixes(
         if (propertyResult.property === "OptionToComplete") {
           addQuickFixOptionToCompleteIfPossible(propertyResult);
         } else {
-          // TODO: Add quick fixes for dead activities.
+          addQuickFixForDeadActivities(propertyResult);
         }
       }
     },
   );
+
+  /**
+   * @param {PropertyResult} propertyResult
+   */
+  function addQuickFixForDeadActivities(propertyResult) {
+    console.log(propertyResult.problematic_elements);
+  }
 
   function addOptionToCompleteParallelQuickFix(exclusiveGateway) {
     addQuickFixForElement(

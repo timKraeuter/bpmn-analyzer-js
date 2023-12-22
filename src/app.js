@@ -8,8 +8,9 @@ import taskMerge from "../resources/taskMerge.bpmn";
 import unsafeGateways from "../resources/unsafe-gateways.bpmn";
 import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 import stuck from "../resources/stuck.bpmn";
+import deadActivity from "../resources/deadActivity.bpmn";
 
-const initialBoardXML = reusedEndEvent;
+const initialBoardXML = deadActivity;
 
 import {
   BpmnPropertiesPanelModule,
@@ -21,12 +22,13 @@ import AnalysisOverlaysModule from "./analysis-overlays";
 import AnalysisQuickFixesModule from "./analysis-quick-fixes";
 
 const example_boards = {
-  taskSplit: taskSplit,
-  taskMerge: taskMerge,
-  showcase: showcase,
-  unsafeGateways: unsafeGateways,
-  reusedEndEvent: reusedEndEvent,
-  stuck: stuck,
+  taskSplit,
+  taskMerge,
+  showcase,
+  unsafeGateways,
+  reusedEndEvent,
+  stuck,
+  deadActivity,
 };
 
 // modeler instance
