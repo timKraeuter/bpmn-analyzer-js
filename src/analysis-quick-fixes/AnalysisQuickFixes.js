@@ -1,6 +1,7 @@
 import { is } from "bpmn-js/lib/util/ModelUtil";
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 import { AddSubsequentExclusiveGatewayCommand } from "./AddSubsequentExclusiveGatewayCommand";
+import { AddPrecedingParallelGatewayCommand } from "./AddPrecedingParallelGatewayCommand";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -23,6 +24,10 @@ export default function AnalysisQuickFixes(
   commandStack.registerHandler(
     "addSubsequentExclusiveGatewayCommand",
     AddSubsequentExclusiveGatewayCommand,
+  );
+  commandStack.registerHandler(
+    "addPrecedingParallelGatewayCommand",
+    AddPrecedingParallelGatewayCommand,
   );
 
   eventBus.on(
@@ -272,45 +277,11 @@ export default function AnalysisQuickFixes(
         left: unsafeMerge.width / 2 - 18, // 18 is roughly half the size of the note (40 / 2)
       },
       "Click to add preceding parallel gateway to fix Safeness.",
-      () => {
-        addPrecedingParallelGateway(unsafeMerge);
-      },
+      () =>
+        commandStack.execute("addPrecedingParallelGatewayCommand", {
+          unsafeMerge,
+        }),
     );
-  }
-
-  /**
-   * @param {Shape} unsafeMerge
-   */
-  function addPrecedingParallelGateway(unsafeMerge) {
-    // TODO: Undo should undo all these commands.
-    // Create parallel gateway
-    const pg = modeling.createShape(
-      { type: "bpmn:ParallelGateway" },
-      {
-        x: unsafeMerge.x,
-        y: getMid(unsafeMerge).y,
-      },
-      unsafeMerge.parent,
-    );
-    // Move everything after unsafeMerge to the right to make space for the pg.
-    const shapesToBeMoved = getAllFollowingShapes(unsafeMerge, [unsafeMerge]);
-    spaceTool.makeSpace(
-      shapesToBeMoved, // Move these elements
-      [], // Dont resize anything
-      {
-        x: 75, // Shift x by 75
-        y: 0,
-      },
-      "e", // Move east
-      0,
-    );
-    // Change incoming sfs
-    const inFlows = unsafeMerge.incoming.map((sf) => sf);
-    for (const inFlow of inFlows) {
-      modeling.reconnectEnd(inFlow, pg, getMid(pg));
-    }
-    // Add new sf between pg and activity.
-    modeling.connect(pg, unsafeMerge);
   }
 
   function addSubsequentExclusiveGatewayQuickFix(unsafeCause) {

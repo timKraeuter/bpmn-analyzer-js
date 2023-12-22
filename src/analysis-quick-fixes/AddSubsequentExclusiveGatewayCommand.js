@@ -1,11 +1,10 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 
 export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
-  let eg;
   this.preExecute = function (context) {
     const unsafeCause = context.unsafeCause;
     // Create exclusive gateway
-    eg = modeling.createShape(
+    const eg = modeling.createShape(
       { type: "bpmn:ExclusiveGateway" },
       {
         x: unsafeCause.x + unsafeCause.width + 75,
@@ -40,7 +39,7 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
  * @param {Shape} startShape
  * @param {Shape[]} shapes
  */
-function getAllFollowingShapes(startShape, shapes) {
+export function getAllFollowingShapes(startShape, shapes) {
   startShape.outgoing.forEach((sf) => {
     const target = sf.target;
     if (target.x > startShape.x && !shapes.includes(target)) {
