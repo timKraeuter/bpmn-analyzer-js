@@ -74,6 +74,7 @@ export function previewSubsequentExclusiveGateway(
   });
   created.push(connection);
   // for each incoming
+  // TODO: do it like reconnect layout so we dont have to do layout arithmetic
   unsafeCause.outgoing.forEach((outFlow) => {
     const replaceConnection = elementFactory.createConnection({
       type: "bpmn:SequenceFlow",
