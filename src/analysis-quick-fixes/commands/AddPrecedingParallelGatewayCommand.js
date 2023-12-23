@@ -4,6 +4,7 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
     const unsafeMerge = context.unsafeMerge;
     // TODO: Undo should undo all these commands.
+    // TODO: xshift is duplicated. should be negative and global
     // Create parallel gateway
     const pg = modeling.createShape(
       { type: "bpmn:ParallelGateway" },
