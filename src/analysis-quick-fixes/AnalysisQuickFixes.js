@@ -156,6 +156,7 @@ export default function AnalysisQuickFixes(
       () => {
         replaceWithParallelGateway(exclusiveGateway);
       },
+      () => {},
     );
   }
 
@@ -203,6 +204,7 @@ export default function AnalysisQuickFixes(
       () => {
         replaceWithExclusiveGateway(problematicPG);
       },
+      () => {},
     );
   }
 
@@ -414,6 +416,7 @@ export default function AnalysisQuickFixes(
       () => {
         replaceWithExclusiveGateway(gateway);
       },
+      () => {},
     );
   }
 
@@ -463,6 +466,7 @@ export default function AnalysisQuickFixes(
       () => {
         replaceWithParallelGateway(exclusiveGateway);
       },
+      () => {},
     );
   }
 
@@ -495,14 +499,12 @@ export default function AnalysisQuickFixes(
       complexPreview.cleanUp();
       applyFunction();
     });
-    if (previewFunction) {
-      document.getElementById(shape.id).addEventListener("mouseenter", () => {
-        previewFunction();
-      });
-      document.getElementById(shape.id).addEventListener("mouseleave", () => {
-        complexPreview.cleanUp();
-      });
-    }
+    document.getElementById(shape.id).addEventListener("mouseenter", () => {
+      previewFunction();
+    });
+    document.getElementById(shape.id).addEventListener("mouseleave", () => {
+      complexPreview.cleanUp();
+    });
   }
 
   /**
@@ -521,20 +523,18 @@ export default function AnalysisQuickFixes(
    * @param {Shape} gateway
    */
   function replaceWithExclusiveGateway(gateway) {
-    const targetElement = {
+    bpmnReplace.replaceElement(gateway, {
       type: "bpmn:ExclusiveGateway",
-    };
-    bpmnReplace.replaceElement(gateway, targetElement);
+    });
   }
 
   /**
    * @param {Shape} gateway
    */
   function replaceWithParallelGateway(gateway) {
-    const targetElement = {
+    bpmnReplace.replaceElement(gateway, {
       type: "bpmn:ParallelGateway",
-    };
-    bpmnReplace.replaceElement(gateway, targetElement);
+    });
   }
 }
 AnalysisQuickFixes.$inject = [
