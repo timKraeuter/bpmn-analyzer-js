@@ -1,4 +1,5 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
+const xShift = 75;
 
 export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
@@ -7,18 +8,18 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
     const eg = modeling.createShape(
       { type: "bpmn:ExclusiveGateway" },
       {
-        x: unsafeCause.x + unsafeCause.width + 75,
+        x: unsafeCause.x + unsafeCause.width + xShift,
         y: getMid(unsafeCause).y,
       },
       unsafeCause.parent,
     );
-    // Move everything after unsafeCause to the right to make space for the ex g
+    // Move everything after unsafeCause to make space for the ex g
     const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
     spaceTool.makeSpace(
       shapesToBeMoved, // Move these elements
       [], // Dont resize anything
       {
-        x: 75, // Shift x by 75
+        x: xShift, // Shift x by 75
         y: 0,
       },
       "e", // Move east
@@ -60,7 +61,6 @@ export function previewSubsequentExclusiveGateway(
   const exG = elementFactory.createShape({
     type: "bpmn:ExclusiveGateway",
   });
-  const xShift = 75;
   exG.x = unsafeCause.x + unsafeCause.width + xShift - exG.width / 2;
   exG.y = getMid(unsafeCause).y - exG.height / 2;
   created.push(exG);
@@ -73,36 +73,31 @@ export function previewSubsequentExclusiveGateway(
     target: exG,
   });
   created.push(connection);
-  // for each incoming
-  // TODO: do it like reconnect layout so we dont have to do layout arithmetic
+  // Change outgoing sfs
   unsafeCause.outgoing.forEach((outFlow) => {
     const replaceConnection = elementFactory.createConnection({
       type: "bpmn:SequenceFlow",
     });
+    // Workaround: Create bogus shape for now.
+    const bogus = elementFactory.createShape({
+      type: outFlow.target.type,
+    });
+    bogus.x = outFlow.target.x + xShift;
+    bogus.y = outFlow.target.y;
 
-    replaceConnection.waypoints = outFlow.waypoints.map((waypoint) => {
-      if (waypoint.x === getMid(unsafeCause).x) {
-        if (waypoint.y === unsafeCause.y + unsafeCause.height) {
-          return {
-            x: waypoint.x + unsafeCause.width - exG.width + xShift,
-            y: exG.y + exG.height,
-          };
-        }
-        return {
-          x: waypoint.x + unsafeCause.width - exG.width + xShift,
-          y: waypoint.y,
-        };
-      }
-      return {
-        x: waypoint.x + xShift,
-        y: waypoint.y,
-      };
+    const midEG = getMid(exG);
+    // Reconnect end
+    replaceConnection.waypoints = layouter.layoutConnection(replaceConnection, {
+      source: exG,
+      target: bogus,
+      connectionStart: midEG,
     });
     created.push(replaceConnection);
   });
 
+  // Move everything after unsafeCause to make space for the ex g
   const delta = {
-    x: +xShift,
+    x: xShift,
     y: 0,
   };
   const shapesAndFlows = getAllFollowingShapes(unsafeCause, []);

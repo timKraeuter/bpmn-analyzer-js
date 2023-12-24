@@ -1,36 +1,35 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
+const xShift = -75;
 
 export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
     const unsafeMerge = context.unsafeMerge;
-    // TODO: Undo should undo all these commands.
-    // TODO: xshift is duplicated. should be negative and global
-    // Create parallel gateway
+    // Create PG
     const pg = modeling.createShape(
       { type: "bpmn:ParallelGateway" },
       {
-        x: unsafeMerge.x - 75,
+        x: unsafeMerge.x + xShift,
         y: getMid(unsafeMerge).y,
       },
       unsafeMerge.parent,
     );
-    // Move everything after unsafeMerge to the right to make space for the pg.
+    // Move everything before unsafeMerge to make space for the preceding pg.
     const shapesToBeMoved = getAllPrecedingShapes(unsafeMerge, []);
     spaceTool.makeSpace(
       shapesToBeMoved, // Move these elements
       [], // Dont resize anything
       {
-        x: -75, // Shift x by 75
+        x: xShift, // Shift x by 75
         y: 0,
       },
       "e", // Move east
       0,
     );
     // Change incoming sfs
-    const inFlows = unsafeMerge.incoming.map((sf) => sf);
-    for (const inFlow of inFlows) {
-      modeling.reconnectEnd(inFlow, pg, getMid(pg));
-    }
+    const midPG = getMid(pg);
+    unsafeMerge.incoming
+      .map((inFlow) => inFlow)
+      .forEach((inFlow) => modeling.reconnectEnd(inFlow, pg, midPG));
     // Add new sf between pg and activity.
     modeling.connect(pg, unsafeMerge);
   };
@@ -48,8 +47,7 @@ export function previewPrecedingParallelGateway(
   const pg = elementFactory.createShape({
     type: "bpmn:ParallelGateway",
   });
-  const xShift = 75;
-  pg.x = unsafeMerge.x - xShift - pg.width / 2;
+  pg.x = unsafeMerge.x + xShift - pg.width / 2;
   pg.y = getMid(unsafeMerge).y - pg.height / 2;
   created.push(pg);
   // New connection from the gateway
@@ -61,7 +59,7 @@ export function previewPrecedingParallelGateway(
     target: unsafeMerge,
   });
   created.push(connection);
-  // for each incoming
+  // Change incoming sfs
   unsafeMerge.incoming.forEach((inFlow) => {
     const replaceConnection = elementFactory.createConnection({
       type: "bpmn:SequenceFlow",
@@ -70,19 +68,22 @@ export function previewPrecedingParallelGateway(
     const bogus = elementFactory.createShape({
       type: inFlow.source.type,
     });
-    const xShift = 75;
-    bogus.x = inFlow.source.x - xShift;
+    bogus.x = inFlow.source.x + xShift;
     bogus.y = inFlow.source.y;
 
+    const midPG = getMid(pg);
+    // Reconnect end
     replaceConnection.waypoints = layouter.layoutConnection(replaceConnection, {
       source: bogus,
       target: pg,
+      connectionEnd: midPG,
     });
     created.push(replaceConnection);
   });
 
+  // Move everything before unsafeMerge to make space for the preceding pg.
   const delta = {
-    x: -xShift,
+    x: xShift,
     y: 0,
   };
   const shapesAndFlows = getAllPrecedingShapes(unsafeMerge, []);
