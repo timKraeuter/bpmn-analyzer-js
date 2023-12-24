@@ -42,7 +42,7 @@ export function previewPrecedingParallelGateway(
   elementFactory,
   layouter,
 ) {
-  // TODO: Refactor this together with the other previews
+  // Create PG
   const created = [];
   const pg = elementFactory.createShape({
     type: "bpmn:ParallelGateway",
@@ -50,7 +50,7 @@ export function previewPrecedingParallelGateway(
   pg.x = unsafeMerge.x + xShift - pg.width / 2;
   pg.y = getMid(unsafeMerge).y - pg.height / 2;
   created.push(pg);
-  // New connection from the gateway
+  // Add new sf between pg and activity.
   const connection = elementFactory.createConnection({
     type: "bpmn:SequenceFlow",
   });

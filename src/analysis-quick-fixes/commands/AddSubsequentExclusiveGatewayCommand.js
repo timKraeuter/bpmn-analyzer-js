@@ -16,10 +16,10 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
     // Move everything after unsafeCause to make space for the ex g
     const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
     spaceTool.makeSpace(
-      shapesToBeMoved, // Move these elements
+      shapesToBeMoved,
       [], // Dont resize anything
       {
-        x: xShift, // Shift x by 75
+        x: xShift,
         y: 0,
       },
       "e", // Move east
@@ -57,6 +57,7 @@ export function previewSubsequentExclusiveGateway(
   elementFactory,
   layouter,
 ) {
+  // Create exclusive gateway
   const created = [];
   const exG = elementFactory.createShape({
     type: "bpmn:ExclusiveGateway",
@@ -64,7 +65,7 @@ export function previewSubsequentExclusiveGateway(
   exG.x = unsafeCause.x + unsafeCause.width + xShift - exG.width / 2;
   exG.y = getMid(unsafeCause).y - exG.height / 2;
   created.push(exG);
-  // New connection from the gateway
+  // Add new sf between ex g and flow node.
   const connection = elementFactory.createConnection({
     type: "bpmn:SequenceFlow",
   });
