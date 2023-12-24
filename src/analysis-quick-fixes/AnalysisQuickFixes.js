@@ -2,15 +2,15 @@ import { is } from "bpmn-js/lib/util/ModelUtil";
 import {
   AddSubsequentExclusiveGatewayCommand,
   previewSubsequentExclusiveGateway,
-} from "./commands/AddSubsequentExclusiveGatewayCommand";
+} from "./cmd/AddSubsequentExclusiveGatewayCommand";
 import {
   AddPrecedingParallelGatewayCommand,
   previewPrecedingParallelGateway,
-} from "./commands/AddPrecedingParallelGatewayCommand";
+} from "./cmd/AddPrecedingParallelGatewayCommand";
 import {
   AddEndEventsForEachIncFlowCommand,
   previewAddedEndEvents,
-} from "./commands/AddEndEventsForEachIncFlowCommand";
+} from "./cmd/AddEndEventsForEachIncFlowCommand";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
