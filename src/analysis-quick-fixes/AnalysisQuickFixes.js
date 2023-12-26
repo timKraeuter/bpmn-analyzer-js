@@ -127,6 +127,10 @@ export default function AnalysisQuickFixes(
           "Click to add incoming sequence flow to fix dead Activity.",
           () => {
             modeling.connect(nearestFlowNode, activity);
+            modeling.setColor(activity.incoming[0], {
+              fill: "green",
+              stroke: "green",
+            });
           },
           () => {
             const connection = elementFactory.createConnection({
@@ -523,8 +527,11 @@ export default function AnalysisQuickFixes(
    * @param {Shape} gateway
    */
   function replaceWithExclusiveGateway(gateway) {
-    bpmnReplace.replaceElement(gateway, {
+    const newElement = bpmnReplace.replaceElement(gateway, {
       type: "bpmn:ExclusiveGateway",
+    });
+    modeling.setColor([newElement], {
+      stroke: "green",
     });
   }
 
@@ -532,8 +539,11 @@ export default function AnalysisQuickFixes(
    * @param {Shape} gateway
    */
   function replaceWithParallelGateway(gateway) {
-    bpmnReplace.replaceElement(gateway, {
+    const newElement = bpmnReplace.replaceElement(gateway, {
       type: "bpmn:ParallelGateway",
+    });
+    modeling.setColor([newElement], {
+      stroke: "green",
     });
   }
 }

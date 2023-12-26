@@ -10,7 +10,7 @@ import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 import stuck from "../resources/stuck.bpmn";
 import deadActivity from "../resources/deadActivity.bpmn";
 
-const initialBoardXML = taskSplit;
+const initialBoardXML = stuck;
 
 import {
   BpmnPropertiesPanelModule,
