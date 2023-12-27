@@ -5,6 +5,9 @@ export function AddEndEventsForEachIncFlowCommand(modeling) {
     const problematicEndEvent = context.problematicEndEvent;
     let oldMid = getMid(problematicEndEvent);
     const inFlows = problematicEndEvent.incoming.slice(1);
+    modeling.setColor(inFlows, {
+      stroke: "green",
+    });
     inFlows.forEach((inFlow) => {
       const endEvent = modeling.createShape(
         { type: "bpmn:EndEvent" },
@@ -14,6 +17,9 @@ export function AddEndEventsForEachIncFlowCommand(modeling) {
         },
         problematicEndEvent.parent,
       );
+      modeling.setColor([endEvent], {
+        stroke: "green",
+      });
       modeling.reconnectEnd(inFlow, endEvent, {
         x: endEvent.x,
         y: endEvent.y,

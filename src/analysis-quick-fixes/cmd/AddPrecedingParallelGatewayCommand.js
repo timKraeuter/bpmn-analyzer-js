@@ -13,6 +13,9 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
       },
       unsafeMerge.parent,
     );
+    modeling.setColor([pg], {
+      stroke: "green",
+    });
     // Move everything before unsafeMerge to make space for the preceding pg.
     const shapesToBeMoved = getAllPrecedingShapes(unsafeMerge, []);
     spaceTool.makeSpace(
@@ -25,13 +28,22 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
       "e", // Move east
       0,
     );
+    modeling.setColor(unsafeMerge.incoming, {
+      stroke: "green",
+    });
     // Change incoming sfs
     const midPG = getMid(pg);
     unsafeMerge.incoming
       .map((inFlow) => inFlow)
       .forEach((inFlow) => modeling.reconnectEnd(inFlow, pg, midPG));
+    modeling.setColor(unsafeMerge.incoming, {
+      stroke: "green",
+    });
     // Add new sf between pg and activity.
-    modeling.connect(pg, unsafeMerge);
+    const sf = modeling.connect(pg, unsafeMerge);
+    modeling.setColor([sf], {
+      stroke: "green",
+    });
   };
   // execute and revert not needed.
 }

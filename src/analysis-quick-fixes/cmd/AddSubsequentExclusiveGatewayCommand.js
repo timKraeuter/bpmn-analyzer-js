@@ -13,6 +13,9 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
       },
       unsafeCause.parent,
     );
+    modeling.setColor([eg], {
+      stroke: "green",
+    });
     // Move everything after unsafeCause to make space for the ex g
     const shapesToBeMoved = getAllFollowingShapes(unsafeCause, []);
     spaceTool.makeSpace(
@@ -25,13 +28,19 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
       "e", // Move east
       0,
     );
+    modeling.setColor(unsafeCause.outgoing, {
+      stroke: "green",
+    });
     // Change outgoing sfs
     const outFlows = unsafeCause.outgoing.map((sf) => sf);
     for (const outFlow of outFlows) {
       modeling.reconnectStart(outFlow, eg, getMid(eg));
     }
     // Add new sf between ex g and flow node.
-    modeling.connect(unsafeCause, eg);
+    const sf = modeling.connect(unsafeCause, eg);
+    modeling.setColor([sf], {
+      stroke: "green",
+    });
   };
   // execute and revert not needed.
 }
