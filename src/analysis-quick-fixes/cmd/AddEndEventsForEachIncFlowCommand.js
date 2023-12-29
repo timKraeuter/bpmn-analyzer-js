@@ -3,14 +3,14 @@ import { getMid } from "diagram-js/lib/layout/LayoutUtil";
 export function AddEndEventsForEachIncFlowCommand(modeling) {
   this.preExecute = function (context) {
     const problematicEndEvent = context.problematicEndEvent;
-    let oldMid = getMid(problematicEndEvent);
+    const endEventMid = getMid(problematicEndEvent);
     const inFlows = problematicEndEvent.incoming.slice(1);
     inFlows.forEach((inFlow) => {
       const endEvent = modeling.createShape(
         { type: "bpmn:EndEvent" },
         {
-          x: oldMid.x,
-          y: oldMid.y + 110, // Same as auto append
+          x: endEventMid.x,
+          y: getMid(inFlow.source).y,
         },
         problematicEndEvent.parent,
       );
@@ -21,8 +21,17 @@ export function AddEndEventsForEachIncFlowCommand(modeling) {
       modeling.layoutConnection(inFlow, {
         waypoints: [], // Forces new layout of the waypoints
       });
-      oldMid = getMid(endEvent);
     });
+    // Move the reused end event to align all end events with their sources.
+    const source = problematicEndEvent.incoming[0].source;
+    const delta = {
+      x: 0,
+      y:
+        getMid(source).y -
+        Math.round(problematicEndEvent.height / 2) -
+        problematicEndEvent.y,
+    }; // Similar to the align elements code.
+    modeling.moveShape(problematicEndEvent, delta);
   };
   // execute and revert not needed.
 }
@@ -33,17 +42,15 @@ export function previewAddedEndEvents(
   elementFactory,
   layouter,
 ) {
-  let previousEndEvent = problematicEndEvent;
-  const inFlows = problematicEndEvent.incoming.slice(1);
   const created = [];
-  inFlows.forEach((inFlow) => {
+  problematicEndEvent.incoming.forEach((inFlow) => {
     // Add end event preview
     const endEvent = elementFactory.createShape({
       type: "bpmn:EndEvent",
     });
-    endEvent.x = previousEndEvent.x;
-    endEvent.y = previousEndEvent.y + 110;
-    previousEndEvent = endEvent;
+    endEvent.x = problematicEndEvent.x;
+    endEvent.y =
+      getMid(inFlow.source).y - Math.round(problematicEndEvent.height / 2);
     created.push(endEvent);
     // Add connection preview
     const connection = elementFactory.createConnection({
@@ -58,6 +65,6 @@ export function previewAddedEndEvents(
 
   complexPreview.create({
     created,
-    removed: inFlows,
+    removed: problematicEndEvent.incoming,
   });
 }
