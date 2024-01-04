@@ -34,7 +34,7 @@ body,
   margin-top: 10px;
 }
 
-.pjs-buttons-active:hover,
+.buttons-active:hover,
 .bottom-buttons button:hover {
   cursor: pointer;
   background-color: var(--color-button-hover);
@@ -49,7 +49,7 @@ body,
 /* screen interaction helpers & modal */
 
 #io-dialog-main {
-  /*display: none;*/
+  display: none;
 }
 
 #io-editing-tools-buttons {
@@ -139,11 +139,11 @@ ul {
   list-style-type: none;
 }
 
-.pjs-buttons {
+.buttons {
   position: fixed;
 }
 
-.pjs-buttons button {
+.buttons button {
   color: black;
   background-color: #f8f8f8;
   border-radius: 3px;
@@ -155,13 +155,13 @@ ul {
   border: solid 1px #cdcdcd;
 }
 
-.pjs-buttons a {
+.buttons a {
   opacity: 0.3;
   text-decoration: none;
 }
 
-.pjs-buttons a.pjs-buttons-active,
-.pjs-buttons button.pjs-buttons-active {
+.buttons a.buttons-active,
+.buttons button.buttons-active {
   opacity: 1;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
 }
@@ -172,7 +172,7 @@ ul {
 }
 
 /* canvas drawing */
-[class*=" pjs-general-icon"]::before {
+[class*="general-icon"]::before {
   font-style: normal;
   font-weight: normal;
   speak: none;
@@ -183,12 +183,12 @@ ul {
   text-transform: none;
 }
 
-.pjs-general-icon {
+.general-icon {
   font-family: "Font Awesome 5 Free Solid", serif;
   line-height: 1.2em;
 }
 
-.pjs-io-dialog.pjs-io-dialog-open::before {
+.io-dialog.io-dialog-open::before {
   content: "";
   position: fixed;
   left: 0;

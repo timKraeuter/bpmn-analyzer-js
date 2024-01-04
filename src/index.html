@@ -12,7 +12,7 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
   </head>
   <body>
-    <div id="io-dialog-main" class="pjs-io-dialog pjs-io-dialog-open">
+    <div id="io-dialog-main" class="io-dialog io-dialog-open">
       <div class="dialog-content">
         <h1>Keyboard Shortcuts</h1>
         <div class="keybindings">
@@ -39,7 +39,7 @@
     <div id="canvas"></div>
     <div class="properties-panel-parent" id="js-properties-panel"></div>
 
-    <div id="io-editing-tools-buttons" class="pjs-buttons">
+    <div id="io-editing-tools-buttons" class="buttons">
       <label for="example-select">Change example:</label>
       <select id="example-select" class="example-select">
         <option value="taskSplit">Unsafe implicit parallel gateway</option>
@@ -52,47 +52,38 @@
       </select>
       <button
         id="js-toggle-keyboard-help"
-        class="pjs-buttons-active"
+        class="buttons-active"
         title="Toggle keyboard shortcuts overlay"
       >
-        <span class="icon-keyboard pjs-general-icon"> </span>
+        <span class="icon-keyboard general-icon"> </span>
       </button>
       <button
         id="js-toggle-fullscreen"
-        class="pjs-buttons-active"
+        class="buttons-active"
         title="Toggle Fullscreen"
       >
-        <span class="icon-resize-full pjs-general-icon"> </span>
+        <span class="icon-resize-full general-icon"> </span>
       </button>
     </div>
 
     <div class="properties">
       <div id="Safeness">Safeness</div>
-      <div id="Safeness-icon" class="icon-question pjs-general-icon"></div>
+      <div id="Safeness-icon" class="icon-question general-icon"></div>
       <div id="OptionToComplete">Option to complete</div>
-      <div
-        id="OptionToComplete-icon"
-        class="icon-question pjs-general-icon"
-      ></div>
+      <div id="OptionToComplete-icon" class="icon-question general-icon"></div>
       <div id="ProperCompletion">Proper completion</div>
-      <div
-        id="ProperCompletion-icon"
-        class="icon-question pjs-general-icon"
-      ></div>
+      <div id="ProperCompletion-icon" class="icon-question general-icon"></div>
       <div id="NoDeadActivities">No dead activities</div>
-      <div
-        id="NoDeadActivities-icon"
-        class="icon-question pjs-general-icon"
-      ></div>
+      <div id="NoDeadActivities-icon" class="icon-question general-icon"></div>
     </div>
 
-    <div class="bottom-buttons pjs-buttons">
+    <div class="bottom-buttons buttons">
       <div class="button-row">
         <div>open</div>
         <div>
           <button
             id="js-open-board"
-            class="pjs-buttons-active"
+            class="buttons-active"
             title="open XML board"
           >
             BPMN file
@@ -101,7 +92,7 @@
         <div>
           <button
             id="js-open-new"
-            class="pjs-buttons-active"
+            class="buttons-active"
             title="open new board"
           >
             New diagram
@@ -113,14 +104,14 @@
         <div>download</div>
         <div>
           <a id="js-download-board">
-            <button class="pjs-buttons-active" title="download XML board">
+            <button class="buttons-active" title="download XML board">
               BPMN file
             </button>
           </a>
         </div>
         <div>
           <a id="js-download-svg">
-            <button class="pjs-buttons-active" title="download as SVG image">
+            <button class="buttons-active" title="download as SVG image">
               SVG image
             </button>
           </a>
