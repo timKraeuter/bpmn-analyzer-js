@@ -1,6 +1,5 @@
 :root {
   --color-button-hover: #fbdbc0;
-  --color-quickfix: #008000ff;
   --color-property--fulfilled: #008000ff;
   --color-property--violated: #ff0000ff;
 }
@@ -270,11 +269,11 @@ a:hover {
 }
 
 .property-note {
-  background-color: rgba(255, 76, 48, 1);
+  background-color: var(--color-property--violated);
 }
 
 .quick-fix-note {
-  background-color: var(--color-quickfix);
+  background-color: var(--color-property--fulfilled);
   width: 25px;
   cursor: pointer;
 }
@@ -303,7 +302,7 @@ a:hover {
   display: inline-block;
 }
 
-.tooltip .tooltiptext {
+.tooltip .tooltipText {
   visibility: hidden;
   width: 100px;
   background-color: black;
@@ -319,7 +318,7 @@ a:hover {
   z-index: 1;
 }
 
-.tooltip:hover .tooltiptext {
+.tooltip:hover .tooltipText {
   visibility: visible;
 }
 

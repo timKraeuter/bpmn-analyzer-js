@@ -491,7 +491,7 @@ export default function AnalysisQuickFixes(
       position,
       html: `<div id=${shape.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">${text}</span>
+               <span class="tooltipText">${text}</span>
            </div>`,
     });
 
