@@ -40,17 +40,25 @@ export default function AnalysisOverlays(eventBus, overlays) {
       `${propertyResult.property}-icon`,
     );
     if (propertyResult.fulfilled) {
-      elementById.classList.remove("red");
-      elementById.classList.add("green");
+      elementById.classList.remove("violated");
+      elementById.classList.add("fulfilled");
 
-      elementIconById.classList.remove("icon-question", "icon-xmark", "red");
-      elementIconById.classList.add("icon-check", "green");
+      elementIconById.classList.remove(
+        "icon-question",
+        "icon-xmark",
+        "violated",
+      );
+      elementIconById.classList.add("icon-check", "fulfilled");
     } else {
-      elementById.classList.remove("green");
-      elementById.classList.add("red");
+      elementById.classList.remove("fulfilled");
+      elementById.classList.add("violated");
 
-      elementIconById.classList.remove("icon-question", "icon-check", "green");
-      elementIconById.classList.add("icon-xmark", "red");
+      elementIconById.classList.remove(
+        "icon-question",
+        "icon-check",
+        "fulfilled",
+      );
+      elementIconById.classList.add("icon-xmark", "violated");
     }
   }
 

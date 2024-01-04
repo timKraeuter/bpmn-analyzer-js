@@ -1,5 +1,8 @@
 :root {
   --color-button-hover: #fbdbc0;
+  --color-quickfix: #008000ff;
+  --color-property--fulfilled: #008000ff;
+  --color-property--violated: #ff0000ff;
 }
 
 label {
@@ -66,13 +69,8 @@ body,
   margin: 0;
 }
 
-#io-editing-tools-buttons button:hover {
-  color: #333333;
-}
-
 .icon-keyboard {
   box-sizing: border-box;
-  cursor: pointer;
   font-size: 18px;
   line-height: 1.2em;
 }
@@ -85,7 +83,6 @@ body,
 
 .icon-resize-full {
   box-sizing: border-box;
-  cursor: pointer;
   font-size: 18px;
   line-height: 1.2em;
 }
@@ -97,7 +94,6 @@ body,
 
 .icon-question {
   box-sizing: border-box;
-  cursor: pointer;
   font-size: 18px;
   line-height: 1.2em;
 }
@@ -109,7 +105,6 @@ body,
 
 .icon-check {
   box-sizing: border-box;
-  cursor: pointer;
   font-size: 18px;
   line-height: 1.2em;
 }
@@ -121,7 +116,6 @@ body,
 
 .icon-xmark {
   box-sizing: border-box;
-  cursor: pointer;
   font-size: 18px;
   line-height: 1.2em;
 }
@@ -238,10 +232,6 @@ a:hover {
   line-height: 1.2em;
 }
 
-button:hover {
-  cursor: pointer;
-}
-
 .pjs-io-dialog.pjs-io-dialog-open::before {
   content: "";
   position: fixed;
@@ -284,7 +274,7 @@ button:hover {
 }
 
 .quick-fix-note {
-  background-color: green;
+  background-color: var(--color-quickfix);
   width: 25px;
   cursor: pointer;
 }
@@ -300,12 +290,12 @@ button:hover {
   text-align: center;
 }
 
-.green {
-  color: green;
+.fulfilled {
+  color: var(--color-property--fulfilled);
 }
 
-.red {
-  color: red;
+.violated {
+  color: var(--color-property--violated);
 }
 
 .tooltip {
@@ -336,8 +326,17 @@ button:hover {
 .keybindings {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(8, 1fr);
+  grid-template-rows: repeat(auto-fit, 1fr);
   grid-row-gap: 10px;
+}
+
+.properties {
+  display: grid;
+  grid-template-columns: 1fr 20px;
+  grid-template-rows: repeat(4, 1fr);
+  grid-column-gap: 15px;
+  grid-row-gap: 5px;
+  align-items: center;
 }
 
 .binding {
