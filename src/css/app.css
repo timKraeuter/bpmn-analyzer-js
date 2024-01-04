@@ -4,15 +4,10 @@
   --color-property--violated: #ff0000ff;
 }
 
-label {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-size: 1rem;
-  padding-right: 5px;
-}
-
 select {
   font-size: 0.9rem;
   padding: 2px 5px;
+  cursor: pointer;
 }
 
 html,
@@ -29,21 +24,19 @@ body,
   left: 20px;
 }
 
-.top-right-buttons {
-  background-color: #f8f8f8;
-  border-radius: 3px;
-  font-size: 13px;
-  font-weight: bold;
-  border: solid 1px #cdcdcd;
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  top: 60px;
-  right: 15px;
-  padding: 5px;
-  position: fixed;
+.button-row + .button-row {
+  margin-top: 10px;
 }
 
 .pjs-buttons-active:hover,
-.bottom-buttons a:hover {
+.bottom-buttons button:hover {
+  cursor: pointer;
   background-color: var(--color-button-hover);
   transition: background-color 0.2s linear;
 }
@@ -62,10 +55,8 @@ body,
 #io-editing-tools-buttons {
   display: block;
   position: fixed;
-  top: 0;
-  right: 0;
-  padding: 5px;
-  margin: 0;
+  top: 10px;
+  right: 15px;
 }
 
 .icon-keyboard {
@@ -148,28 +139,10 @@ ul {
   list-style-type: none;
 }
 
-button:hover,
-a:hover {
-  cursor: pointer;
-}
-
 .pjs-buttons {
   position: fixed;
 }
 
-.pjs-buttons > ul {
-  display: block;
-  padding: 0;
-  margin: 10px 0 0;
-  list-style: none;
-}
-
-.pjs-buttons > ul > li {
-  display: inline-block;
-  margin-right: 10px;
-}
-
-.pjs-buttons > ul > li > a,
 .pjs-buttons button {
   color: black;
   background-color: #f8f8f8;
@@ -187,13 +160,6 @@ a:hover {
   text-decoration: none;
 }
 
-.pjs-button-disabled,
-.pjs-button-disabled:hover,
-.pjs-button-disabled:active {
-  opacity: 0.3;
-  text-decoration: none;
-}
-
 .pjs-buttons a.pjs-buttons-active,
 .pjs-buttons button.pjs-buttons-active {
   opacity: 1;
@@ -206,15 +172,6 @@ a:hover {
 }
 
 /* canvas drawing */
-
-.pjs-horizontal {
-  display: inline-block;
-}
-
-.pjs-horizontal li {
-  float: left;
-}
-
 [class*=" pjs-general-icon"]::before {
   font-style: normal;
   font-weight: normal;
@@ -258,7 +215,7 @@ a:hover {
 }
 
 .small-note {
-  color: White;
+  color: white;
   border-radius: 5px;
   font-family: Arial, serif;
   font-size: 12px;
@@ -336,6 +293,17 @@ a:hover {
   grid-column-gap: 15px;
   grid-row-gap: 5px;
   align-items: center;
+
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: bold;
+  border: solid 1px #cdcdcd;
+
+  top: 55px;
+  right: 15px;
+  padding: 5px;
+  position: fixed;
 }
 
 .binding {
