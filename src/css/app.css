@@ -1,3 +1,7 @@
+:root {
+  --color-button-hover: #fbdbc0;
+}
+
 label {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 1rem;
@@ -36,8 +40,10 @@ body,
   position: fixed;
 }
 
+.pjs-buttons-active:hover,
 .bottom-buttons a:hover {
-  color: #555;
+  background-color: var(--color-button-hover);
+  transition: background-color 0.2s linear;
 }
 
 .bottom-buttons a.active {
@@ -56,7 +62,6 @@ body,
   position: fixed;
   top: 0;
   right: 0;
-  list-style: none;
   padding: 5px;
   margin: 0;
 }
