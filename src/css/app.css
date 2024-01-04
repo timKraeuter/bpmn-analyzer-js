@@ -200,7 +200,7 @@ ul {
   z-index: 1001;
 }
 
-.pjs-io-dialog-content {
+.dialog-content {
   background: white;
   z-index: 1001;
   position: fixed;
