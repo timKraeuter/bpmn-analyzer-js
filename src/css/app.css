@@ -61,28 +61,22 @@ body,
 
 .icon-keyboard::before {
   content: "\e802";
-  display: inline-block;
-  line-height: 1.2em;
 }
 
 .icon-resize-full::before {
   content: "\e801";
-  display: inline-block;
 }
 
 .icon-question::before {
   content: "\e805";
-  display: inline-block;
 }
 
 .icon-check::before {
   content: "\e804";
-  display: inline-block;
 }
 
 .icon-xmark::before {
   content: "\e800";
-  display: inline-block;
 }
 
 @font-face {
