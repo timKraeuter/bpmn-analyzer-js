@@ -30,8 +30,8 @@ body,
   gap: 10px;
 }
 
-.button-row + .button-row {
-  margin-top: 10px;
+.button-row:not(:last-child) {
+  margin-bottom: 10px;
 }
 
 .buttons-active:hover,
