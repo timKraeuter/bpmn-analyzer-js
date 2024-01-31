@@ -36,6 +36,8 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
   // execute and revert not needed.
 }
 
+AddSubsequentExclusiveGatewayCommand.$inject = ["modeling", "spaceTool"];
+
 /**
  * @param {Shape} startShape
  * @param {Shape[]} shapes

@@ -36,6 +36,8 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   // execute and revert not needed.
 }
 
+AddPrecedingParallelGatewayCommand.$inject = ["modeling", "spaceTool"];
+
 export function previewPrecedingParallelGateway(
   unsafeMerge,
   complexPreview,
