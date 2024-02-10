@@ -10,12 +10,7 @@ import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 import stuck from "../resources/stuck.bpmn";
 import deadActivity from "../resources/deadActivity.bpmn";
 
-const initialBoardXML = deadActivity;
-
-import {
-  BpmnPropertiesPanelModule,
-  BpmnPropertiesProviderModule,
-} from "bpmn-js-properties-panel";
+const initialBoardXML = stuck;
 
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
@@ -38,8 +33,6 @@ const modeler = new BpmnModeler({
     bindTo: window,
   },
   additionalModules: [
-    BpmnPropertiesPanelModule,
-    BpmnPropertiesProviderModule,
     AnalysisClientModule,
     AnalysisOverlaysModule,
     AnalysisQuickFixesModule,

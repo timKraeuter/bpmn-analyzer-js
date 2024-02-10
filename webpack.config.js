@@ -49,10 +49,6 @@ module.exports = (env) => {
             from: "node_modules/bpmn-js/dist/assets",
             to: ".",
           },
-          {
-            from: "node_modules/@bpmn-io/properties-panel/dist/assets",
-            to: ".",
-          },
         ],
       }),
       new webpack.DefinePlugin({
