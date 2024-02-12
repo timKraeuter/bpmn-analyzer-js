@@ -15,6 +15,7 @@ const initialBoardXML = stuck;
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
 import AnalysisQuickFixesModule from "./analysis-quick-fixes";
+import CounterExampleVisualizationModule from "./counter-example-visualization";
 
 const example_boards = {
   taskSplit,
@@ -36,6 +37,7 @@ const modeler = new BpmnModeler({
     AnalysisClientModule,
     AnalysisOverlaysModule,
     AnalysisQuickFixesModule,
+    CounterExampleVisualizationModule,
   ],
 });
 
