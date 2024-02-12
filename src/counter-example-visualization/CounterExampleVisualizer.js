@@ -37,9 +37,11 @@ export default function CounterExampleVisualizer(
 
   /**
    * Visualize the counter example on click.
+   * Removes all ongoing animations and token counts and starts the animation.
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
+    animation.clearAnimations();
     tokenCount.clearTokenCounts();
 
     const snapshot = getSingleSnapshot(
@@ -57,10 +59,10 @@ export default function CounterExampleVisualizer(
       const lastTransition = transitions[transitions.length - 1];
       const snapshot = getSingleSnapshot(lastTransition.next_state);
 
-      Object.entries(snapshot.tokens).forEach(([elementId, tokenAmound]) => {
+      Object.entries(snapshot.tokens).forEach(([elementId, tokenAmount]) => {
         const element = elementRegistry.get(elementId);
         if (element.target) {
-          tokenCount.addTokenCounts(element.target, tokenAmound);
+          tokenCount.addTokenCounts(element.target, tokenAmount);
         }
       });
       return;
