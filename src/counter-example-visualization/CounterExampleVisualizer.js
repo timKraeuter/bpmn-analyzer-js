@@ -2,6 +2,7 @@ export default function CounterExampleVisualizer(
   animation,
   eventBus,
   elementRegistry,
+  tokenCount,
 ) {
   animation.setAnimationSpeed(2);
 
@@ -59,10 +60,10 @@ export default function CounterExampleVisualizer(
         const lastTransition = transitions[transitions.length - 1];
         const snapshot = getSingleSnapshot(lastTransition.next_state);
 
-        Object.entries(snapshot.tokens).forEach(([key, value]) => {
-          const element = elementRegistry.get(key);
+        Object.entries(snapshot.tokens).forEach(([elementId, tokenAmound]) => {
+          const element = elementRegistry.get(elementId);
           if (element.target) {
-            // TODO: Add pulsing here.
+            tokenCount.addTokenCounts(element.target, tokenAmound);
           }
         });
         return;
@@ -84,4 +85,9 @@ export default function CounterExampleVisualizer(
   }
 }
 
-CounterExampleVisualizer.$inject = ["animation", "eventBus", "elementRegistry"];
+CounterExampleVisualizer.$inject = [
+  "animation",
+  "eventBus",
+  "elementRegistry",
+  "tokenCount",
+];
