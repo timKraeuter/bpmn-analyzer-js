@@ -47,14 +47,20 @@ export default function CounterExampleVisualizer(
     const snapshot = getSingleSnapshot(
       propertyResult.counter_example.start_state,
     );
-    visualizeSnapshot(snapshot, propertyResult.counter_example.transitions, -1);
+    visualizeSnapshotDelta(
+      { tokens: {} },
+      snapshot,
+      propertyResult.counter_example.transitions,
+      -1,
+    );
   }
 
   /**
+   * @param {Snapshot} previousSnapshot
    * @param {Transition[]} transitions
    * @param {number} index
    */
-  function visualizeNextState(transitions, index) {
+  function visualizeNextState(previousSnapshot, transitions, index) {
     if (index >= transitions.length) {
       const lastTransition = transitions[transitions.length - 1];
       const snapshot = getSingleSnapshot(lastTransition.next_state);
@@ -69,20 +75,52 @@ export default function CounterExampleVisualizer(
     }
     const transition = transitions[index];
     const snapshot = getSingleSnapshot(transition.next_state);
-    visualizeSnapshot(snapshot, transitions, index);
+    visualizeSnapshotDelta(previousSnapshot, snapshot, transitions, index);
   }
 
-  function visualizeSnapshot(snapshot, transitions, index) {
-    Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
-      if (tokenAmount !== 1) {
-        console.error("Token amount is not 1!");
-      }
+  /**
+   * @param {Snapshot} previousSnapshot
+   * @param {Snapshot} snapshot
+   * @param {Transition[]} transitions
+   * @param {number} index
+   */
+  function visualizeSnapshotDelta(
+    previousSnapshot,
+    snapshot,
+    transitions,
+    index,
+  ) {
+    // works but can probably be optimized
+    const newTokens = calcTokenDelta(snapshot, previousSnapshot);
+
+    let semaphore = 0;
+    Object.entries(newTokens).forEach(([key, tokenAmount]) => {
       const element = elementRegistry.get(key);
       const scope = { element };
-      animation.animate(element, scope, () => {
-        visualizeNextState(transitions, index + 1);
-      });
+      for (let i = 0; i <= tokenAmount; i++) {
+        semaphore++;
+        animation.animate(element, scope, () => {
+          semaphore--;
+          // TODO: Add token counts in between and fix errors
+          if (semaphore === 0) {
+            visualizeNextState(snapshot, transitions, index + 1);
+          }
+        });
+      }
     });
+  }
+
+  function calcTokenDelta(snapshot, previousSnapshot) {
+    const newTokens = { ...snapshot.tokens };
+    Object.entries(previousSnapshot.tokens).forEach(([key, tokenAmount]) => {
+      const newAmount = snapshot.tokens[key] - tokenAmount;
+      if (newAmount > 0) {
+        newTokens[key] = newAmount;
+      } else {
+        delete newTokens[key];
+      }
+    });
+    return newTokens;
   }
 }
 

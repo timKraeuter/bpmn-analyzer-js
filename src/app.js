@@ -10,7 +10,7 @@ import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
 import stuck from "../resources/stuck.bpmn";
 import deadActivity from "../resources/deadActivity.bpmn";
 
-const initialBoardXML = stuck;
+const initialBoardXML = unsafeGateways;
 
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
