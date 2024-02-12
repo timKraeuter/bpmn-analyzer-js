@@ -3,6 +3,8 @@ export default function CounterExampleVisualizer(
   eventBus,
   elementRegistry,
 ) {
+  animation.setAnimationSpeed(2);
+
   eventBus.on("analysis.done", (result) => {
     result.property_results.forEach((propertyResult) => {
       addClickListenerIfNotFulfilled(propertyResult);
@@ -22,26 +24,63 @@ export default function CounterExampleVisualizer(
   }
 
   /**
+   * @param {State} state
+   * @returns {Snapshot}
+   */
+  function getSingleSnapshot(state) {
+    if (state.snapshots.length !== 1) {
+      console.error("State has more than one snapshot! (not allowed for now)");
+    }
+    return state.snapshots[0];
+  }
+
+  /**
    * Visualize the counter example on click.
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
-    if (propertyResult.counter_example.start_state.snapshots.length !== 1) {
-      console.error("Start state has more than one snapshot");
-      return;
-    }
-    const snapshot = propertyResult.counter_example.start_state.snapshots[0];
+    const snapshot = getSingleSnapshot(
+      propertyResult.counter_example.start_state,
+    );
     Object.entries(snapshot.tokens).forEach(([key, value]) => {
       const element = elementRegistry.get(key);
       const scope = { element };
       animation.animate(element, scope, () => {
-        console.log("Animation done");
+        visualizeNextState(propertyResult.counter_example.transitions, 0);
       });
     });
 
-    // propertyResult.counter_example.transitions.forEach((transition) => {
-    //   console.log("Animate each transition", transition);
-    // });
+    /**
+     * @param {Transition[]} transitions
+     * @param {number} index
+     */
+    function visualizeNextState(transitions, index) {
+      if (index >= transitions.length) {
+        const lastTransition = transitions[transitions.length - 1];
+        const snapshot = getSingleSnapshot(lastTransition.next_state);
+
+        Object.entries(snapshot.tokens).forEach(([key, value]) => {
+          const element = elementRegistry.get(key);
+          if (element.target) {
+            // TODO: Add pulsing here.
+          }
+        });
+        return;
+      }
+      const transition = transitions[index];
+      const snapshot = getSingleSnapshot(transition.next_state);
+
+      Object.entries(snapshot.tokens).forEach(([key, value]) => {
+        const element = elementRegistry.get(key);
+        const scope = { element };
+        animation.animate(element, scope, () => {
+          visualizeNextState(
+            propertyResult.counter_example.transitions,
+            index + 1,
+          );
+        });
+      });
+    }
   }
 }
 
