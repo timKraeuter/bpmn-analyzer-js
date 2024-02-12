@@ -40,48 +40,47 @@ export default function CounterExampleVisualizer(
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
+    tokenCount.clearTokenCounts();
+
     const snapshot = getSingleSnapshot(
       propertyResult.counter_example.start_state,
     );
-    Object.entries(snapshot.tokens).forEach(([key, value]) => {
+    visualizeSnapshot(snapshot, propertyResult.counter_example.transitions, -1);
+  }
+
+  /**
+   * @param {Transition[]} transitions
+   * @param {number} index
+   */
+  function visualizeNextState(transitions, index) {
+    if (index >= transitions.length) {
+      const lastTransition = transitions[transitions.length - 1];
+      const snapshot = getSingleSnapshot(lastTransition.next_state);
+
+      Object.entries(snapshot.tokens).forEach(([elementId, tokenAmound]) => {
+        const element = elementRegistry.get(elementId);
+        if (element.target) {
+          tokenCount.addTokenCounts(element.target, tokenAmound);
+        }
+      });
+      return;
+    }
+    const transition = transitions[index];
+    const snapshot = getSingleSnapshot(transition.next_state);
+    visualizeSnapshot(snapshot, transitions, index);
+  }
+
+  function visualizeSnapshot(snapshot, transitions, index) {
+    Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
+      if (tokenAmount !== 1) {
+        console.error("Token amount is not 1!");
+      }
       const element = elementRegistry.get(key);
       const scope = { element };
       animation.animate(element, scope, () => {
-        visualizeNextState(propertyResult.counter_example.transitions, 0);
+        visualizeNextState(transitions, index + 1);
       });
     });
-
-    /**
-     * @param {Transition[]} transitions
-     * @param {number} index
-     */
-    function visualizeNextState(transitions, index) {
-      if (index >= transitions.length) {
-        const lastTransition = transitions[transitions.length - 1];
-        const snapshot = getSingleSnapshot(lastTransition.next_state);
-
-        Object.entries(snapshot.tokens).forEach(([elementId, tokenAmound]) => {
-          const element = elementRegistry.get(elementId);
-          if (element.target) {
-            tokenCount.addTokenCounts(element.target, tokenAmound);
-          }
-        });
-        return;
-      }
-      const transition = transitions[index];
-      const snapshot = getSingleSnapshot(transition.next_state);
-
-      Object.entries(snapshot.tokens).forEach(([key, value]) => {
-        const element = elementRegistry.get(key);
-        const scope = { element };
-        animation.animate(element, scope, () => {
-          visualizeNextState(
-            propertyResult.counter_example.transitions,
-            index + 1,
-          );
-        });
-      });
-    }
   }
 }
 

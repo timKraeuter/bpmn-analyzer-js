@@ -8,6 +8,8 @@ const OFFSET_LEFT = -15;
 const DEFAULT_PRIMARY_COLOR = "--token-simulation-green-base-44";
 const DEFAULT_AUXILIARY_COLOR = "--token-simulation-white";
 
+const TOKEN_COUNT_OVERLAY_TYPE = "token-count";
+
 export default function TokenCount(eventBus, overlays) {
   this._overlays = overlays;
   this.overlayIds = {};
@@ -17,7 +19,7 @@ TokenCount.prototype.addTokenCounts = function (element, tokenCount) {
   if (is(element, "bpmn:MessageFlow") || is(element, "bpmn:SequenceFlow")) {
     return;
   }
-  this.removeTokenCounts(element);
+  this.removeTokenCount(element);
 
   this.addTokenCount(element, tokenCount);
 };
@@ -31,17 +33,24 @@ TokenCount.prototype.addTokenCount = function (element, tokenCount) {
 
   const position = { bottom: OFFSET_BOTTOM, left: OFFSET_LEFT };
 
-  this.overlayIds[element.id] = this._overlays.add(element, "token-count", {
-    position: position,
-    html: html,
-    show: {
-      minZoom: 0.5,
+  this.overlayIds[element.id] = this._overlays.add(
+    element,
+    TOKEN_COUNT_OVERLAY_TYPE,
+    {
+      position: position,
+      html: html,
+      show: {
+        minZoom: 0.5,
+      },
     },
-  });
+  );
 };
 
-TokenCount.prototype.removeTokenCounts = function (element) {
-  this.removeTokenCount(element);
+TokenCount.prototype.clearTokenCounts = function () {
+  this._overlays.remove({
+    type: TOKEN_COUNT_OVERLAY_TYPE,
+  });
+  this.overlayIds = {};
 };
 
 TokenCount.prototype.removeTokenCount = function (element) {
