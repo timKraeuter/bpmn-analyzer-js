@@ -52,12 +52,6 @@ export default function Log(eventBus, notifications, canvas) {
         icon: "bpmn-icon-business-rule",
         scope,
       });
-    } else if (is(element, "bpmn:CallActivity")) {
-      this.log({
-        text: elementName || "Call Activity",
-        icon: "bpmn-icon-call-activity",
-        scope,
-      });
     } else if (
       is(element, "bpmn:IntermediateCatchEvent") ||
       is(element, "bpmn:IntermediateThrowEvent")
