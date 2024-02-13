@@ -1,3 +1,5 @@
+import { TRACE_EVENT } from "./util/EventHelper";
+
 export default function CounterExampleVisualizer(
   animation,
   eventBus,
@@ -63,6 +65,7 @@ export default function CounterExampleVisualizer(
       propertyResult.counter_example.start_state,
     );
     visualizeSnapshotDelta(
+      propertyResult.property,
       { tokens: {} },
       snapshot,
       propertyResult.counter_example.transitions,
@@ -71,11 +74,12 @@ export default function CounterExampleVisualizer(
   }
 
   /**
+   * @param {string} property
    * @param {Snapshot} previousSnapshot
    * @param {Transition[]} transitions
    * @param {number} index
    */
-  function visualizeNextState(previousSnapshot, transitions, index) {
+  function visualizeNextState(property, previousSnapshot, transitions, index) {
     if (index >= transitions.length) {
       notifications.showNotification({
         text: "Visualizing counter example finished.",
@@ -83,17 +87,30 @@ export default function CounterExampleVisualizer(
       return;
     }
     const transition = transitions[index];
+    console.log(transition.label);
+    eventBus.fire(TRACE_EVENT, {
+      element: elementRegistry.get(transition.label),
+      property,
+    });
     const snapshot = getSingleSnapshot(transition.next_state);
-    visualizeSnapshotDelta(previousSnapshot, snapshot, transitions, index);
+    visualizeSnapshotDelta(
+      property,
+      previousSnapshot,
+      snapshot,
+      transitions,
+      index,
+    );
   }
 
   /**
+   * @param {string} property
    * @param {Snapshot} previousSnapshot
    * @param {Snapshot} snapshot
    * @param {Transition[]} transitions
    * @param {number} index
    */
   function visualizeSnapshotDelta(
+    property,
     previousSnapshot,
     snapshot,
     transitions,
@@ -113,7 +130,7 @@ export default function CounterExampleVisualizer(
           semaphore--;
           tokenCount.increaseTokenCount(element.target);
           if (semaphore === 0) {
-            visualizeNextState(snapshot, transitions, index + 1);
+            visualizeNextState(property, snapshot, transitions, index + 1);
           }
         });
       }

@@ -1,15 +1,9 @@
-import { is as __is } from "bpmn-js/lib/util/ModelUtil";
+import { some } from "min-dash";
 
-export function is(element, types) {
-  if (element.type === "label") {
-    return false;
-  }
+import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 
-  if (!Array.isArray(types)) {
-    types = [types];
-  }
-
-  return types.some(function (type) {
-    return __is(element, type);
+export function isTypedEvent(event, eventDefinitionType) {
+  return some(getBusinessObject(event).eventDefinitions, (definition) => {
+    return is(definition, eventDefinitionType);
   });
 }
