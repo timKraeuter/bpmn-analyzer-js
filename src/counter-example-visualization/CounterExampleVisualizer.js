@@ -4,7 +4,10 @@ export default function CounterExampleVisualizer(
   elementRegistry,
   tokenCount,
 ) {
-  animation.setAnimationSpeed(2);
+  animation.setAnimationSpeed(1.25);
+
+  // We have to store the visualization functions in an object to be able to remove them later
+  const clickFunctions = {};
 
   eventBus.on("analysis.done", (result) => {
     result.property_results.forEach((propertyResult) => {
@@ -14,13 +17,21 @@ export default function CounterExampleVisualizer(
 
   function addClickListenerIfNotFulfilled(propertyResult) {
     const property = document.getElementById(propertyResult.property);
+
+    property.removeEventListener(
+      "click",
+      clickFunctions[propertyResult.property],
+    );
+    property.classList.remove("clickable");
+
     if (!property.fulfilled && propertyResult.counter_example) {
       property.classList.add("clickable");
-      property.addEventListener("click", function () {
-        visualizeCounterExample(propertyResult);
-      });
-    } else {
-      property.classList.remove("clickable");
+      property.addEventListener("click", visualize);
+      clickFunctions[propertyResult.property] = visualize;
+    }
+
+    function visualize() {
+      visualizeCounterExample(propertyResult);
     }
   }
 
@@ -83,6 +94,8 @@ export default function CounterExampleVisualizer(
   ) {
     // works but can probably be optimized
     const newTokens = calcTokenDelta(snapshot, previousSnapshot);
+    console.log("newTokens", newTokens);
+    console.log(snapshot.tokens);
 
     let semaphore = 0;
     Object.entries(newTokens).forEach(([key, tokenAmount]) => {
