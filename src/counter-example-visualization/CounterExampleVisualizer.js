@@ -62,15 +62,6 @@ export default function CounterExampleVisualizer(
    */
   function visualizeNextState(previousSnapshot, transitions, index) {
     if (index >= transitions.length) {
-      const lastTransition = transitions[transitions.length - 1];
-      const snapshot = getSingleSnapshot(lastTransition.next_state);
-
-      Object.entries(snapshot.tokens).forEach(([elementId, tokenAmount]) => {
-        const element = elementRegistry.get(elementId);
-        if (element.target) {
-          tokenCount.addTokenCounts(element.target, tokenAmount);
-        }
-      });
       return;
     }
     const transition = transitions[index];
@@ -97,11 +88,12 @@ export default function CounterExampleVisualizer(
     Object.entries(newTokens).forEach(([key, tokenAmount]) => {
       const element = elementRegistry.get(key);
       const scope = { element };
-      for (let i = 0; i <= tokenAmount; i++) {
+      for (let i = 0; i < tokenAmount; i++) {
         semaphore++;
+        tokenCount.decreaseTokenCount(element.source);
         animation.animate(element, scope, () => {
           semaphore--;
-          // TODO: Add token counts in between and fix errors
+          tokenCount.increaseTokenCount(element.target);
           if (semaphore === 0) {
             visualizeNextState(snapshot, transitions, index + 1);
           }

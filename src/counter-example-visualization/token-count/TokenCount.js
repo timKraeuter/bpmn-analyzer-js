@@ -12,19 +12,10 @@ const TOKEN_COUNT_OVERLAY_TYPE = "token-count";
 
 export default function TokenCount(eventBus, overlays) {
   this._overlays = overlays;
-  this.overlayIds = {};
+  this.overlayIdsAndCount = {};
 }
 
-TokenCount.prototype.addTokenCounts = function (element, tokenCount) {
-  if (is(element, "bpmn:MessageFlow") || is(element, "bpmn:SequenceFlow")) {
-    return;
-  }
-  this.removeTokenCount(element);
-
-  this.addTokenCount(element, tokenCount);
-};
-
-TokenCount.prototype.addTokenCount = function (element, tokenCount) {
+TokenCount.prototype.addTokenCountOverlay = function (element, tokenCount) {
   const html = domify(`
     <div class="bts-token-count-parent">
       ${this._getTokenHTML(element, tokenCount)}
@@ -33,36 +24,54 @@ TokenCount.prototype.addTokenCount = function (element, tokenCount) {
 
   const position = { bottom: OFFSET_BOTTOM, left: OFFSET_LEFT };
 
-  this.overlayIds[element.id] = this._overlays.add(
-    element,
-    TOKEN_COUNT_OVERLAY_TYPE,
-    {
-      position: position,
-      html: html,
-      show: {
-        minZoom: 0.5,
-      },
+  return this._overlays.add(element, TOKEN_COUNT_OVERLAY_TYPE, {
+    position: position,
+    html: html,
+    show: {
+      minZoom: 0.5,
     },
-  );
+  });
+};
+
+TokenCount.prototype.increaseTokenCount = function (element) {
+  let tokenCount = 1;
+  const existingOverlayIDAndCount = this.overlayIdsAndCount[element.id];
+  if (existingOverlayIDAndCount) {
+    this._overlays.remove(existingOverlayIDAndCount.id);
+    tokenCount = existingOverlayIDAndCount.count + 1;
+  }
+
+  const overlayID = this.addTokenCountOverlay(element, tokenCount);
+  this.overlayIdsAndCount[element.id] = {
+    id: overlayID,
+    count: tokenCount,
+  };
 };
 
 TokenCount.prototype.clearTokenCounts = function () {
   this._overlays.remove({
     type: TOKEN_COUNT_OVERLAY_TYPE,
   });
-  this.overlayIds = {};
+  this.overlayIdsAndCount = {};
 };
 
-TokenCount.prototype.removeTokenCount = function (element) {
-  const overlayId = this.overlayIds[element.id];
+TokenCount.prototype.decreaseTokenCount = function (element) {
+  const overlayIdAndCount = this.overlayIdsAndCount[element.id];
 
-  if (!overlayId) {
+  if (!overlayIdAndCount) {
     return;
   }
-
-  this._overlays.remove(overlayId);
-
-  delete this.overlayIds[element.id];
+  this._overlays.remove(overlayIdAndCount.id);
+  if (overlayIdAndCount.count > 1) {
+    const decreasedCount = overlayIdAndCount.count - 1;
+    const overlayID = this.addTokenCountOverlay(element, decreasedCount);
+    this.overlayIdsAndCount[element.id] = {
+      id: overlayID,
+      count: decreasedCount,
+    };
+  } else {
+    delete this.overlayIdsAndCount[element.id];
+  }
 };
 
 TokenCount.prototype._getTokenHTML = function (element, tokenCount) {
