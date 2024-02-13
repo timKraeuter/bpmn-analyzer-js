@@ -1,4 +1,8 @@
-import { TRACE_EVENT } from "./util/EventHelper";
+import {
+  RESET_SIMULATION_EVENT,
+  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
+  TRACE_EVENT,
+} from "./util/EventHelper";
 
 export default function CounterExampleVisualizer(
   animation,
@@ -34,6 +38,14 @@ export default function CounterExampleVisualizer(
     }
 
     function visualize() {
+      animation.clearAnimations();
+      tokenCount.clearTokenCounts();
+
+      notifications.showNotification({
+        text: "Visualizing counter example started.",
+      });
+      eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, {});
+
       visualizeCounterExample(propertyResult);
     }
   }
@@ -55,12 +67,6 @@ export default function CounterExampleVisualizer(
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
-    notifications.showNotification({
-      text: "Visualizing counter example started.",
-    });
-    animation.clearAnimations();
-    tokenCount.clearTokenCounts();
-
     const snapshot = getSingleSnapshot(
       propertyResult.counter_example.start_state,
     );
@@ -87,7 +93,6 @@ export default function CounterExampleVisualizer(
       return;
     }
     const transition = transitions[index];
-    console.log(transition.label);
     eventBus.fire(TRACE_EVENT, {
       element: elementRegistry.get(transition.label),
       property,

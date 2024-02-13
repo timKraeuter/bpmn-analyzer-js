@@ -1,4 +1,9 @@
-import { domify, classes as domClasses, query as domQuery } from "min-dom";
+import {
+  domify,
+  classes as domClasses,
+  query as domQuery,
+  event as domEvent,
+} from "min-dom";
 
 import { isTypedEvent } from "../util/ElementHelper";
 
@@ -8,9 +13,15 @@ import {
   TOGGLE_MODE_EVENT,
   RESET_SIMULATION_EVENT,
   TRACE_EVENT,
+  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
 } from "../util/EventHelper";
 
+import { InfoIcon, LogIcon, TimesIcon } from "../icons";
+
+const ICON_INFO = InfoIcon();
+
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
+
 const STYLE = getComputedStyle(document.documentElement);
 
 const DEFAULT_PRIMARY_COLOR = STYLE.getPropertyValue(
@@ -32,8 +43,7 @@ export default function Log(eventBus, notifications, canvas) {
   this._notifications = notifications;
   this._canvas = canvas;
 
-  this._content = domQuery(".bts-content", this._container);
-  this._placeholder = domQuery(".bts-placeholder", this._container);
+  this._init();
 
   eventBus.on(TRACE_EVENT, (data) => {
     const { property, element } = data;
@@ -132,11 +142,55 @@ export default function Log(eventBus, notifications, canvas) {
     }
   });
 
-  eventBus.on([TOGGLE_MODE_EVENT, RESET_SIMULATION_EVENT], (event) => {
+  eventBus.on([TOGGLE_MODE_EVENT, RESET_SIMULATION_EVENT], () => {
     this.clear();
     this.toggle(false);
   });
+
+  eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, () => {
+    this.clear();
+    this.toggle(true);
+  });
 }
+
+Log.prototype._init = function () {
+  this._container = domify(`
+    <div class="bts-log hidden djs-scrollable">
+      <div class="bts-header">
+        ${LogIcon("bts-log-icon")}
+        Execution Log
+        <button class="bts-close">
+          ${TimesIcon()}
+        </button>
+      </div>
+      <div class="bts-content">
+        <p class="bts-entry placeholder">No Entries</p>
+      </div>
+    </div>
+  `);
+
+  this._placeholder = domQuery(".bts-placeholder", this._container);
+
+  this._content = domQuery(".bts-content", this._container);
+
+  domEvent.bind(this._content, "mousedown", (event) => {
+    event.stopPropagation();
+  });
+
+  this._close = domQuery(".bts-close", this._container);
+
+  domEvent.bind(this._close, "click", () => {
+    this.toggle(false);
+  });
+
+  this._icon = domQuery(".bts-log-icon", this._container);
+
+  domEvent.bind(this._icon, "click", () => {
+    this.toggle();
+  });
+
+  this._canvas.getContainer().appendChild(this._container);
+};
 
 Log.prototype.isShown = function () {
   const container = this._container;
@@ -155,7 +209,46 @@ Log.prototype.toggle = function (shown = !this.isShown()) {
 };
 
 Log.prototype.log = function (options) {
-  this._notifications.showNotification(options);
+  const { text, type = "info", icon = ICON_INFO, scope } = options;
+  const content = this._content;
+
+  domClasses(this._placeholder).add("hidden");
+
+  if (!this.isShown()) {
+    this._notifications.showNotification(options);
+  }
+
+  const iconMarkup = icon.startsWith("<") ? icon : `<i class="${icon}"></i>`;
+
+  const colors = scope && scope.colors;
+
+  const colorMarkup = colors
+    ? `style="background: ${colors.primary}; color: ${colors.auxiliary}"`
+    : "";
+
+  const logEntry = domify(`
+    <p class="bts-entry ${type}" ${scope ? `data-scope-id="${scope.id}"` : ""}>
+      <span class="bts-icon">${iconMarkup}</span>
+      <span class="bts-text" title="${text}">${text}</span>
+      ${
+        scope
+          ? `<span class="bts-scope" data-scope-id="${scope.id}" ${colorMarkup}>${scope.id}</span>`
+          : ""
+      }
+    </p>
+  `);
+
+  // determine if the container should scroll,
+  // because it is currently scrolled to the very bottom
+  const shouldScroll =
+    Math.abs(content.clientHeight + content.scrollTop - content.scrollHeight) <
+    2;
+
+  content.appendChild(logEntry);
+
+  if (shouldScroll) {
+    content.scrollTop = content.scrollHeight;
+  }
 };
 
 Log.prototype.clear = function () {
