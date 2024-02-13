@@ -1,13 +1,13 @@
 :root {
-  --token-simulation-green-base-44: #10D070;
+  --token-simulation-green-base-44: #10d070;
   --token-simulation-grey-base-40: #666666;
   --token-simulation-grey-darken-30: #212121;
   --token-simulation-grey-lighten-56: #909090;
-  --token-simulation-red-base-62: #FF3D3D;
-  --token-simulation-silver-base-97: #F8F8F8;
-  --token-simulation-silver-darken-94: #EFEFEF;
+  --token-simulation-red-base-62: #ff3d3d;
+  --token-simulation-silver-base-97: #f8f8f8;
+  --token-simulation-silver-darken-94: #efefef;
 
-  --token-simulation-white: #FFFFFF;
+  --token-simulation-white: #ffffff;
 }
 
 .bjs-container {
@@ -22,7 +22,7 @@
 }
 
 .bjs-container.simulation {
-  border-color: var(--token-simulation-green-base-44, #10D070);
+  border-color: var(--token-simulation-green-base-44, #10d070);
 }
 
 .bjs-container.simulation.paused {
@@ -30,7 +30,7 @@
 }
 
 .bjs-container.simulation.warning {
-  border-color: var(--token-simulation-red-base-62, #FF3D3D) !important;
+  border-color: var(--token-simulation-red-base-62, #ff3d3d) !important;
 }
 
 .bts-context-pad {
@@ -51,9 +51,9 @@
 }
 
 .bts-context-pad:not(.disabled):hover {
-  background-color: var(--token-simulation-green-base-44, #10D070);
+  background-color: var(--token-simulation-green-base-44, #10d070);
   opacity: 1;
-  color: var(--token-simulation-white, #FFFFFF);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .djs-overlays:not(.hover) .bts-context-pad:not(:hover).show-hover,
@@ -63,7 +63,7 @@
 }
 
 .bts-context-pad.disabled {
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   color: var(--token-simulation-grey-base-40, #666666);
   pointer-events: none;
 }
@@ -78,7 +78,7 @@
 }
 
 .bts-token .text {
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .bts-token-count-parent {
@@ -86,7 +86,7 @@
 }
 
 .bts-token-count {
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   border-radius: 100%;
   width: 25px;
   height: 25px;
@@ -111,27 +111,29 @@
 }
 
 .bts-token-count.waiting {
-  color: var(--token-simulation-white, #FFFFFF);
-  font-family: 'Arial', sans-serif;
-  background-color: var(--token-simulation-green-base-44, #10D070);
+  color: var(--token-simulation-white, #ffffff);
+  font-family: "Arial", sans-serif;
+  background-color: var(--token-simulation-green-base-44, #10d070);
 }
 
 @keyframes bts-jump {
-  50% { top: 5px; }
+  50% {
+    top: 5px;
+  }
 }
 
 .bts-notifications {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  top: 170px;
+  right: 10px;
 }
 
 .bts-notifications .bts-notification {
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   padding: 5px 8px;
   font-size: 16px;
-  color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  color: var(--token-simulation-silver-darken-94, #efefef);
   user-select: none;
   margin-top: 4px;
   min-width: 300px;
@@ -142,18 +144,18 @@
 }
 
 .bts-notifications .bts-notification.info {
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   color: #000;
 }
 
 .bts-notifications .bts-notification.success {
-  background-color: var(--token-simulation-green-base-44, #10D070);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-green-base-44, #10d070);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-notifications .bts-notification.warning {
-  background-color: var(--token-simulation-red-base-62, #FF3D3D);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-notifications .bts-notification > * {
@@ -178,7 +180,7 @@
 
 .bts-notifications .bts-notification > .bts-scope {
   font-family: monospace;
-  font-size: .8em;
+  font-size: 0.8em;
   padding: 2px 3px;
   border-radius: 3px;
   cursor: default;
@@ -190,13 +192,13 @@
 }
 
 .bjs-container.paused .bts-play-pause.active {
-  color: var(--token-simulation-silver-darken-94, #EFEFEF);
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  color: var(--token-simulation-silver-darken-94, #efefef);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
 }
 
 .bts-element-notification {
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
-  color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
+  color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   height: 30px;
   box-sizing: border-box;
@@ -216,13 +218,13 @@
 }
 
 .bts-element-notification.success {
-  background-color: var(--token-simulation-green-base-44, #10D070);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-green-base-44, #10d070);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-element-notification.warning {
-  background-color: var(--token-simulation-red-base-62, #FF3D3D);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-toggle-mode {
@@ -230,7 +232,7 @@
   position: absolute;
   top: 20px;
   left: 20px;
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   padding: 6px;
   font-size: 16px;
@@ -240,14 +242,14 @@
 }
 
 .bts-toggle-mode .bts-toggle {
-  margin-left: .25em;
+  margin-left: 0.25em;
   display: inline-flex;
 }
 
 .bjs-container.simulation .bts-toggle-mode,
 .bts-toggle-mode:hover {
-  background-color: var(--token-simulation-green-base-44, #10D070);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-green-base-44, #10d070);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bjs-container .djs-palette {
@@ -277,7 +279,7 @@
 
 .bts-palette .bts-entry {
   cursor: pointer;
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   padding: 6px 0;
   margin-bottom: 6px;
@@ -297,13 +299,13 @@
 }
 
 .bts-palette .bts-entry:not(.disabled):hover {
-  color: var(--token-simulation-white, #FFFFFF);
-  background-color: var(--token-simulation-green-base-44, #10D070);
+  color: var(--token-simulation-white, #ffffff);
+  background-color: var(--token-simulation-green-base-44, #10d070);
 }
 
 .bts-palette .bts-entry.active {
-  color: var(--token-simulation-white, #FFFFFF);
-  background-color: var(--token-simulation-green-base-44, #10D070);
+  color: var(--token-simulation-white, #ffffff);
+  background-color: var(--token-simulation-green-base-44, #10d070);
 }
 
 .bts-palette .bts-entry.disabled {
@@ -317,7 +319,7 @@
   right: 20px;
   bottom: 50px;
   width: 300px;
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   z-index: 10000;
   overflow: hidden;
@@ -330,9 +332,9 @@
 }
 
 .bts-log .bts-header {
-  background-color: var(--token-simulation-green-base-44, #10D070);
+  background-color: var(--token-simulation-green-base-44, #10d070);
   padding: 6px 8px;
-  color: var(--token-simulation-white, #FFFFFF);
+  color: var(--token-simulation-white, #ffffff);
   height: 30px;
   box-sizing: border-box;
   font-size: 16px;
@@ -345,7 +347,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--token-simulation-white, #FFFFFF);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-log .bts-log-icon {
@@ -380,7 +382,7 @@
   font-size: 16px;
   margin: 0 0 6px 0;
   padding: 6px;
-  background: var(--token-simulation-white, #FFFFFF);
+  background: var(--token-simulation-white, #ffffff);
   border-radius: 2px;
   display: flex;
   align-items: stretch;
@@ -388,17 +390,17 @@
 }
 
 .bts-log .bts-entry.inactive {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .bts-log .bts-entry.success {
-  background-color: var(--token-simulation-green-base-44, #10D070);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-green-base-44, #10d070);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-log .bts-entry.warning {
-  background-color: var(--token-simulation-red-base-62, #FF3D3D);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-red-base-62, #ff3d3d);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-log .bts-entry:last-child {
@@ -420,7 +422,7 @@
 
 .bts-log .bts-entry > .bts-scope {
   font-family: monospace;
-  font-size: .8em;
+  font-size: 0.8em;
   padding: 2px 3px;
   border-radius: 3px;
   cursor: default;
@@ -456,21 +458,21 @@
   font-size: 14px;
   line-height: 25px;
   text-align: center;
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   margin-right: 10px;
   cursor: pointer;
 }
 
 .bts-scopes .bts-scope.inactive:hover {
-  opacity: 1
+  opacity: 1;
 }
 
 .bts-scopes .bts-scope.inactive {
-  opacity: .25;
+  opacity: 0.25;
 }
 
 .djs-container.highlight {
-  background-color: var(--token-simulation-silver-base-97, #F8F8F8);
+  background-color: var(--token-simulation-silver-base-97, #f8f8f8);
 }
 
 .bts-set-animation-speed {
@@ -480,7 +482,7 @@
   transform: translate(-50%, 0);
   font-size: 16px;
   text-align: center;
-  background-color: var(--token-simulation-silver-darken-94, #EFEFEF);
+  background-color: var(--token-simulation-silver-darken-94, #efefef);
   border-radius: 2px;
   display: flex;
   flex-direction: row;
@@ -510,8 +512,8 @@
 
 .bts-set-animation-speed .bts-animation-speed-button.active,
 .bts-set-animation-speed .bts-animation-speed-button:hover {
-  background-color: var(--token-simulation-green-base-44, #10D070);
-  color: var(--token-simulation-white, #FFFFFF);
+  background-color: var(--token-simulation-green-base-44, #10d070);
+  color: var(--token-simulation-white, #ffffff);
 }
 
 .bts-icon {

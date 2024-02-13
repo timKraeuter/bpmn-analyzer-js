@@ -3,6 +3,7 @@ export default function CounterExampleVisualizer(
   eventBus,
   elementRegistry,
   tokenCount,
+  notifications,
 ) {
   animation.setAnimationSpeed(1.25);
 
@@ -52,6 +53,9 @@ export default function CounterExampleVisualizer(
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
+    notifications.showNotification({
+      text: "Visualizing counter example started.",
+    });
     animation.clearAnimations();
     tokenCount.clearTokenCounts();
 
@@ -73,6 +77,9 @@ export default function CounterExampleVisualizer(
    */
   function visualizeNextState(previousSnapshot, transitions, index) {
     if (index >= transitions.length) {
+      notifications.showNotification({
+        text: "Visualizing counter example finished.",
+      });
       return;
     }
     const transition = transitions[index];
@@ -94,8 +101,6 @@ export default function CounterExampleVisualizer(
   ) {
     // works but can probably be optimized
     const newTokens = calcTokenDelta(snapshot, previousSnapshot);
-    console.log("newTokens", newTokens);
-    console.log(snapshot.tokens);
 
     let semaphore = 0;
     Object.entries(newTokens).forEach(([key, tokenAmount]) => {
@@ -134,4 +139,5 @@ CounterExampleVisualizer.$inject = [
   "eventBus",
   "elementRegistry",
   "tokenCount",
+  "notifications",
 ];
