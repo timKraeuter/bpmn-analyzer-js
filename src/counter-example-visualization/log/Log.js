@@ -150,8 +150,12 @@ export default function Log(
 
   eventBus.on(
     [TOGGLE_MODE_EVENT, RESTART_COUNTER_EXAMPLE_VISUALIZATION],
-    () => {
-      this.clear();
+    (event) => {
+      if (event.active) {
+        this.clear();
+      } else {
+        this.toggle(false);
+      }
     },
   );
 

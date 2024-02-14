@@ -1,7 +1,10 @@
 import { domify } from "min-dom";
 
 import { is } from "../util/ElementHelper";
-import { RESTART_COUNTER_EXAMPLE_VISUALIZATION } from "../util/EventHelper";
+import {
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
+  TOGGLE_MODE_EVENT,
+} from "../util/EventHelper";
 
 const OFFSET_BOTTOM = 10;
 const OFFSET_LEFT = -15;
@@ -17,6 +20,12 @@ export default function TokenCount(eventBus, overlays) {
 
   eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
     this.clearTokenCounts();
+  });
+
+  eventBus.on(TOGGLE_MODE_EVENT, (event) => {
+    if (!event.active) {
+      this.clearTokenCounts();
+    }
   });
 }
 

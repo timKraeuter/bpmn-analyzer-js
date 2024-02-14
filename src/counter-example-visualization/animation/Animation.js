@@ -14,6 +14,7 @@ import {
   ANIMATION_CREATED_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
   SCOPE_DESTROYED_EVENT,
+  TOGGLE_MODE_EVENT,
 } from "../util/EventHelper";
 
 const STYLE = getComputedStyle(document.documentElement);
@@ -82,10 +83,10 @@ export default function Animation(canvas, eventBus) {
     this.play();
   });
 
-  eventBus.on(SCOPE_DESTROYED_EVENT, (event) => {
-    const { scope } = event;
-
-    this.clearAnimations(scope);
+  eventBus.on(TOGGLE_MODE_EVENT, (event) => {
+    if (!event.active) {
+      this.clearAnimations();
+    }
   });
 }
 

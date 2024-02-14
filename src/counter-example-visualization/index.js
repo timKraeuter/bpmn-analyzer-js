@@ -7,6 +7,7 @@ import DisableModelingModule from "./disable-modeling";
 import TokenSimulationPaletteModule from "./palette";
 import RestartCounterExampleModule from "./restart-counter-example";
 import PauseExecutionModule from "./pause-execution";
+import ToggleModelingModule from "./toggle-modeling";
 
 export default {
   __depends__: [
@@ -18,6 +19,7 @@ export default {
     TokenSimulationPaletteModule,
     RestartCounterExampleModule,
     PauseExecutionModule,
+    ToggleModelingModule,
   ],
   __init__: ["counterExampleVisualizer"],
   counterExampleVisualizer: ["type", CounterExampleVisualizer],
