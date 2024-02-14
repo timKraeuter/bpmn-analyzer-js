@@ -1,10 +1,6 @@
-import { domify, classes as domClasses, event as domEvent } from "min-dom";
+import { domify, event as domEvent } from "min-dom";
 
-import {
-  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
-  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
-  TOGGLE_MODE_EVENT,
-} from "../util/EventHelper";
+import { RESTART_COUNTER_EXAMPLE_VISUALIZATION } from "../util/EventHelper";
 
 import { RestartIcon } from "../icons";
 

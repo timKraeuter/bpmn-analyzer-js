@@ -13,7 +13,6 @@ import {
   PAUSE_SIMULATION_EVENT,
   ANIMATION_CREATED_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
-  SCOPE_DESTROYED_EVENT,
   TOGGLE_MODE_EVENT,
 } from "../util/EventHelper";
 
@@ -119,16 +118,11 @@ Animation.prototype.createAnimation = function (
 
   const tokenGfx = this._createTokenGfx(group, scope);
 
-  const animation = new TokenAnimation(
-    tokenGfx,
-    connection.waypoints,
-    this._randomize,
-    () => {
-      this._animations.delete(animation);
+  const animation = new TokenAnimation(tokenGfx, connection.waypoints, () => {
+    this._animations.delete(animation);
 
-      done();
-    },
-  );
+    done();
+  });
 
   animation.setSpeed(this.getAnimationSpeed());
 
@@ -200,9 +194,9 @@ Animation.prototype._getTokenSVG = function (scope) {
 };
 
 Animation.prototype._getGroup = function (scope) {
-  var canvas = this._canvas;
+  const canvas = this._canvas;
 
-  var layer, root;
+  let layer, root;
 
   // bpmn-js@9 compatibility:
   // show animation tokens on plane layers
@@ -213,7 +207,7 @@ Animation.prototype._getGroup = function (scope) {
     layer = domQuery(".viewport", canvas._svg);
   }
 
-  var group = domQuery(".bts-animation-tokens", layer);
+  let group = domQuery(".bts-animation-tokens", layer);
 
   if (!group) {
     group = svgCreate('<g class="bts-animation-tokens" />');
@@ -226,11 +220,10 @@ Animation.prototype._getGroup = function (scope) {
 
 Animation.$inject = ["canvas", "eventBus"];
 
-function TokenAnimation(gfx, waypoints, randomize, done) {
+function TokenAnimation(gfx, waypoints, done) {
   this.gfx = gfx;
   this.waypoints = waypoints;
   this.done = done;
-  this.randomize = randomize;
 
   this._paused = true;
   this._t = 0;
@@ -361,14 +354,6 @@ TokenAnimation.prototype.create = function () {
 
   this._path = svgCreate(`<path d="${d}" />`);
   this._t = 0;
-};
-
-TokenAnimation.prototype.show = function () {
-  svgAttr(this.gfx, "display", "");
-};
-
-TokenAnimation.prototype.hide = function () {
-  svgAttr(this.gfx, "display", "none");
 };
 
 TokenAnimation.prototype.remove = function () {

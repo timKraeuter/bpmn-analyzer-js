@@ -10,7 +10,6 @@ export default function DisableModeling(
   editorActions,
   modeling,
   palette,
-  paletteProvider,
 ) {
   let modelingDisabled = false;
 
@@ -122,7 +121,6 @@ DisableModeling.$inject = [
   "editorActions",
   "modeling",
   "palette",
-  "paletteProvider",
 ];
 
 // helpers //////////

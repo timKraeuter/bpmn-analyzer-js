@@ -1,5 +1,4 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
-import { AddPrecedingParallelGatewayCommand } from "./AddPrecedingParallelGatewayCommand";
 
 export function AddEndEventsForEachIncFlowCommand(modeling) {
   this.preExecute = function (context) {
