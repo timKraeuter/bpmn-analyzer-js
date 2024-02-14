@@ -5,6 +5,7 @@ import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   TOGGLE_MODE_EVENT,
 } from "../util/EventHelper";
+const LOW_PRIORITY = 500;
 
 const OFFSET_BOTTOM = 10;
 const OFFSET_LEFT = -15;
@@ -22,7 +23,7 @@ export default function TokenCount(eventBus, overlays) {
     this.clearTokenCounts();
   });
 
-  eventBus.on(TOGGLE_MODE_EVENT, (event) => {
+  eventBus.on(TOGGLE_MODE_EVENT, LOW_PRIORITY, (event) => {
     if (!event.active) {
       this.clearTokenCounts();
     }
