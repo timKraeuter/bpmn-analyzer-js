@@ -8,6 +8,7 @@ import TokenSimulationPaletteModule from "./palette";
 import RestartCounterExampleModule from "./restart-counter-example";
 import PauseExecutionModule from "./pause-execution";
 import ToggleModelingModule from "./toggle-modeling";
+import SetAnimationSpeedModule from "./set-animation-speed";
 
 export default {
   __depends__: [
@@ -20,6 +21,7 @@ export default {
     RestartCounterExampleModule,
     PauseExecutionModule,
     ToggleModelingModule,
+    SetAnimationSpeedModule,
   ],
   __init__: ["counterExampleVisualizer"],
   counterExampleVisualizer: ["type", CounterExampleVisualizer],

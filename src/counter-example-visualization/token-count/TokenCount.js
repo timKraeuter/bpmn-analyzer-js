@@ -24,7 +24,6 @@ export default function TokenCount(eventBus, overlays) {
 
   eventBus.on(TOGGLE_MODE_EVENT, (event) => {
     if (!event.active) {
-      console.log("clear");
       this.clearTokenCounts();
     }
   });
