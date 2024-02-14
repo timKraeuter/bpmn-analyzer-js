@@ -148,6 +148,11 @@ export default function CounterExampleVisualizer(
     // works but can probably be optimized
     const newTokens = calcTokenDelta(snapshot, previousSnapshot);
 
+    if (Object.keys(newTokens).length === 0) {
+      visualizeNextState(property, snapshot, transitions, index + 1);
+      return;
+    }
+
     let semaphore = 0;
     Object.entries(newTokens).forEach(([key, tokenAmount]) => {
       const element = elementRegistry.get(key);
