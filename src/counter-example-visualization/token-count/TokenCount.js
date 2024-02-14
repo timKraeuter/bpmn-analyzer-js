@@ -1,9 +1,11 @@
 import { domify } from "min-dom";
 
-import { is } from "../util/ElementHelper";
+import { is } from "bpmn-js/lib/util/ModelUtil";
+
 import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   TOGGLE_MODE_EVENT,
+  TRACE_EVENT,
 } from "../util/EventHelper";
 const LOW_PRIORITY = 500;
 
@@ -26,6 +28,13 @@ export default function TokenCount(eventBus, overlays) {
   eventBus.on(TOGGLE_MODE_EVENT, LOW_PRIORITY, (event) => {
     if (!event.active) {
       this.clearTokenCounts();
+    }
+  });
+
+  eventBus.on(TRACE_EVENT, (data) => {
+    const element = data.element;
+    if (is(element, "bpmn:EndEvent")) {
+      this.decreaseTokenCount(element);
     }
   });
 }
