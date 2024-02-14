@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="definitions_793d1020-e08a-4f53-b128-c61827f033c9" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.7.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="definitions_793d1020-e08a-4f53-b128-c61827f033c9" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <process id="process_c648aa44-f99b-4cc0-8bba-9b1fafd7d01b" isExecutable="false">
     <startEvent id="FlowNode_1">
       <outgoing>Flow_18hry6m</outgoing>
     </startEvent>
     <sequenceFlow id="Flow_18hry6m" sourceRef="FlowNode_1" targetRef="Gateway_19m1xkh" />
-    <parallelGateway id="Gateway_19m1xkh">
+    <parallelGateway id="Gateway_19m1xkh" name="p1">
       <incoming>Flow_18hry6m</incoming>
       <outgoing>Flow_16uaxqz</outgoing>
       <outgoing>Flow_1efaah2</outgoing>
     </parallelGateway>
-    <exclusiveGateway id="Gateway_0g0wslj">
+    <exclusiveGateway id="Gateway_0g0wslj" name="e1">
       <incoming>Flow_16uaxqz</incoming>
       <incoming>Flow_1efaah2</incoming>
       <outgoing>Flow_16otuif</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_16uaxqz" sourceRef="Gateway_19m1xkh" targetRef="Gateway_0g0wslj" />
     <sequenceFlow id="Flow_1efaah2" sourceRef="Gateway_19m1xkh" targetRef="Gateway_0g0wslj" />
-    <endEvent id="Event_0zpujef">
+    <endEvent id="Event_0zpujef" name="end1">
       <incoming>Flow_0rj1ajz</incoming>
     </endEvent>
     <sequenceFlow id="Flow_16otuif" sourceRef="Gateway_0g0wslj" targetRef="Gateway_07q265d" />
-    <exclusiveGateway id="Gateway_07q265d">
+    <exclusiveGateway id="Gateway_07q265d" name="e2">
       <incoming>Flow_16otuif</incoming>
       <outgoing>Flow_0rj1ajz</outgoing>
       <outgoing>Flow_1a7qrau</outgoing>
     </exclusiveGateway>
     <sequenceFlow id="Flow_0rj1ajz" sourceRef="Gateway_07q265d" targetRef="Event_0zpujef" />
     <sequenceFlow id="Flow_1a7qrau" sourceRef="Gateway_07q265d" targetRef="Gateway_1r5g9ue" />
-    <parallelGateway id="Gateway_1r5g9ue">
+    <parallelGateway id="Gateway_1r5g9ue" name="p2">
       <incoming>Flow_1a7qrau</incoming>
       <incoming>Flow_1ulbcjl</incoming>
       <outgoing>Flow_0noxem3</outgoing>
     </parallelGateway>
-    <task id="Activity_1jsm4u8">
+    <task id="Activity_1jsm4u8" name="A">
       <outgoing>Flow_1ulbcjl</outgoing>
     </task>
     <sequenceFlow id="Flow_1ulbcjl" sourceRef="Activity_1jsm4u8" targetRef="Gateway_1r5g9ue" />
-    <endEvent id="Event_0ntel2a">
+    <endEvent id="Event_0ntel2a" name="end2">
       <incoming>Flow_0noxem3</incoming>
     </endEvent>
     <sequenceFlow id="Flow_0noxem3" sourceRef="Gateway_1r5g9ue" targetRef="Event_0ntel2a" />
@@ -52,24 +52,43 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1l4k4l0_di" bpmnElement="Gateway_19m1xkh">
         <dc:Bounds x="275" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="294" y="55" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0g0wslj_di" bpmnElement="Gateway_0g0wslj" isMarkerVisible="true">
         <dc:Bounds x="425" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="444" y="55" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0zpujef_di" bpmnElement="Event_0zpujef">
         <dc:Bounds x="652" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="697" y="103" width="25" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_07q265d_di" bpmnElement="Gateway_07q265d" isMarkerVisible="true">
         <dc:Bounds x="535" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="554" y="55" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_035ywgl_di" bpmnElement="Gateway_1r5g9ue">
         <dc:Bounds x="645" y="165" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ntel2a_di" bpmnElement="Event_0ntel2a">
-        <dc:Bounds x="762" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="663" y="143" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1jsm4u8_di" bpmnElement="Activity_1jsm4u8">
         <dc:Bounds x="460" y="260" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0ntel2a_di" bpmnElement="Event_0ntel2a">
+        <dc:Bounds x="762" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="768" y="215" width="25" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_18hry6m_di" bpmnElement="Flow_18hry6m">
         <di:waypoint x="218" y="110" />
