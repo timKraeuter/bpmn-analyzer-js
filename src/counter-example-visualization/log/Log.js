@@ -148,16 +148,17 @@ export default function Log(
     }
   });
 
-  eventBus.on(
-    [TOGGLE_MODE_EVENT, RESTART_COUNTER_EXAMPLE_VISUALIZATION],
-    (event) => {
-      if (event.active) {
-        this.clear();
-      } else {
-        this.toggle(false);
-      }
-    },
-  );
+  eventBus.on(TOGGLE_MODE_EVENT, (event) => {
+    if (event.active) {
+      this.clear();
+    } else {
+      this.toggle(false);
+    }
+  });
+
+  eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
+    this.clear();
+  });
 
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, () => {
     this.clear();

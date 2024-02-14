@@ -7,11 +7,9 @@ import { RestartIcon } from "../icons";
 export default function RestartCounterExample(
   eventBus,
   tokenSimulationPalette,
-  notifications,
 ) {
   this._eventBus = eventBus;
   this._tokenSimulationPalette = tokenSimulationPalette;
-  this._notifications = notifications;
 
   this._init();
 }
@@ -25,11 +23,6 @@ RestartCounterExample.prototype._init = function () {
 
   domEvent.bind(this._paletteEntry, "click", () => {
     this.restartCounterExample();
-
-    this._notifications.showNotification({
-      text: "Restart counter example",
-      type: "info",
-    });
   });
 
   this._tokenSimulationPalette.addEntry(this._paletteEntry, 2);
@@ -39,8 +32,4 @@ RestartCounterExample.prototype.restartCounterExample = function () {
   this._eventBus.fire(RESTART_COUNTER_EXAMPLE_VISUALIZATION);
 };
 
-RestartCounterExample.$inject = [
-  "eventBus",
-  "tokenSimulationPalette",
-  "notifications",
-];
+RestartCounterExample.$inject = ["eventBus", "tokenSimulationPalette"];

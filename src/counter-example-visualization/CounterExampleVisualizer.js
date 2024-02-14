@@ -21,7 +21,7 @@ export default function CounterExampleVisualizer(
 
   eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
     if (lastProperty) {
-      visualizeCounterExample(lastProperty);
+      clearAndVisualize(lastProperty);
     }
   });
 
