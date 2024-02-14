@@ -8,7 +8,7 @@ import {
 } from "tiny-svg";
 
 import {
-  RESET_SIMULATION_EVENT,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   PLAY_SIMULATION_EVENT,
   PAUSE_SIMULATION_EVENT,
   ANIMATION_CREATED_EVENT,
@@ -70,7 +70,7 @@ export default function Animation(canvas, eventBus) {
   this._animations = new Set();
   this._speed = 1;
 
-  eventBus.on(RESET_SIMULATION_EVENT, () => {
+  eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
     this.clearAnimations();
   });
 

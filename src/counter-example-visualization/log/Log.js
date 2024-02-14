@@ -11,7 +11,7 @@ import { escapeHTML } from "diagram-js/lib/util/EscapeUtil";
 
 import {
   TOGGLE_MODE_EVENT,
-  RESET_SIMULATION_EVENT,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   TRACE_EVENT,
   START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
 } from "../util/EventHelper";
@@ -39,9 +39,15 @@ function getElementName(element) {
   return "";
 }
 
-export default function Log(eventBus, notifications, canvas) {
+export default function Log(
+  eventBus,
+  notifications,
+  canvas,
+  tokenSimulationPalette,
+) {
   this._notifications = notifications;
   this._canvas = canvas;
+  this._tokenSimulationPalette = tokenSimulationPalette;
 
   this._init();
 
@@ -142,10 +148,12 @@ export default function Log(eventBus, notifications, canvas) {
     }
   });
 
-  eventBus.on([TOGGLE_MODE_EVENT, RESET_SIMULATION_EVENT], () => {
-    this.clear();
-    this.toggle(false);
-  });
+  eventBus.on(
+    [TOGGLE_MODE_EVENT, RESTART_COUNTER_EXAMPLE_VISUALIZATION],
+    () => {
+      this.clear();
+    },
+  );
 
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, () => {
     this.clear();
@@ -190,6 +198,18 @@ Log.prototype._init = function () {
   });
 
   this._canvas.getContainer().appendChild(this._container);
+
+  this.paletteEntry = domify(`
+    <div class="bts-entry" title="Toggle Execution Log">
+      ${LogIcon()}
+    </div>
+  `);
+
+  domEvent.bind(this.paletteEntry, "click", () => {
+    this.toggle();
+  });
+
+  this._tokenSimulationPalette.addEntry(this.paletteEntry, 3);
 };
 
 Log.prototype.isShown = function () {
@@ -261,4 +281,4 @@ Log.prototype.clear = function () {
   this._content.appendChild(this._placeholder);
 };
 
-Log.$inject = ["eventBus", "notifications", "canvas"];
+Log.$inject = ["eventBus", "notifications", "canvas", "tokenSimulationPalette"];

@@ -1,6 +1,7 @@
 import {
-  RESET_SIMULATION_EVENT,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
+  TOGGLE_MODE_EVENT,
   TRACE_EVENT,
 } from "./util/EventHelper";
 
@@ -12,9 +13,17 @@ export default function CounterExampleVisualizer(
   notifications,
 ) {
   animation.setAnimationSpeed(1.25);
+  this._notifications = notifications;
 
   // We have to store the visualization functions in an object to be able to remove them later
   const clickFunctions = {};
+  let lastProperty;
+
+  eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
+    if (lastProperty) {
+      visualizeCounterExample(lastProperty);
+    }
+  });
 
   eventBus.on("analysis.done", (result) => {
     result.property_results.forEach((propertyResult) => {
@@ -33,21 +42,36 @@ export default function CounterExampleVisualizer(
 
     if (!property.fulfilled && propertyResult.counter_example) {
       property.classList.add("clickable");
-      property.addEventListener("click", visualize);
-      clickFunctions[propertyResult.property] = visualize;
+      property.addEventListener(
+        "click",
+        clearAndVisualize.bind(this, propertyResult),
+      );
+      clickFunctions[propertyResult.property] = clearAndVisualize.bind(
+        this,
+        propertyResult,
+      );
     }
+  }
 
-    function visualize() {
-      animation.clearAnimations();
-      tokenCount.clearTokenCounts();
+  /**
+   * @param {PropertyResult} propertyResult
+   */
+  function clearAndVisualize(propertyResult) {
+    lastProperty = propertyResult;
 
-      notifications.showNotification({
-        text: "Visualizing counter example started.",
-      });
-      eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, {});
+    animation.clearAnimations();
+    tokenCount.clearTokenCounts();
 
-      visualizeCounterExample(propertyResult);
-    }
+    eventBus.fire(TOGGLE_MODE_EVENT, {
+      active: true,
+    });
+    eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, {});
+
+    notifications.showNotification({
+      text: "Visualizing counter example started.",
+    });
+
+    visualizeCounterExample(propertyResult);
   }
 
   /**

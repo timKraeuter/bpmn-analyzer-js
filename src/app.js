@@ -30,15 +30,15 @@ const example_boards = {
 // modeler instance
 const modeler = new BpmnModeler({
   container: "#canvas",
-  keyboard: {
-    bindTo: window,
-  },
   additionalModules: [
     AnalysisClientModule,
     AnalysisOverlaysModule,
     AnalysisQuickFixesModule,
     CounterExampleVisualizationModule,
   ],
+  keyboard: {
+    bindTo: window,
+  },
 });
 
 /* screen interaction */

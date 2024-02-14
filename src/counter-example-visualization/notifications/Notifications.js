@@ -1,6 +1,9 @@
 import { domify } from "min-dom";
 
-import { TOGGLE_MODE_EVENT, RESET_SIMULATION_EVENT } from "../util/EventHelper";
+import {
+  TOGGLE_MODE_EVENT,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
+} from "../util/EventHelper";
 
 import { InfoIcon } from "../icons";
 
@@ -14,9 +17,12 @@ export default function Notifications(eventBus, canvas) {
 
   this._init();
 
-  eventBus.on([TOGGLE_MODE_EVENT, RESET_SIMULATION_EVENT], (event) => {
-    this.clear();
-  });
+  eventBus.on(
+    [TOGGLE_MODE_EVENT, RESTART_COUNTER_EXAMPLE_VISUALIZATION],
+    () => {
+      this.clear();
+    },
+  );
 }
 
 Notifications.prototype._init = function () {

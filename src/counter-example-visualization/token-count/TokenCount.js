@@ -1,6 +1,7 @@
 import { domify } from "min-dom";
 
 import { is } from "../util/ElementHelper";
+import { RESTART_COUNTER_EXAMPLE_VISUALIZATION } from "../util/EventHelper";
 
 const OFFSET_BOTTOM = 10;
 const OFFSET_LEFT = -15;
@@ -13,6 +14,10 @@ const TOKEN_COUNT_OVERLAY_TYPE = "token-count";
 export default function TokenCount(eventBus, overlays) {
   this._overlays = overlays;
   this.overlayIdsAndCount = {};
+
+  eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
+    this.clearTokenCounts();
+  });
 }
 
 TokenCount.prototype.addTokenCountOverlay = function (element, tokenCount) {
