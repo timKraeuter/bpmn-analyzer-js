@@ -42,14 +42,10 @@ export default function CounterExampleVisualizer(
 
     if (!property.fulfilled && propertyResult.counter_example) {
       property.classList.add("clickable");
-      property.addEventListener(
-        "click",
-        clearAndVisualize.bind(this, propertyResult),
-      );
-      clickFunctions[propertyResult.property] = clearAndVisualize.bind(
-        this,
-        propertyResult,
-      );
+
+      const handler = clearAndVisualize.bind(this, propertyResult);
+      property.addEventListener("click", handler);
+      clickFunctions[propertyResult.property] = handler;
     }
   }
 
