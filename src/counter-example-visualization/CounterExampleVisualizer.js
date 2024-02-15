@@ -12,7 +12,6 @@ export default function CounterExampleVisualizer(
   tokenCount,
   notifications,
 ) {
-  animation.setAnimationSpeed(2);
   this._notifications = notifications;
 
   // We have to store the visualization functions in an object to be able to remove them later
