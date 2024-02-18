@@ -76,7 +76,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
         "small-note clickable",
       );
       document
-        .getElementById(problematicElement)
+        .getElementById(problematicElement + "_counter")
         .addEventListener("click", () => {
           eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
             propertyResult,
@@ -97,7 +97,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
         "big-note clickable",
       );
       document
-        .getElementById(problematicElement)
+        .getElementById(problematicElement + "_counter")
         .addEventListener("click", () => {
           eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
             propertyResult,
@@ -123,7 +123,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
   function addPropertyOverlay(problematicElement, position, text, cssClasses) {
     overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position,
-      html: `<div id="${problematicElement}" class="property-note tooltip ${cssClasses}">
+      html: `<div id="${problematicElement}_counter" class="property-note tooltip ${cssClasses}">
                ${text}
                ${cssClasses.includes("clickable") ? '<span class="tooltipText">Click to show counter example.</span>' : ""}
              </div>`,
