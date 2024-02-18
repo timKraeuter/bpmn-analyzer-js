@@ -13,7 +13,7 @@ import {
   TOGGLE_MODE_EVENT,
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   TRACE_EVENT,
-  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
+  COUNTER_EXAMPLE_VISUALIZATION_STARTED,
 } from "../util/EventHelper";
 
 import { InfoIcon, LogIcon, TimesIcon } from "../icons";
@@ -160,7 +160,7 @@ export default function Log(
     this.clear();
   });
 
-  eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, () => {
+  eventBus.on(COUNTER_EXAMPLE_VISUALIZATION_STARTED, () => {
     this.clear();
     this.toggle(true);
   });

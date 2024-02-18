@@ -1,8 +1,8 @@
 import { domify, classes as domClasses, event as domEvent } from "min-dom";
 
 import {
-  PLAY_SIMULATION_EVENT,
-  PAUSE_SIMULATION_EVENT,
+  PLAY_EXECUTION_EVENT,
+  PAUSE_EXECUTION_EVENT,
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
 } from "../util/EventHelper";
 
@@ -62,7 +62,7 @@ PauseExecution.prototype.pause = function () {
 
   this.paletteEntry.innerHTML = PLAY_MARKUP;
 
-  this._eventBus.fire(PAUSE_SIMULATION_EVENT);
+  this._eventBus.fire(PAUSE_EXECUTION_EVENT);
 
   this._notifications.showNotification({
     text: "Pause Execution",
@@ -81,7 +81,7 @@ PauseExecution.prototype.unpause = function () {
 
   this.paletteEntry.innerHTML = PAUSE_MARKUP;
 
-  this._eventBus.fire(PLAY_SIMULATION_EVENT);
+  this._eventBus.fire(PLAY_EXECUTION_EVENT);
 
   this._notifications.showNotification({
     text: "Play Execution",

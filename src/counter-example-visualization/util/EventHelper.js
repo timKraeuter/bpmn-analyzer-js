@@ -1,23 +1,24 @@
 const TOGGLE_MODE_EVENT = "counterexample.visualization.toggleMode";
-const PLAY_SIMULATION_EVENT = "tokenSimulation.playSimulation";
-const PAUSE_SIMULATION_EVENT = "tokenSimulation.pauseSimulation";
-const ANIMATION_CREATED_EVENT = "tokenSimulation.animationCreated";
-const ANIMATION_SPEED_CHANGED_EVENT = "tokenSimulation.animationSpeedChanged";
-const SCOPE_DESTROYED_EVENT = "tokenSimulation.simulator.destroyScope";
-const TRACE_EVENT = "tokenSimulation.simulator.trace";
+const PLAY_EXECUTION_EVENT = "counterexample.playExecution";
+const PAUSE_EXECUTION_EVENT = "counterexample.pauseExecution";
+const ANIMATION_CREATED_EVENT = "counterexample.animationCreated";
+const ANIMATION_SPEED_CHANGED_EVENT = "counterexample.animationSpeedChanged";
+const TRACE_EVENT = "counterexample.execution.trace";
+const START_COUNTER_EXAMPLE_VISUALIZATION =
+  "counterexample.visualization.start";
 const RESTART_COUNTER_EXAMPLE_VISUALIZATION =
   "counterexample.visualization.restart";
-const START_COUNTER_EXAMPLE_VISUALIZATION_EVENT =
-  "counterexample.visualization.start";
+const COUNTER_EXAMPLE_VISUALIZATION_STARTED =
+  "counterexample.visualization.started";
 
 export {
   TOGGLE_MODE_EVENT,
-  PLAY_SIMULATION_EVENT,
-  PAUSE_SIMULATION_EVENT,
+  PLAY_EXECUTION_EVENT,
+  PAUSE_EXECUTION_EVENT,
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   ANIMATION_CREATED_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
-  SCOPE_DESTROYED_EVENT,
   TRACE_EVENT,
-  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
+  COUNTER_EXAMPLE_VISUALIZATION_STARTED,
+  START_COUNTER_EXAMPLE_VISUALIZATION,
 };

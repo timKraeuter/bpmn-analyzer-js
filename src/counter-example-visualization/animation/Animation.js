@@ -9,8 +9,8 @@ import {
 
 import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
-  PLAY_SIMULATION_EVENT,
-  PAUSE_SIMULATION_EVENT,
+  PLAY_EXECUTION_EVENT,
+  PAUSE_EXECUTION_EVENT,
   ANIMATION_CREATED_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
   TOGGLE_MODE_EVENT,
@@ -74,11 +74,11 @@ export default function Animation(canvas, eventBus) {
     this.clearAnimations();
   });
 
-  eventBus.on(PAUSE_SIMULATION_EVENT, () => {
+  eventBus.on(PAUSE_EXECUTION_EVENT, () => {
     this.pause();
   });
 
-  eventBus.on(PLAY_SIMULATION_EVENT, () => {
+  eventBus.on(PLAY_EXECUTION_EVENT, () => {
     this.play();
   });
 

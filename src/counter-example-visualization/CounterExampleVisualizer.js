@@ -1,8 +1,9 @@
 import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
-  START_COUNTER_EXAMPLE_VISUALIZATION_EVENT,
+  COUNTER_EXAMPLE_VISUALIZATION_STARTED,
   TOGGLE_MODE_EVENT,
   TRACE_EVENT,
+  START_COUNTER_EXAMPLE_VISUALIZATION,
 } from "./util/EventHelper";
 
 export default function CounterExampleVisualizer(
@@ -13,6 +14,12 @@ export default function CounterExampleVisualizer(
   notifications,
 ) {
   this._notifications = notifications;
+
+  eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION, (data) => {
+    if (data.propertyResult) {
+      clearAndVisualize(data.propertyResult);
+    }
+  });
 
   // We have to store the visualization functions in an object to be able to remove them later
   const clickFunctions = {};
@@ -60,7 +67,7 @@ export default function CounterExampleVisualizer(
     eventBus.fire(TOGGLE_MODE_EVENT, {
       active: true,
     });
-    eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION_EVENT, {});
+    eventBus.fire(COUNTER_EXAMPLE_VISUALIZATION_STARTED, {});
 
     notifications.showNotification({
       text: "Visualizing counter example started.",

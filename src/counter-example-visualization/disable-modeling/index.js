@@ -1,8 +1,6 @@
-import DisableModeling from './DisableModeling';
+import DisableModeling from "./DisableModeling";
 
 export default {
-  __init__: [
-    'disableModeling'
-  ],
-  disableModeling: [ 'type', DisableModeling ]
+  __init__: ["disableModeling"],
+  disableModeling: ["type", DisableModeling],
 };
