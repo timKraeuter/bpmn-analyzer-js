@@ -1,3 +1,7 @@
+.quick-fixes-hide .djs-overlays .quick-fix-note {
+  display: none;
+}
+
 :root {
   --color-button-hover: #fbdbc0;
   --color-property--fulfilled: #008000ff;
