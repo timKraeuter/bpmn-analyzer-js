@@ -43,9 +43,3 @@ jobs:
         env:
           TEST_BROWSERS: ChromeHeadless,Firefox
         run: npm run all
-
-      - name: Setup and build modeler starter
-        working-directory: ./starter
-        run: |
-          npm install
-          npm run all
