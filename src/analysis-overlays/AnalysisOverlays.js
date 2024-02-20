@@ -1,9 +1,13 @@
 import { START_COUNTER_EXAMPLE_VISUALIZATION } from "../counter-example-visualization/util/EventHelper";
+import { domify } from "min-dom";
 
 const ANALYSIS_NOTE_TYPE = "analysis-note";
 
-export default function AnalysisOverlays(eventBus, overlays) {
+export default function AnalysisOverlays(eventBus, overlays, canvas) {
   eventBus.on("analysis.done", handleAnalysis);
+  this._canvas = canvas;
+
+  this._init();
 
   function handleAnalysis(result) {
     overlays.remove({
@@ -131,4 +135,21 @@ export default function AnalysisOverlays(eventBus, overlays) {
   }
 }
 
-AnalysisOverlays.$inject = ["eventBus", "overlays"];
+AnalysisOverlays.prototype._init = function () {
+  const html = domify(`
+    <div class="properties">
+      <div id="Safeness">Safeness</div>
+      <div id="Safeness-icon" class="icon-question general-icon"></div>
+      <div id="OptionToComplete">Option to complete</div>
+      <div id="OptionToComplete-icon" class="icon-question general-icon"></div>
+      <div id="ProperCompletion">Proper completion</div>
+      <div id="ProperCompletion-icon" class="icon-question general-icon"></div>
+      <div id="NoDeadActivities">No dead activities</div>
+      <div id="NoDeadActivities-icon" class="icon-question general-icon"></div>
+    </div>
+  `);
+
+  this._canvas.getContainer().appendChild(html);
+};
+
+AnalysisOverlays.$inject = ["eventBus", "overlays", "canvas"];
