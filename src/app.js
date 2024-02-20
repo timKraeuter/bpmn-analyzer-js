@@ -2,9 +2,9 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/empty.bpmn";
 
-import unsafeGateways from "../resources/unsafe-gateways.bpmn";
+import example from "../resources/paper-example.bpmn";
 
-const initialBoardXML = unsafeGateways;
+const initialBoardXML = example;
 
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
