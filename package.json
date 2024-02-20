@@ -4,7 +4,7 @@
   "description": "bpmn-js including analysis after each save",
   "main": "app/index.js",
   "scripts": {
-    "all": "run-s lint build",
+    "all": "run-s lint pCheck build",
     "build": "webpack",
     "lint": "eslint ",
     "start": "run-s dev",
