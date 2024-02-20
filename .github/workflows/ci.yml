@@ -29,16 +29,16 @@ jobs:
             ${{ runner.OS }}-
 
       #  Check modeler
-      - name: Install modeler dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Test modeler
+      - name: Lint & Test ubuntu
         if: matrix.os == 'ubuntu-latest'
         env:
           TEST_BROWSERS: ChromeHeadless
         run: xvfb-run npm run all
 
-      - name: Build modeler
+      - name: Lint & Test others
         if: matrix.os != 'ubuntu-latest'
         env:
           TEST_BROWSERS: ChromeHeadless,Firefox
