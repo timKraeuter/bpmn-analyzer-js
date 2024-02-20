@@ -48,6 +48,8 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   // execute and revert not needed.
 }
 
+AddPrecedingParallelGatewayCommand.$inject = ["modeling", "spaceTool"];
+
 export function previewPrecedingParallelGateway(
   unsafeMerge,
   complexPreview,
@@ -116,13 +118,16 @@ export function previewPrecedingParallelGateway(
 
 /**
  * @param {Shape} startShape
- * @param {Shape[]} shapes
+ * @param {Element[]} shapes
  */
 export function getAllPrecedingShapes(startShape, shapes) {
   startShape.incoming.forEach((sf) => {
     const source = sf.source;
     if (source.x < startShape.x && !shapes.includes(source)) {
       shapes.push(source);
+      if (source.label) {
+        shapes.push(source.label);
+      }
       getAllPrecedingShapes(source, shapes);
     }
   });

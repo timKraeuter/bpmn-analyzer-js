@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="definitions_793d1020-e08a-4f53-b128-c61827f033c9" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.7.0">
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="definitions_793d1020-e08a-4f53-b128-c61827f033c9" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <process id="process_c648aa44-f99b-4cc0-8bba-9b1fafd7d01b" isExecutable="false">
-    <startEvent id="FlowNode_1">
+    <startEvent id="FlowNode_1" name="start">
       <outgoing>Flow_18hry6m</outgoing>
     </startEvent>
     <sequenceFlow id="Flow_18hry6m" sourceRef="FlowNode_1" targetRef="Gateway_19m1xkh" />
-    <task id="Activity_1k9hlq7">
+    <task id="Activity_1k9hlq7" name="A">
       <incoming>Flow_0k243p1</incoming>
       <outgoing>Flow_0msbshj</outgoing>
     </task>
     <sequenceFlow id="Flow_0k243p1" sourceRef="Gateway_19m1xkh" targetRef="Activity_1k9hlq7" />
-    <task id="Activity_0b89un0">
+    <task id="Activity_0b89un0" name="B">
       <incoming>Flow_1q12yo1</incoming>
       <outgoing>Flow_171s3u9</outgoing>
     </task>
     <sequenceFlow id="Flow_1q12yo1" sourceRef="Gateway_19m1xkh" targetRef="Activity_0b89un0" />
     <sequenceFlow id="Flow_0msbshj" sourceRef="Activity_1k9hlq7" targetRef="Gateway_17yykq8" />
     <sequenceFlow id="Flow_171s3u9" sourceRef="Activity_0b89un0" targetRef="Gateway_17yykq8" />
-    <task id="Activity_0euzcpq">
+    <task id="Activity_0euzcpq" name="C">
       <incoming>Flow_0z37bdf</incoming>
       <outgoing>Flow_1c24te8</outgoing>
     </task>
     <sequenceFlow id="Flow_0z37bdf" sourceRef="Gateway_17yykq8" targetRef="Activity_0euzcpq" />
-    <endEvent id="Event_0wi1fn1">
+    <endEvent id="Event_0wi1fn1" name="end">
       <incoming>Flow_1c24te8</incoming>
     </endEvent>
     <sequenceFlow id="Flow_1c24te8" sourceRef="Activity_0euzcpq" targetRef="Event_0wi1fn1" />
-    <exclusiveGateway id="Gateway_19m1xkh">
+    <exclusiveGateway id="Gateway_19m1xkh" name="e1">
       <incoming>Flow_18hry6m</incoming>
       <outgoing>Flow_0k243p1</outgoing>
       <outgoing>Flow_1q12yo1</outgoing>
     </exclusiveGateway>
-    <parallelGateway id="Gateway_17yykq8">
+    <parallelGateway id="Gateway_17yykq8" name="p1">
       <incoming>Flow_0msbshj</incoming>
       <incoming>Flow_171s3u9</incoming>
       <outgoing>Flow_0z37bdf</outgoing>
@@ -42,26 +42,38 @@
       <bpmndi:BPMNShape id="BPMNShape_5604032a-8541-4e0f-9276-10d9de3c10df" bpmnElement="FlowNode_1">
         <dc:Bounds x="182" y="92" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="169" y="128" width="62" height="14" />
+          <dc:Bounds x="189" y="135" width="23" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1k9hlq7_di" bpmnElement="Activity_1k9hlq7">
         <dc:Bounds x="390" y="70" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0b89un0_di" bpmnElement="Activity_0b89un0">
         <dc:Bounds x="390" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0euzcpq_di" bpmnElement="Activity_0euzcpq">
         <dc:Bounds x="670" y="70" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0wi1fn1_di" bpmnElement="Event_0wi1fn1">
         <dc:Bounds x="842" y="92" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="851" y="135" width="19" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0hq73ub_di" bpmnElement="Gateway_19m1xkh" isMarkerVisible="true">
         <dc:Bounds x="275" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="294" y="55" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1errs79_di" bpmnElement="Gateway_17yykq8">
         <dc:Bounds x="555" y="85" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="574" y="55" width="13" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_18hry6m_di" bpmnElement="Flow_18hry6m">
         <di:waypoint x="218" y="110" />

@@ -11,6 +11,7 @@ import {
   AddEndEventsForEachIncFlowCommand,
   previewAddedEndEvents,
 } from "./cmd/AddEndEventsForEachIncFlowCommand";
+import { TOGGLE_MODE_EVENT } from "../counter-example-visualization/util/EventHelper";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -32,6 +33,18 @@ export default function AnalysisQuickFixes(
   elementFactory,
   layouter,
 ) {
+  eventBus.on(TOGGLE_MODE_EVENT, (event) => {
+    // Hide/Show quick fixes when the counter example visualization is active/inactive.
+    const overlaysRoot = document
+      .getElementsByClassName("djs-overlay-container")
+      .item(0);
+    if (event.active) {
+      overlaysRoot.classList.add("quick-fixes-hide");
+    } else {
+      overlaysRoot.classList.remove("quick-fixes-hide");
+    }
+  });
+
   commandStack.registerHandler(
     "addSubsequentExclusiveGatewayCommand",
     AddSubsequentExclusiveGatewayCommand,
@@ -495,7 +508,7 @@ export default function AnalysisQuickFixes(
       position,
       html: `<div id=${shape.id} class="small-note quick-fix-note tooltip">
                <img alt="quick-fix" src="data:image/svg+xml;base64,${LIGHT_BULB_BASE64}"/>
-               <span class="tooltiptext">${text}</span>
+               <span class="tooltipText">${text}</span>
            </div>`,
     });
 

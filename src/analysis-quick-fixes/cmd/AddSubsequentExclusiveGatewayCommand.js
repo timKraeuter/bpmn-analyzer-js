@@ -45,15 +45,20 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
   // execute and revert not needed.
 }
 
+AddSubsequentExclusiveGatewayCommand.$inject = ["modeling", "spaceTool"];
+
 /**
  * @param {Shape} startShape
- * @param {Shape[]} shapes
+ * @param {Element[]} shapes
  */
 export function getAllFollowingShapes(startShape, shapes) {
   startShape.outgoing.forEach((sf) => {
     const target = sf.target;
     if (target.x > startShape.x && !shapes.includes(target)) {
       shapes.push(target);
+      if (target.label) {
+        shapes.push(target.label);
+      }
       getAllFollowingShapes(target, shapes);
     }
   });
