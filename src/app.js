@@ -2,13 +2,7 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/empty.bpmn";
 
-import showcase from "../resources/showcase.bpmn";
-import taskSplit from "../resources/taskSplit.bpmn";
-import taskMerge from "../resources/taskMerge.bpmn";
 import unsafeGateways from "../resources/unsafe-gateways.bpmn";
-import reusedEndEvent from "../resources/reusedEndEvent.bpmn";
-import stuck from "../resources/stuck.bpmn";
-import deadActivity from "../resources/deadActivity.bpmn";
 
 const initialBoardXML = unsafeGateways;
 
@@ -16,16 +10,7 @@ import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
 import AnalysisQuickFixesModule from "./analysis-quick-fixes";
 import CounterExampleVisualizationModule from "./counter-example-visualization";
-
-const example_boards = {
-  taskSplit,
-  taskMerge,
-  showcase,
-  unsafeGateways,
-  reusedEndEvent,
-  stuck,
-  deadActivity,
-};
+import AnalysisExamplesModule from "./analysis-examples";
 
 // modeler instance
 const modeler = new BpmnModeler({
@@ -34,6 +19,7 @@ const modeler = new BpmnModeler({
     AnalysisClientModule,
     AnalysisOverlaysModule,
     AnalysisQuickFixesModule,
+    AnalysisExamplesModule,
     CounterExampleVisualizationModule,
   ],
   keyboard: {
@@ -138,7 +124,7 @@ function openBoard(xml) {
   // import board
   modeler.importXML(xml).catch(function (err) {
     if (err) {
-      return console.error("could not import od board", err);
+      return console.error("could not import xml", err);
     }
   });
 }
@@ -186,6 +172,7 @@ const exportArtifacts = debounce(function () {
 
 modeler.on("commandStack.changed", exportArtifacts);
 modeler.on("import.done", exportArtifacts);
+modeler.on("example.import", (data) => openBoard(data.xml));
 
 openNew.addEventListener("click", function () {
   openBoard(emptyBoardXML);
@@ -199,12 +186,6 @@ openExistingBoard.addEventListener("click", function () {
 
 openBoard(initialBoardXML);
 
-document
-  .getElementById("example-select")
-  .addEventListener("change", (event) => {
-    const value = event.currentTarget.value;
-    openBoard(example_boards[value]);
-  });
 // helpers //////////////////////
 
 function debounce(fn, timeout) {
