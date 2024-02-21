@@ -18,8 +18,8 @@ const modeler = new BpmnModeler({
   additionalModules: [
     AnalysisClientModule,
     AnalysisOverlaysModule,
-    AnalysisQuickFixesModule,
-    AnalysisExamplesModule,
+    // AnalysisQuickFixesModule,
+    // AnalysisExamplesModule,
     CounterExampleVisualizationModule,
   ],
   keyboard: {
@@ -138,34 +138,34 @@ function saveBoard() {
 }
 
 // bootstrap board functions
-const downloadLink = document.getElementById("js-download-board");
-const downloadSvgLink = document.getElementById("js-download-svg");
-
-const openNew = document.getElementById("js-open-new");
-const openExistingBoard = document.getElementById("js-open-board");
-
-function setEncoded(link, name, data) {
-  const encodedData = encodeURIComponent(data);
-
-  if (data) {
-    link.classList.add("active");
-    link.setAttribute(
-      "href",
-      "data:application/xml;charset=UTF-8," + encodedData,
-    );
-    link.setAttribute("download", name);
-  } else {
-    link.classList.remove("active");
-  }
-}
-
+// const downloadLink = document.getElementById("js-download-board");
+// const downloadSvgLink = document.getElementById("js-download-svg");
+//
+// const openNew = document.getElementById("js-open-new");
+// const openExistingBoard = document.getElementById("js-open-board");
+//
+// function setEncoded(link, name, data) {
+//   const encodedData = encodeURIComponent(data);
+//
+//   if (data) {
+//     link.classList.add("active");
+//     link.setAttribute(
+//       "href",
+//       "data:application/xml;charset=UTF-8," + encodedData,
+//     );
+//     link.setAttribute("download", name);
+//   } else {
+//     link.classList.remove("active");
+//   }
+// }
+//
 const exportArtifacts = debounce(function () {
   saveSVG().then(function (result) {
-    setEncoded(downloadSvgLink, "bpmn.svg", result.svg);
+    // setEncoded(downloadSvgLink, "bpmn.svg", result.svg);
   });
 
   saveBoard().then(function (result) {
-    setEncoded(downloadLink, "bpmn.bpmn", result.xml);
+    // setEncoded(downloadLink, "bpmn.bpmn", result.xml);
     modeler._emit("analysis.start", result);
   });
 }, 500);
@@ -174,15 +174,15 @@ modeler.on("commandStack.changed", exportArtifacts);
 modeler.on("import.done", exportArtifacts);
 modeler.on("example.import", (data) => openBoard(data.xml));
 
-openNew.addEventListener("click", function () {
-  openBoard(emptyBoardXML);
-});
-
-openExistingBoard.addEventListener("click", function () {
-  // clear input so that previously selected file can be reopened
-  fileInput.value = "";
-  fileInput.click();
-});
+// openNew.addEventListener("click", function () {
+//   openBoard(emptyBoardXML);
+// });
+//
+// openExistingBoard.addEventListener("click", function () {
+//   // clear input so that previously selected file can be reopened
+//   fileInput.value = "";
+//   fileInput.click();
+// });
 
 openBoard(initialBoardXML);
 
