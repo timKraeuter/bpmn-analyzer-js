@@ -31,6 +31,7 @@ export default function TokenCount(eventBus, overlays) {
     }
   });
 
+  // Add specific token count behavior for some elements.
   eventBus.on(TRACE_EVENT, (data) => {
     const element = data.element;
     if (is(element, "bpmn:EndEvent")) {
