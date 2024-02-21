@@ -36,6 +36,10 @@ export default function TokenCount(eventBus, overlays) {
     if (is(element, "bpmn:EndEvent")) {
       this.decreaseTokenCount(element);
     }
+    if (is(element, "bpmn:ParallelGateway")) {
+      // We decrease the token count for all incoming sequence flows - 1 since it has already been decreased by one.
+      this.decreaseTokenCountBy(element, element.incoming.length - 1);
+    }
   });
 }
 
@@ -79,15 +83,15 @@ TokenCount.prototype.clearTokenCounts = function () {
   this.overlayIdsAndCount = {};
 };
 
-TokenCount.prototype.decreaseTokenCount = function (element) {
+TokenCount.prototype.decreaseTokenCountBy = function (element, amount) {
   const overlayIdAndCount = this.overlayIdsAndCount[element.id];
 
   if (!overlayIdAndCount) {
     return;
   }
   this._overlays.remove(overlayIdAndCount.id);
-  if (overlayIdAndCount.count > 1) {
-    const decreasedCount = overlayIdAndCount.count - 1;
+  if (overlayIdAndCount.count > amount) {
+    const decreasedCount = overlayIdAndCount.count - amount;
     const overlayID = this.addTokenCountOverlay(element, decreasedCount);
     this.overlayIdsAndCount[element.id] = {
       id: overlayID,
@@ -96,6 +100,10 @@ TokenCount.prototype.decreaseTokenCount = function (element) {
   } else {
     delete this.overlayIdsAndCount[element.id];
   }
+};
+
+TokenCount.prototype.decreaseTokenCount = function (element) {
+  this.decreaseTokenCountBy(element, 1);
 };
 
 TokenCount.prototype._getTokenHTML = function (element, tokenCount) {
