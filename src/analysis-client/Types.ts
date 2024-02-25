@@ -1,5 +1,6 @@
 export interface CheckingResponse {
   property_results: PropertyResult[];
+  unsupported_elements: string[];
 }
 
 export interface PropertyResult {
