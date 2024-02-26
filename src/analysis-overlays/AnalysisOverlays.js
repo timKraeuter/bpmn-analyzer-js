@@ -30,6 +30,30 @@ export default function AnalysisOverlays(
                </div>`,
       });
     }
+
+    resetPropertiesSummary();
+  }
+
+  function resetPropertiesSummary() {
+    const properties = [
+      "Safeness",
+      "OptionToComplete",
+      "ProperCompletion",
+      "NoDeadActivities",
+    ];
+    for (const property of properties) {
+      const propertyElement = document.getElementById(property);
+      propertyElement.classList.remove("violated", "fulfilled");
+
+      const propertyIcon = document.getElementById(`${property}-icon`);
+      propertyIcon.classList.add("icon-question");
+      propertyIcon.classList.remove(
+        "icon-check",
+        "icon-xmark",
+        "fulfilled",
+        "violated",
+      );
+    }
   }
 
   function handleAnalysis(result) {
