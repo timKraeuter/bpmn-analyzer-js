@@ -8,9 +8,10 @@ const initialBoardXML = unsafeGateways;
 
 import AnalysisClientModule from "./analysis-client";
 import AnalysisOverlaysModule from "./analysis-overlays";
-import AnalysisQuickFixesModule from "./analysis-quick-fixes";
+import QuickFixesModule from "./quick-fixes";
 import CounterExampleVisualizationModule from "./counter-example-visualization";
 import AnalysisExamplesModule from "./analysis-examples";
+import PropertiesSummaryModule from "./properties-summary";
 
 // modeler instance
 const modeler = new BpmnModeler({
@@ -18,7 +19,8 @@ const modeler = new BpmnModeler({
   additionalModules: [
     AnalysisClientModule,
     AnalysisOverlaysModule,
-    AnalysisQuickFixesModule,
+    PropertiesSummaryModule,
+    QuickFixesModule,
     AnalysisExamplesModule,
     CounterExampleVisualizationModule,
   ],
