@@ -1,11 +1,11 @@
 import { domify } from "min-dom";
-import taskSplit from "../../resources/taskSplit.bpmn";
-import taskMerge from "../../resources/taskMerge.bpmn";
-import showcase from "../../resources/showcase.bpmn";
-import unsafeGateways from "../../resources/unsafe-gateways.bpmn";
-import reusedEndEvent from "../../resources/reusedEndEvent.bpmn";
-import stuck from "../../resources/stuck.bpmn";
-import deadActivity from "../../resources/deadActivity.bpmn";
+import taskSplit from "../../../resources/taskSplit.bpmn";
+import taskMerge from "../../../resources/taskMerge.bpmn";
+import showcase from "../../../resources/showcase.bpmn";
+import unsafeGateways from "../../../resources/unsafe-gateways.bpmn";
+import reusedEndEvent from "../../../resources/reusedEndEvent.bpmn";
+import stuck from "../../../resources/stuck.bpmn";
+import deadActivity from "../../../resources/deadActivity.bpmn";
 
 const example_boards = {
   taskSplit,

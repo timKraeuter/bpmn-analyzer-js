@@ -6,12 +6,12 @@ import unsafeGateways from "../resources/unsafe-gateways.bpmn";
 
 const initialBoardXML = unsafeGateways;
 
-import AnalysisClientModule from "./analysis-client";
-import AnalysisOverlaysModule from "./analysis-overlays";
-import QuickFixesModule from "./quick-fixes";
-import CounterExampleVisualizationModule from "./counter-example-visualization";
-import AnalysisExamplesModule from "./analysis-examples";
-import PropertiesSummaryModule from "./properties-summary";
+import AnalysisClientModule from "./lib/analysis-client";
+import AnalysisOverlaysModule from "./lib/analysis-overlays";
+import QuickFixesModule from "./lib/quick-fixes";
+import CounterExampleVisualizationModule from "./lib/counter-example-visualization";
+import AnalysisExamplesModule from "./lib/analysis-examples";
+import PropertiesSummaryModule from "./lib/properties-summary";
 
 // modeler instance
 const modeler = new BpmnModeler({
