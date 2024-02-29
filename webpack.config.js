@@ -9,9 +9,11 @@ module.exports = (env) => {
   let outputPath = __dirname + "/public";
   let path = "src";
   let mode = "development";
+  let devtool = "source-map";
   if (env.rust) {
     outputPath = __dirname + "/../RustBPMNAnalyzer/public";
     mode = "production";
+    devtool = false;
   }
   return {
     entry: {
@@ -56,6 +58,6 @@ module.exports = (env) => {
       }),
     ],
     mode,
-    devtool: "source-map",
+    devtool,
   };
 };
