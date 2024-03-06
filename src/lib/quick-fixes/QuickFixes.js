@@ -1,4 +1,4 @@
-import { is } from "bpmn-js/lib/util/ModelUtil";
+import { is, isAny } from "bpmn-js/lib/util/ModelUtil";
 import {
   AddSubsequentExclusiveGatewayCommand,
   previewSubsequentExclusiveGateway,
@@ -101,7 +101,7 @@ export default function QuickFixes(
           is(child, "bpmn:FlowNode") &&
           child.x < activity.x &&
           isStartOrConnected(child) &&
-          !is(child, "bpmn:EndEvent"),
+          !isAny(child, ["bpmn:EndEvent"]),
       )
       .forEach((flowNode) => {
         if (!nearest) {
