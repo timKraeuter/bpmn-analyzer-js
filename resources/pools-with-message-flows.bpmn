@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" camunda:diagramRelationId="c0ee7b3d-cbff-4320-b2f5-c9f17011829d">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.7.0" camunda:diagramRelationId="c0ee7b3d-cbff-4320-b2f5-c9f17011829d">
   <bpmn:collaboration id="Collaboration_0rxoef1">
     <bpmn:participant id="p1" name="p1" processRef="p1_process" />
     <bpmn:participant id="p2" name="p2" processRef="p2_process" />
-    <bpmn:participant id="Participant_04q82id" name="p3" processRef="Process_1d58lgn" />
+    <bpmn:participant id="p3" name="p3" processRef="p3_process" />
     <bpmn:messageFlow id="Flow_0mj6zqd" sourceRef="sendEvent" targetRef="startP2" />
     <bpmn:messageFlow id="Flow_1l5tj5s" sourceRef="SendTask" targetRef="receiveEvent" />
     <bpmn:messageFlow id="Flow_1teo7b1" sourceRef="endP1" targetRef="ReceiveTask" />
@@ -53,7 +53,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_04w7jid" />
     </bpmn:endEvent>
   </bpmn:process>
-  <bpmn:process id="Process_1d58lgn" isExecutable="false">
+  <bpmn:process id="p3_process" isExecutable="false">
     <bpmn:startEvent id="Event_0kdhzc1" name="startP3">
       <bpmn:outgoing>Flow_1cnujy1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -172,7 +172,7 @@
         <di:waypoint x="540" y="350" />
         <di:waypoint x="622" y="350" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BPMNShape_08vdfj5" bpmnElement="Participant_04q82id" isHorizontal="true">
+      <bpmndi:BPMNShape id="BPMNShape_08vdfj5" bpmnElement="p3" isHorizontal="true">
         <dc:Bounds x="160" y="450" width="720" height="270" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

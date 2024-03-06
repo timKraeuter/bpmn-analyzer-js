@@ -77,29 +77,15 @@ export default function CounterExampleVisualizer(
   }
 
   /**
-   * @param {State} state
-   * @returns {Snapshot}
-   */
-  function getSingleSnapshot(state) {
-    if (state.snapshots.length !== 1) {
-      console.error("State has more than one snapshot! (not allowed for now)");
-    }
-    return state.snapshots[0];
-  }
-
-  /**
    * Visualize the counter example on click.
    * Removes all ongoing animations and token counts and starts the animation.
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
-    const snapshot = getSingleSnapshot(
-      propertyResult.counter_example.start_state,
-    );
     visualizeSnapshotDelta(
       propertyResult.property,
-      { tokens: {} },
-      snapshot,
+      [],
+      propertyResult.counter_example.start_state.snapshots,
       propertyResult.counter_example.transitions,
       -1,
     );
@@ -107,11 +93,11 @@ export default function CounterExampleVisualizer(
 
   /**
    * @param {string} property
-   * @param {Snapshot} previousSnapshot
+   * @param {Snapshot[]} previousSnapshots
    * @param {Transition[]} transitions
    * @param {number} index
    */
-  function visualizeNextState(property, previousSnapshot, transitions, index) {
+  function visualizeNextState(property, previousSnapshots, transitions, index) {
     if (index >= transitions.length) {
       notifications.showNotification({
         text: "Visualizing counter example finished.",
@@ -123,11 +109,10 @@ export default function CounterExampleVisualizer(
       element: elementRegistry.get(transition.label),
       property,
     });
-    const snapshot = getSingleSnapshot(transition.next_state);
     visualizeSnapshotDelta(
       property,
-      previousSnapshot,
-      snapshot,
+      previousSnapshots,
+      transition.next_state.snapshots,
       transitions,
       index,
     );
@@ -135,55 +120,76 @@ export default function CounterExampleVisualizer(
 
   /**
    * @param {string} property
-   * @param {Snapshot} previousSnapshot
-   * @param {Snapshot} snapshot
+   * @param {Snapshot[]} previousSnapshots
+   * @param {Snapshot[]} snapshots
    * @param {Transition[]} transitions
    * @param {number} index
    */
   function visualizeSnapshotDelta(
     property,
-    previousSnapshot,
-    snapshot,
+    previousSnapshots,
+    snapshots,
     transitions,
     index,
   ) {
     // works but can probably be optimized
-    const newTokens = calcTokenDelta(snapshot, previousSnapshot);
+    const snapshotsDelta = calcSnapshotDelta(snapshots, previousSnapshots);
 
-    if (Object.keys(newTokens).length === 0) {
-      visualizeNextState(property, snapshot, transitions, index + 1);
+    if (
+      snapshotsDelta.every(
+        (snapshot) => Object.keys(snapshot.tokens).length === 0,
+      )
+    ) {
+      visualizeNextState(property, snapshots, transitions, index + 1);
       return;
     }
 
     let semaphore = 0;
-    Object.entries(newTokens).forEach(([key, tokenAmount]) => {
-      const element = elementRegistry.get(key);
-      const scope = { element };
-      for (let i = 0; i < tokenAmount; i++) {
-        semaphore++;
-        tokenCount.decreaseTokenCount(element.source);
-        animation.animate(element, scope, () => {
-          semaphore--;
-          tokenCount.increaseTokenCount(element.target);
-          if (semaphore === 0) {
-            visualizeNextState(property, snapshot, transitions, index + 1);
-          }
-        });
-      }
+    snapshotsDelta.forEach((snapshot) => {
+      Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
+        const element = elementRegistry.get(key);
+        const scope = { element };
+        for (let i = 0; i < tokenAmount; i++) {
+          semaphore++;
+          tokenCount.decreaseTokenCount(element.source);
+          animation.animate(element, scope, () => {
+            semaphore--;
+            tokenCount.increaseTokenCount(element.target);
+            if (semaphore === 0) {
+              visualizeNextState(property, snapshots, transitions, index + 1);
+            }
+          });
+        }
+      });
     });
   }
 
-  function calcTokenDelta(snapshot, previousSnapshot) {
-    const newTokens = { ...snapshot.tokens };
-    Object.entries(previousSnapshot.tokens).forEach(([key, tokenAmount]) => {
-      const newAmount = snapshot.tokens[key] - tokenAmount;
-      if (newAmount > 0) {
-        newTokens[key] = newAmount;
-      } else {
-        delete newTokens[key];
-      }
+  /**
+   * @param {Snapshot[]} previousSnapshots
+   * @param {Snapshot[]} snapshots
+   * @returns {Snapshot[]}
+   */
+  function calcSnapshotDelta(snapshots, previousSnapshots) {
+    const snapshotDiff = snapshots.slice();
+    // Remove all tokens that are in the previous snapshots
+    previousSnapshots.forEach((oldSnapshot) => {
+      Object.entries(oldSnapshot.tokens).forEach(([key, tokenAmount]) => {
+        const newSnapshot = snapshotDiff.find(
+          (snapshot) => snapshot.id === oldSnapshot.id,
+        );
+        const newAmount = newSnapshot.tokens[key] - tokenAmount;
+        console.log(key, newAmount);
+        if (newAmount > 0) {
+          newSnapshot.tokens[key] = newAmount;
+        } else {
+          delete newSnapshot.tokens[key];
+        }
+      });
     });
-    return newTokens;
+    console.log("old snapshots", previousSnapshots);
+    console.log("new snapshots", snapshots);
+    console.log("calculated snapshot diff", snapshotDiff);
+    return snapshotDiff;
   }
 }
 
