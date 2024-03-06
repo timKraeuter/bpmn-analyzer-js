@@ -184,26 +184,28 @@ export default function QuickFixes(
       .pop();
     if (lastTransition) {
       const lastState = lastTransition.next_state;
-      if (lastState.snapshots.length !== 1) {
-        console.error("Not dealing with more than one snapshot yet!");
-        return;
-      }
-      const tokens = lastState.snapshots[0].tokens;
-      const blockingPGs = Object.keys(tokens)
-        .map((id) => elementRegistry.get(id).target)
-        .filter(
-          (flowNode) =>
-            flowNode.type === "bpmn:ParallelGateway" &&
-            flowNode.incoming.length > 1,
-        );
-      if (blockingPGs.length === 1) {
-        const problematicPG = blockingPGs.pop();
-        addOptionToCompleteExclusiveQuickFix(problematicPG);
+      lastState.snapshots.forEach((snapshot) => {
+        const tokens = snapshot.tokens;
+        tryFindBlockingPGsAndAddQuickFix(tokens);
+      });
+    }
+  }
 
-        const exgCause = findProperCompletionChoiceCause(problematicPG);
-        if (exgCause) {
-          addOptionToCompleteParallelQuickFix(exgCause);
-        }
+  function tryFindBlockingPGsAndAddQuickFix(tokens) {
+    const blockingPGs = Object.keys(tokens)
+      .map((id) => elementRegistry.get(id).target)
+      .filter(
+        (flowNode) =>
+          flowNode.type === "bpmn:ParallelGateway" &&
+          flowNode.incoming.length > 1,
+      );
+    if (blockingPGs.length === 1) {
+      const problematicPG = blockingPGs.pop();
+      addOptionToCompleteExclusiveQuickFix(problematicPG);
+
+      const exgCause = findProperCompletionChoiceCause(problematicPG);
+      if (exgCause) {
+        addOptionToCompleteParallelQuickFix(exgCause);
       }
     }
   }
