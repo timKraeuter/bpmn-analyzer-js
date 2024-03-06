@@ -98,8 +98,9 @@ export default function QuickFixes(
     activity.parent.children
       .filter(
         (child) =>
-          is(child, "bpmn:FlowNode") &&
           child.x < activity.x &&
+          is(child, "bpmn:FlowNode") &&
+          child.type !== "label" &&
           isStartOrConnected(child) &&
           !isAny(child, ["bpmn:EndEvent"]),
       )
