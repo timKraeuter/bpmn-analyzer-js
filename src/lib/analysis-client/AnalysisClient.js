@@ -10,11 +10,12 @@ AnalysisClient.$inject = ["eventBus"];
 
 function getCheckerPort() {
   const port = window.location.port;
+  // Dev is served at + 1.
   if (port === "3000") {
-    return parseInt(port) + 2;
+    return parseInt(port) + 1;
   }
-  // We assume the checker function is served at the same server with port + 1.
-  return parseInt(port) + 1;
+  // We assume the checker function is served at the same port.
+  return parseInt(port);
 }
 
 function startAnalysis(checker_port, diagramXML, eventBus) {
@@ -36,5 +37,8 @@ function startAnalysis(checker_port, diagramXML, eventBus) {
     .then((response) => response.json())
     .then((json) => {
       eventBus.fire("analysis.done", json);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
     });
 }
