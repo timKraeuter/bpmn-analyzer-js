@@ -68,20 +68,23 @@ export default function Log(
         icon: "bpmn-icon-business-rule",
         scope,
       });
-    } else if (
-      is(element, "bpmn:IntermediateCatchEvent") ||
-      is(element, "bpmn:IntermediateThrowEvent")
-    ) {
+    } else if (is(element, "bpmn:IntermediateThrowEvent")) {
       this.log({
-        text: elementName || "Intermediate Event",
-        icon: "bpmn-icon-intermediate-element-none",
+        text: elementName || "Intermediate Throw Event",
+        icon: getIconForIntermediateEvent(element, "throw"),
+        scope,
+      });
+    } else if (is(element, "bpmn:IntermediateCatchEvent")) {
+      this.log({
+        text: elementName || "Intermediate Catch Event",
+        icon: getIconForIntermediateEvent(element, "catch"),
         scope,
       });
     }
     if (is(element, "bpmn:BoundaryEvent")) {
       this.log({
         text: elementName || "Boundary Event",
-        icon: "bpmn-icon-intermediate-element-none",
+        icon: "bpmn-icon-intermediate-event-none",
         scope,
       });
     } else if (is(element, "bpmn:ManualTask")) {
@@ -141,7 +144,7 @@ export default function Log(
       } else {
         this.log({
           text: elementName || "End Event",
-          icon: "bpmn-icon-end-event-none",
+          icon: `bpmn-icon-end-event-${getEventTypeString(element)}`,
           scope,
         });
       }
@@ -164,6 +167,55 @@ export default function Log(
     this.clear();
     this.toggle(true);
   });
+}
+
+function getIconForIntermediateEvent(element, throwOrCatch) {
+  const eventTypeString = getEventTypeString(element);
+
+  // Currently only timer events are supported
+  return `bpmn-icon-intermediate-event-${throwOrCatch}-${eventTypeString}`;
+}
+
+function getEventTypeString(element) {
+  if (
+    !element.businessObject.eventDefinitions ||
+    element.businessObject.eventDefinitions.length === 0
+  ) {
+    return "none";
+  }
+  const eventDefinition = element.businessObject.eventDefinitions[0];
+
+  if (is(eventDefinition, "bpmn:MessageEventDefinition")) {
+    return "message";
+  }
+  if (is(eventDefinition, "bpmn:TimerEventDefinition")) {
+    return "timer";
+  }
+  if (is(eventDefinition, "bpmn:SignalEventDefinition")) {
+    return "signal";
+  }
+  if (is(eventDefinition, "bpmn:ErrorEventDefinition")) {
+    return "error";
+  }
+  if (is(eventDefinition, "bpmn:EscalationEventDefinition")) {
+    return "escalation";
+  }
+  if (is(eventDefinition, "bpmn:CompensateEventDefinition")) {
+    return "compensate";
+  }
+  if (is(eventDefinition, "bpmn:ConditionalEventDefinition")) {
+    return "conditional";
+  }
+  if (is(eventDefinition, "bpmn:LinkEventDefinition")) {
+    return "link";
+  }
+  if (is(eventDefinition, "bpmn:CancelEventDefinition")) {
+    return "cancel";
+  }
+  if (is(eventDefinition, "bpmn:TerminateEventDefinition")) {
+    return "terminate";
+  }
+  return "none";
 }
 
 Log.prototype._init = function () {
