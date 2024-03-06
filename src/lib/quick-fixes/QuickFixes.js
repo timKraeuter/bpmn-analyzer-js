@@ -185,8 +185,7 @@ export default function QuickFixes(
     if (lastTransition) {
       const lastState = lastTransition.next_state;
       lastState.snapshots.forEach((snapshot) => {
-        const tokens = snapshot.tokens;
-        tryFindBlockingPGsAndAddQuickFix(tokens);
+        tryFindBlockingPGsAndAddQuickFix(snapshot.tokens);
       });
     }
   }
