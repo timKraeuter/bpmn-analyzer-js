@@ -1,11 +1,12 @@
 import { domify } from "min-dom";
-import taskSplit from "../../../resources/taskSplit.bpmn";
-import taskMerge from "../../../resources/taskMerge.bpmn";
+import taskSplit from "../../../resources/implicit-task-split.bpmn";
+import taskMerge from "../../../resources/implicit-task-merge.bpmn";
 import showcase from "../../../resources/showcase.bpmn";
 import unsafeGateways from "../../../resources/unsafe-gateways.bpmn";
-import reusedEndEvent from "../../../resources/reusedEndEvent.bpmn";
+import reusedEndEvent from "../../../resources/reused-end-event.bpmn";
 import stuck from "../../../resources/stuck.bpmn";
-import deadActivity from "../../../resources/deadActivity.bpmn";
+import deadActivity from "../../../resources/dead-activity.bpmn";
+import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -15,6 +16,7 @@ const example_boards = {
   reusedEndEvent,
   stuck,
   deadActivity,
+  poolsWithMessageFlows,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -32,13 +34,14 @@ AnalysisExamples.prototype._init = function () {
     <select id="example-select" class="example-select">
       <option value="taskSplit">Unsafe implicit parallel gateway</option>
       <option value="stuck">Cannot terminate</option>
-      <option value="unsafeGateways" selected="selected">
+      <option value="unsafeGateways">
         Unsafe exclusive gateway
       </option>
       <option value="taskMerge">Unsafe implicit exclusive gateway</option>
       <option value="reusedEndEvent">Reused end event</option>
       <option value="showcase">Showcase</option>
       <option value="deadActivity">Dead Activity</option>
+      <option value="poolsWithMessageFlows" selected="selected">Pools with message flows</option>
     </select>
   `);
 
