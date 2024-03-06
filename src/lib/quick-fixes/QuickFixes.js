@@ -93,14 +93,15 @@ export default function QuickFixes(
    * @param {Shape} activity
    * @returns {Shape | undefined}
    */
-  function findNearestFlowNode(activity) {
+  function findNearestConnectedFlowNode(activity) {
     let nearest = undefined;
     activity.parent.children
       .filter(
         (child) =>
           is(child, "bpmn:FlowNode") &&
           child.x < activity.x &&
-          isStartOrConnected(child),
+          isStartOrConnected(child) &&
+          !is(child, "bpmn:EndEvent"),
       )
       .forEach((flowNode) => {
         if (!nearest) {
@@ -129,7 +130,7 @@ export default function QuickFixes(
       if (activity.incoming.length > 0) {
         return;
       }
-      const nearestFlowNode = findNearestFlowNode(activity);
+      const nearestFlowNode = findNearestConnectedFlowNode(activity);
       if (nearestFlowNode) {
         addQuickFixForShape(
           activity,
