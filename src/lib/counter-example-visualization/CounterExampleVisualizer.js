@@ -1,10 +1,11 @@
 import {
-  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   COUNTER_EXAMPLE_VISUALIZATION_STARTED,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
+  START_COUNTER_EXAMPLE_VISUALIZATION,
   TOGGLE_MODE_EVENT,
   TRACE_EVENT,
-  START_COUNTER_EXAMPLE_VISUALIZATION,
 } from "./util/EventHelper";
+import randomColor from "randomcolor";
 
 export default function CounterExampleVisualizer(
   animation,
@@ -13,6 +14,41 @@ export default function CounterExampleVisualizer(
   tokenCount,
   notifications,
 ) {
+  const colors = randomColor({
+    count: 60,
+  }).filter((c) => getContrastYIQ(c.substring(1)) < 200);
+
+  function getContrastYIQ(hexcolor) {
+    const r = parseInt(hexcolor.substring(1, 3), 16);
+    const g = parseInt(hexcolor.substring(3, 5), 16);
+    const b = parseInt(hexcolor.substring(5, 7), 16);
+    return (r * 299 + g * 587 + b * 114) / 1000;
+  }
+
+  let colorsIdx = 0;
+
+  function getColors(scope) {
+    const { element } = scope;
+
+    if (element && element.type === "bpmn:MessageFlow") {
+      return {
+        primary: "#999",
+        auxiliary: "#FFF",
+      };
+    }
+
+    if (scope.colors) {
+      return scope.colors;
+    }
+
+    const primary = colors[colorsIdx++ % colors.length];
+
+    return {
+      primary,
+      auxiliary: getContrastYIQ(primary) >= 128 ? "#111" : "#fff",
+    };
+  }
+
   this._notifications = notifications;
 
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION, (data) => {
