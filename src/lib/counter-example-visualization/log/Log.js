@@ -129,6 +129,12 @@ export default function Log(
         icon: "bpmn-icon-gateway-parallel",
         scope,
       });
+    } else if (is(element, "bpmn:EventBasedGateway")) {
+      this.log({
+        text: elementName || "Event-based Gateway",
+        icon: "bpmn-icon-gateway-eventbased",
+        scope,
+      });
     } else if (is(element, "bpmn:EndEvent")) {
       if (
         isTypedEvent(
@@ -171,8 +177,9 @@ export default function Log(
 
 function getIconForIntermediateEvent(element, throwOrCatch) {
   const eventTypeString = getEventTypeString(element);
-
-  // Currently only timer events are supported
+  if (eventTypeString === "none") {
+    return `bpmn-icon-intermediate-event-none`;
+  }
   return `bpmn-icon-intermediate-event-${throwOrCatch}-${eventTypeString}`;
 }
 

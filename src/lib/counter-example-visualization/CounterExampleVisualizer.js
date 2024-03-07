@@ -170,7 +170,10 @@ export default function CounterExampleVisualizer(
    * @returns {Snapshot[]}
    */
   function calcSnapshotDelta(snapshots, previousSnapshots) {
-    const snapshotDiff = snapshots.slice();
+    // Make a copy we can edit.
+    const snapshotDiff = snapshots.map((snapshot) => {
+      return { tokens: Object.assign({}, snapshot.tokens), id: snapshot.id };
+    });
     // Remove all tokens that are in the previous snapshots
     previousSnapshots.forEach((oldSnapshot) => {
       Object.entries(oldSnapshot.tokens).forEach(([key, tokenAmount]) => {
@@ -178,7 +181,6 @@ export default function CounterExampleVisualizer(
           (snapshot) => snapshot.id === oldSnapshot.id,
         );
         const newAmount = newSnapshot.tokens[key] - tokenAmount;
-        console.log(key, newAmount);
         if (newAmount > 0) {
           newSnapshot.tokens[key] = newAmount;
         } else {
@@ -186,9 +188,6 @@ export default function CounterExampleVisualizer(
         }
       });
     });
-    console.log("old snapshots", previousSnapshots);
-    console.log("new snapshots", snapshots);
-    console.log("calculated snapshot diff", snapshotDiff);
     return snapshotDiff;
   }
 }

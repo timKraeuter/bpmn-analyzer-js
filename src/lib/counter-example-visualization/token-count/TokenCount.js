@@ -1,6 +1,6 @@
 import { domify } from "min-dom";
 
-import { is } from "bpmn-js/lib/util/ModelUtil";
+import { is, isAny } from "bpmn-js/lib/util/ModelUtil";
 
 import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
@@ -34,7 +34,7 @@ export default function TokenCount(eventBus, overlays) {
   // Add specific token count behavior for some elements.
   eventBus.on(TRACE_EVENT, (data) => {
     const element = data.element;
-    if (is(element, "bpmn:EndEvent")) {
+    if (isAny(element, ["bpmn:EndEvent", "bpmn:EventBasedGateway"])) {
       this.decreaseTokenCount(element);
     }
     if (is(element, "bpmn:ParallelGateway")) {
