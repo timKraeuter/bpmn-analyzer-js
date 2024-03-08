@@ -48,10 +48,11 @@ export default function Log(
     const elementName = getElementName(element);
     const scope = {
       // TODO: Second part should be the real snapshot id later.
-      id: element.parent.businessObject.name || element.parent.id,
+      id:
+        element.parent.businessObject.name.substring(0, 20) ||
+        element.parent.id.substring(0, 7),
       colors: tokenColors.getColorForElement(element),
     };
-
     if (is(element, "bpmn:BusinessRuleTask")) {
       this.log({
         text: elementName || "Business Rule Task",
@@ -117,6 +118,12 @@ export default function Log(
       this.log({
         text: elementName || "User Task",
         icon: "bpmn-icon-user",
+        scope,
+      });
+    } else if (element.type === "bpmn:Task") {
+      this.log({
+        text: elementName || "Task",
+        icon: "bpmn-icon-task",
         scope,
       });
     } else if (is(element, "bpmn:ExclusiveGateway")) {

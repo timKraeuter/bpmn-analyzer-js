@@ -46,5 +46,9 @@ TokenColors.prototype.getColor = function getColor(snapshotID) {
 TokenColors.prototype.getColorForElement = function getColorForElement(
   element,
 ) {
-  return this.getColor(element.parent.businessObject.processRef.id);
+  if (element.parent.businessObject.processRef) {
+    return this.getColor(element.parent.businessObject.processRef.id);
+  } else {
+    return this.getColor(element.parent.id);
+  }
 };
