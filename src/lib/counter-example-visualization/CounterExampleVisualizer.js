@@ -106,10 +106,30 @@ export default function CounterExampleVisualizer(
       return;
     }
     const transition = transitions[index];
+    console.log(transition);
     eventBus.fire(TRACE_EVENT, {
       element: elementRegistry.get(transition.label),
       property,
     });
+    // Visualize messages
+    Object.entries(transition.next_state.messages).forEach(
+      ([key, messageAmount]) => {
+        const element = elementRegistry.get(key);
+        const scope = {
+          element,
+          colors: {
+            primary: "#999",
+            auxiliary: "#FFF",
+          },
+        };
+        for (let i = 0; i < messageAmount; i++) {
+          animation.animate(element, scope, () => {
+            // TODO: Wait before starting the next round of animation
+          });
+        }
+      },
+    );
+
     visualizeSnapshotDelta(
       property,
       previousSnapshots,

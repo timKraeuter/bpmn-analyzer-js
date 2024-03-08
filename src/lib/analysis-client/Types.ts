@@ -17,6 +17,11 @@ export interface CounterExample {
 
 export interface State {
   snapshots: Snapshot[];
+  messages: Messages;
+}
+
+export interface Messages {
+  [key: string]: number;
 }
 
 export interface Snapshot {
