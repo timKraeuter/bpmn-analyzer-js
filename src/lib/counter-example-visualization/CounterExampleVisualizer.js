@@ -68,7 +68,7 @@ export default function CounterExampleVisualizer(
     eventBus.fire(TOGGLE_MODE_EVENT, {
       active: true,
     });
-    eventBus.fire(COUNTER_EXAMPLE_VISUALIZATION_STARTED, {});
+    eventBus.fire(COUNTER_EXAMPLE_VISUALIZATION_STARTED, { propertyResult });
 
     notifications.showNotification({
       text: "Visualizing counter example started.",

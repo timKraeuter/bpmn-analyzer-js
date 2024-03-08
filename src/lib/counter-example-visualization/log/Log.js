@@ -22,15 +22,6 @@ const ICON_INFO = InfoIcon();
 
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 
-const STYLE = getComputedStyle(document.documentElement);
-
-const DEFAULT_PRIMARY_COLOR = STYLE.getPropertyValue(
-  "--token-simulation-green-base-44",
-);
-const DEFAULT_AUXILIARY_COLOR = STYLE.getPropertyValue(
-  "--token-simulation-white",
-);
-
 function getElementName(element) {
   const name = element.di.bpmnElement.name;
   if (name) {
@@ -53,7 +44,7 @@ export default function Log(
   this._init();
 
   eventBus.on(TRACE_EVENT, (data) => {
-    const { property, element } = data;
+    const { element } = data;
     const elementName = getElementName(element);
     const scope = {
       // TODO: Second part should be the real snapshot id later.
@@ -180,9 +171,13 @@ export default function Log(
     this.clear();
   });
 
-  eventBus.on(COUNTER_EXAMPLE_VISUALIZATION_STARTED, () => {
+  eventBus.on(COUNTER_EXAMPLE_VISUALIZATION_STARTED, (data) => {
     this.clear();
     this.toggle(true);
+    const property = domify(
+      `<p class="bts-entry placeholder">${data.propertyResult.property}</p>`,
+    );
+    this._content.prepend(property);
   });
 }
 
