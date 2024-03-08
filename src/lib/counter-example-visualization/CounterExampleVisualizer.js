@@ -47,7 +47,7 @@ export default function CounterExampleVisualizer(
     );
     property.classList.remove("clickable");
 
-    if (!property.fulfilled && propertyResult.counter_example) {
+    if (!propertyResult.fulfilled && propertyResult.counter_example) {
       property.classList.add("clickable");
 
       const handler = clearAndVisualize.bind(this, propertyResult);

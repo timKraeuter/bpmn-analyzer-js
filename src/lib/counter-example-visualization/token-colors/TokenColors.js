@@ -22,7 +22,6 @@ function getContrastYIQ(hexcolor) {
 
 export default function TokenColors(eventBus) {
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION, () => {
-    console.log("reset");
     colorsIdx = 0;
     snapshotColorMap.clear();
   });
