@@ -148,6 +148,12 @@ export default function Log(
         icon: "bpmn-icon-gateway-eventbased",
         scope,
       });
+    } else if (is(element, "bpmn:StartEvent")) {
+      this.log({
+        text: elementName || "Start Event",
+        icon: `bpmn-icon-start-event-${getEventTypeString(element)}`,
+        scope,
+      });
     } else if (is(element, "bpmn:EndEvent")) {
       if (
         isTypedEvent(
