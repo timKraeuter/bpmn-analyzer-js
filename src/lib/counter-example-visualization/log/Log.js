@@ -44,6 +44,7 @@ export default function Log(
   notifications,
   canvas,
   tokenSimulationPalette,
+  tokenColors,
 ) {
   this._notifications = notifications;
   this._canvas = canvas;
@@ -55,11 +56,9 @@ export default function Log(
     const { property, element } = data;
     const elementName = getElementName(element);
     const scope = {
-      id: property,
-      colors: {
-        primary: DEFAULT_PRIMARY_COLOR,
-        auxiliary: DEFAULT_AUXILIARY_COLOR,
-      },
+      // TODO: Second part should be the real snapshot id later.
+      id: element.parent.businessObject.name || element.parent.id,
+      colors: tokenColors.getColorForElement(element),
     };
 
     if (is(element, "bpmn:BusinessRuleTask")) {
@@ -357,4 +356,10 @@ Log.prototype.clear = function () {
   this._content.appendChild(this._placeholder);
 };
 
-Log.$inject = ["eventBus", "notifications", "canvas", "tokenSimulationPalette"];
+Log.$inject = [
+  "eventBus",
+  "notifications",
+  "canvas",
+  "tokenSimulationPalette",
+  "tokenColors",
+];

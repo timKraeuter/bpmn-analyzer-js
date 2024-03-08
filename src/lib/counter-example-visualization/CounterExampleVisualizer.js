@@ -5,7 +5,6 @@ import {
   TOGGLE_MODE_EVENT,
   TRACE_EVENT,
 } from "./util/EventHelper";
-import randomColor from "randomcolor";
 
 export default function CounterExampleVisualizer(
   animation,
@@ -13,42 +12,8 @@ export default function CounterExampleVisualizer(
   elementRegistry,
   tokenCount,
   notifications,
+  tokenColors,
 ) {
-  const colors = randomColor({
-    count: 60,
-  }).filter((c) => getContrastYIQ(c.substring(1)) < 200);
-
-  function getContrastYIQ(hexcolor) {
-    const r = parseInt(hexcolor.substring(1, 3), 16);
-    const g = parseInt(hexcolor.substring(3, 5), 16);
-    const b = parseInt(hexcolor.substring(5, 7), 16);
-    return (r * 299 + g * 587 + b * 114) / 1000;
-  }
-
-  let colorsIdx = 0;
-
-  function getColors(scope) {
-    const { element } = scope;
-
-    if (element && element.type === "bpmn:MessageFlow") {
-      return {
-        primary: "#999",
-        auxiliary: "#FFF",
-      };
-    }
-
-    if (scope.colors) {
-      return scope.colors;
-    }
-
-    const primary = colors[colorsIdx++ % colors.length];
-
-    return {
-      primary,
-      auxiliary: getContrastYIQ(primary) >= 128 ? "#111" : "#fff",
-    };
-  }
-
   this._notifications = notifications;
 
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION, (data) => {
@@ -184,13 +149,13 @@ export default function CounterExampleVisualizer(
     snapshotsDelta.forEach((snapshot) => {
       Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
         const element = elementRegistry.get(key);
-        const scope = { element };
+        const scope = { element, colors: tokenColors.getColor(snapshot.id) };
         for (let i = 0; i < tokenAmount; i++) {
           semaphore++;
-          tokenCount.decreaseTokenCount(element.source);
+          tokenCount.decreaseTokenCount(element.source, scope.colors);
           animation.animate(element, scope, () => {
             semaphore--;
-            tokenCount.increaseTokenCount(element.target);
+            tokenCount.increaseTokenCount(element.target, scope.colors);
             if (semaphore === 0) {
               visualizeNextState(property, snapshots, transitions, index + 1);
             }
@@ -208,7 +173,10 @@ export default function CounterExampleVisualizer(
   function calcSnapshotDelta(snapshots, previousSnapshots) {
     // Make a copy we can edit.
     const snapshotDiff = snapshots.map((snapshot) => {
-      return { tokens: Object.assign({}, snapshot.tokens), id: snapshot.id };
+      return {
+        tokens: Object.assign({}, snapshot.tokens),
+        id: snapshot.id,
+      };
     });
     // Remove all tokens that are in the previous snapshots
     previousSnapshots.forEach((oldSnapshot) => {
@@ -234,4 +202,5 @@ CounterExampleVisualizer.$inject = [
   "elementRegistry",
   "tokenCount",
   "notifications",
+  "tokenColors",
 ];

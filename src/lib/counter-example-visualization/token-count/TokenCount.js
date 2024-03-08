@@ -17,7 +17,7 @@ const DEFAULT_AUXILIARY_COLOR = "--token-simulation-white";
 
 const TOKEN_COUNT_OVERLAY_TYPE = "token-count";
 
-export default function TokenCount(eventBus, overlays) {
+export default function TokenCount(eventBus, overlays, tokenColors) {
   this._overlays = overlays;
   this.overlayIdsAndCount = {};
 
@@ -35,19 +35,27 @@ export default function TokenCount(eventBus, overlays) {
   eventBus.on(TRACE_EVENT, (data) => {
     const element = data.element;
     if (isAny(element, ["bpmn:EndEvent", "bpmn:EventBasedGateway"])) {
-      this.decreaseTokenCount(element);
+      this.decreaseTokenCount(element, tokenColors.getColorForElement(element));
     }
     if (is(element, "bpmn:ParallelGateway")) {
       // We decrease the token count for all incoming sequence flows - 1 since it has already been decreased by one.
-      this.decreaseTokenCountBy(element, element.incoming.length - 1);
+      this.decreaseTokenCountBy(
+        element,
+        element.incoming.length - 1,
+        tokenColors.getColorForElement(element),
+      );
     }
   });
 }
 
-TokenCount.prototype.addTokenCountOverlay = function (element, tokenCount) {
+TokenCount.prototype.addTokenCountOverlay = function (
+  element,
+  tokenCount,
+  colors,
+) {
   const html = domify(`
     <div class="bts-token-count-parent">
-      ${this._getTokenHTML(element, tokenCount)}
+      ${this._getTokenHTML(element, tokenCount, colors)}
     </div>
   `);
 
@@ -62,7 +70,7 @@ TokenCount.prototype.addTokenCountOverlay = function (element, tokenCount) {
   });
 };
 
-TokenCount.prototype.increaseTokenCount = function (element) {
+TokenCount.prototype.increaseTokenCount = function (element, colors) {
   let tokenCount = 1;
   const existingOverlayIDAndCount = this.overlayIdsAndCount[element.id];
   if (existingOverlayIDAndCount) {
@@ -70,7 +78,7 @@ TokenCount.prototype.increaseTokenCount = function (element) {
     tokenCount = existingOverlayIDAndCount.count + 1;
   }
 
-  const overlayID = this.addTokenCountOverlay(element, tokenCount);
+  const overlayID = this.addTokenCountOverlay(element, tokenCount, colors);
   this.overlayIdsAndCount[element.id] = {
     id: overlayID,
     count: tokenCount,
@@ -84,7 +92,7 @@ TokenCount.prototype.clearTokenCounts = function () {
   this.overlayIdsAndCount = {};
 };
 
-TokenCount.prototype.decreaseTokenCountBy = function (element, amount) {
+TokenCount.prototype.decreaseTokenCountBy = function (element, amount, colors) {
   const overlayIdAndCount = this.overlayIdsAndCount[element.id];
 
   if (!overlayIdAndCount) {
@@ -93,7 +101,11 @@ TokenCount.prototype.decreaseTokenCountBy = function (element, amount) {
   this._overlays.remove(overlayIdAndCount.id);
   if (overlayIdAndCount.count > amount) {
     const decreasedCount = overlayIdAndCount.count - amount;
-    const overlayID = this.addTokenCountOverlay(element, decreasedCount);
+    const overlayID = this.addTokenCountOverlay(
+      element,
+      decreasedCount,
+      colors,
+    );
     this.overlayIdsAndCount[element.id] = {
       id: overlayID,
       count: decreasedCount,
@@ -103,12 +115,12 @@ TokenCount.prototype.decreaseTokenCountBy = function (element, amount) {
   }
 };
 
-TokenCount.prototype.decreaseTokenCount = function (element) {
-  this.decreaseTokenCountBy(element, 1);
+TokenCount.prototype.decreaseTokenCount = function (element, colors) {
+  this.decreaseTokenCountBy(element, 1, colors);
 };
 
-TokenCount.prototype._getTokenHTML = function (element, tokenCount) {
-  const colors = this._getDefaultColors();
+TokenCount.prototype._getTokenHTML = function (element, tokenCount, colors) {
+  colors = colors || this._getDefaultColors();
 
   return `
     <div class="bts-token-count waiting"
@@ -125,4 +137,4 @@ TokenCount.prototype._getDefaultColors = function () {
   };
 };
 
-TokenCount.$inject = ["eventBus", "overlays"];
+TokenCount.$inject = ["eventBus", "overlays", "tokenColors"];
