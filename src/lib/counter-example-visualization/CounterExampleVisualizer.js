@@ -83,10 +83,10 @@ export default function CounterExampleVisualizer(
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
-    visualizeSnapshotDelta(
+    visualizeStateChanges(
       propertyResult.property,
       [],
-      propertyResult.counter_example.start_state.snapshots,
+      propertyResult.counter_example.start_state,
       propertyResult.counter_example.transitions,
       -1,
     );
@@ -106,34 +106,15 @@ export default function CounterExampleVisualizer(
       return;
     }
     const transition = transitions[index];
-    console.log(transition);
     eventBus.fire(TRACE_EVENT, {
       element: elementRegistry.get(transition.label),
       property,
     });
-    // Visualize messages
-    Object.entries(transition.next_state.messages).forEach(
-      ([key, messageAmount]) => {
-        const element = elementRegistry.get(key);
-        const scope = {
-          element,
-          colors: {
-            primary: "#999",
-            auxiliary: "#FFF",
-          },
-        };
-        for (let i = 0; i < messageAmount; i++) {
-          animation.animate(element, scope, () => {
-            // TODO: Wait before starting the next round of animation
-          });
-        }
-      },
-    );
 
-    visualizeSnapshotDelta(
+    visualizeStateChanges(
       property,
       previousSnapshots,
-      transition.next_state.snapshots,
+      transition.next_state,
       transitions,
       index,
     );
@@ -142,30 +123,61 @@ export default function CounterExampleVisualizer(
   /**
    * @param {string} property
    * @param {Snapshot[]} previousSnapshots
-   * @param {Snapshot[]} snapshots
+   * @param {State} state
    * @param {Transition[]} transitions
    * @param {number} index
    */
-  function visualizeSnapshotDelta(
+  function visualizeStateChanges(
     property,
     previousSnapshots,
-    snapshots,
+    state,
     transitions,
     index,
   ) {
     // works but can probably be optimized
-    const snapshotsDelta = calcSnapshotDelta(snapshots, previousSnapshots);
+    const snapshotsDelta = calcSnapshotDelta(
+      state.snapshots,
+      previousSnapshots,
+    );
 
     if (
+      Object.keys(state.messages).length === 0 &&
       snapshotsDelta.every(
         (snapshot) => Object.keys(snapshot.tokens).length === 0,
       )
     ) {
-      visualizeNextState(property, snapshots, transitions, index + 1);
+      visualizeNextState(property, state.snapshots, transitions, index + 1);
       return;
     }
 
     let semaphore = 0;
+    // Visualize messages
+    Object.entries(state.messages).forEach(([key, messageAmount]) => {
+      const element = elementRegistry.get(key);
+      const scope = {
+        element,
+        colors: {
+          primary: "#999",
+          auxiliary: "#FFF",
+        },
+      };
+      for (let i = 0; i < messageAmount; i++) {
+        semaphore++;
+        animation.animate(element, scope, () => {
+          semaphore--;
+          if (semaphore === 0) {
+            visualizeNextState(
+              property,
+              state.snapshots,
+              transitions,
+              index + 1,
+            );
+          }
+        });
+      }
+    });
+
+    // Visualize tokens
     snapshotsDelta.forEach((snapshot) => {
       Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
         const element = elementRegistry.get(key);
@@ -177,7 +189,12 @@ export default function CounterExampleVisualizer(
             semaphore--;
             tokenCount.increaseTokenCount(element.target, scope.colors);
             if (semaphore === 0) {
-              visualizeNextState(property, snapshots, transitions, index + 1);
+              visualizeNextState(
+                property,
+                state.snapshots,
+                transitions,
+                index + 1,
+              );
             }
           });
         }

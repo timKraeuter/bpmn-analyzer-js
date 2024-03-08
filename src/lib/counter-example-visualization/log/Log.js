@@ -43,14 +43,18 @@ export default function Log(
 
   this._init();
 
+  function getScopeID(element) {
+    if (element.parent.businessObject.name) {
+      element.parent.businessObject.name.substring(0, 20);
+    }
+    return element.parent.id.substring(0, 7);
+  }
+
   eventBus.on(TRACE_EVENT, (data) => {
     const { element } = data;
     const elementName = getElementName(element);
     const scope = {
-      // TODO: Second part should be the real snapshot id later.
-      id:
-        element.parent.businessObject.name.substring(0, 20) ||
-        element.parent.id.substring(0, 7),
+      id: getScopeID(element),
       colors: tokenColors.getColorForElement(element),
     };
     if (is(element, "bpmn:BusinessRuleTask")) {
