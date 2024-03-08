@@ -68,6 +68,24 @@ export default function Log(
         icon: "bpmn-icon-business-rule",
         scope,
       });
+    } else if (is(element, "bpmn:SendTask")) {
+      this.log({
+        text: elementName || "Send Task",
+        icon: "bpmn-icon-send-task",
+        scope,
+      });
+    } else if (is(element, "bpmn:SubProcess")) {
+      this.log({
+        text: elementName || "Sub-process",
+        icon: "bpmn-icon-subprocess-collapsed",
+        scope,
+      });
+    } else if (is(element, "bpmn:ReceiveTask")) {
+      this.log({
+        text: elementName || "Receive Task",
+        icon: "bpmn-icon-receive-task",
+        scope,
+      });
     } else if (is(element, "bpmn:IntermediateThrowEvent")) {
       this.log({
         text: elementName || "Intermediate Throw Event",
@@ -103,12 +121,6 @@ export default function Log(
       this.log({
         text: elementName || "Service Task",
         icon: "bpmn-icon-service",
-        scope,
-      });
-    } else if (is(element, "bpmn:Task")) {
-      this.log({
-        text: elementName || "Task",
-        icon: "bpmn-icon-task",
         scope,
       });
     } else if (is(element, "bpmn:UserTask")) {
