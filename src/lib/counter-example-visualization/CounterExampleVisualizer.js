@@ -83,7 +83,6 @@ export default function CounterExampleVisualizer(
    * @param {PropertyResult} propertyResult
    */
   function visualizeCounterExample(propertyResult) {
-    console.log(propertyResult.counter_example.transitions);
     visualizeStateChanges(
       propertyResult.property,
       [],
