@@ -45,7 +45,7 @@ export default function Log(
 
   function getScopeID(element) {
     if (element.parent.businessObject.name) {
-      element.parent.businessObject.name.substring(0, 20);
+      return element.parent.businessObject.name.substring(0, 20);
     }
     return element.parent.id.substring(0, 7);
   }
