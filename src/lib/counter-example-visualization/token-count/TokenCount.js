@@ -1,12 +1,13 @@
 import { domify } from "min-dom";
 
-import { is, isAny } from "bpmn-js/lib/util/ModelUtil";
+import { getBusinessObject, is, isAny } from "bpmn-js/lib/util/ModelUtil";
 
 import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   TOGGLE_MODE_EVENT,
   TRACE_EVENT,
 } from "../util/EventHelper";
+import { isTypedEvent } from "../util/ElementHelper";
 const LOW_PRIORITY = 500;
 
 const OFFSET_BOTTOM = 10;
@@ -44,6 +45,13 @@ export default function TokenCount(eventBus, overlays, tokenColors) {
         element.incoming.length - 1,
         tokenColors.getColorForElement(element),
       );
+    }
+    if (
+      isTypedEvent(getBusinessObject(element), "bpmn:TerminateEventDefinition")
+    ) {
+      // TODO: Careful with multiple snapshots in the same process later!
+      // Remove all tokens from the same snapshot.
+      element.parent.children.forEach((child) => this.removeAllTokens(child));
     }
   });
 }
@@ -90,6 +98,16 @@ TokenCount.prototype.clearTokenCounts = function () {
     type: TOKEN_COUNT_OVERLAY_TYPE,
   });
   this.overlayIdsAndCount = {};
+};
+
+TokenCount.prototype.removeAllTokens = function (element) {
+  const overlayIdAndCount = this.overlayIdsAndCount[element.id];
+
+  if (!overlayIdAndCount) {
+    return;
+  }
+  this._overlays.remove(overlayIdAndCount.id);
+  delete this.overlayIdsAndCount[element.id];
 };
 
 TokenCount.prototype.decreaseTokenCountBy = function (element, amount, colors) {

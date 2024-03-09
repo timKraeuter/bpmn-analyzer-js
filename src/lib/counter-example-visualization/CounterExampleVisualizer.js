@@ -135,7 +135,7 @@ export default function CounterExampleVisualizer(
     index,
   ) {
     // works but can probably be optimized
-    const snapshotsDelta = calcSnapshotDelta(
+    const snapshotsDelta = calcSnapshotTokenAdditions(
       state.snapshots,
       previousSnapshots,
     );
@@ -207,7 +207,7 @@ export default function CounterExampleVisualizer(
    * @param {Snapshot[]} snapshots
    * @returns {Snapshot[]}
    */
-  function calcSnapshotDelta(snapshots, previousSnapshots) {
+  function calcSnapshotTokenAdditions(snapshots, previousSnapshots) {
     // Make a copy we can edit.
     const snapshotDiff = snapshots.map((snapshot) => {
       return {
