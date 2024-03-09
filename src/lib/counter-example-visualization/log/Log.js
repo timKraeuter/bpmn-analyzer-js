@@ -155,24 +155,11 @@ export default function Log(
         scope,
       });
     } else if (is(element, "bpmn:EndEvent")) {
-      if (
-        isTypedEvent(
-          getBusinessObject(element),
-          "bpmn:TerminateEventDefinition",
-        )
-      ) {
-        this.log({
-          text: elementName || "Terminate End Event",
-          icon: "bpmn-icon-end-element-terminate",
-          scope,
-        });
-      } else {
-        this.log({
-          text: elementName || "End Event",
-          icon: `bpmn-icon-end-event-${getEventTypeString(element)}`,
-          scope,
-        });
-      }
+      this.log({
+        text: elementName || "End Event",
+        icon: `bpmn-icon-end-event-${getEventTypeString(element)}`,
+        scope,
+      });
     }
   });
 
