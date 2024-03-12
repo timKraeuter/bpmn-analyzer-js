@@ -7,6 +7,7 @@ import reusedEndEvent from "../../../resources/reused-end-event.bpmn";
 import stuck from "../../../resources/stuck.bpmn";
 import deadActivity from "../../../resources/dead-activity.bpmn";
 import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.bpmn";
+import cycles from "../../../resources/cyclic.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -17,6 +18,7 @@ const example_boards = {
   stuck,
   deadActivity,
   poolsWithMessageFlows,
+  cycles,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -32,16 +34,17 @@ AnalysisExamples.prototype._init = function () {
   `);
   const select = domify(`
     <select id="example-select" class="example-select">
-      <option value="taskSplit">Unsafe implicit parallel gateway</option>
-      <option value="stuck">Cannot terminate</option>
-      <option value="unsafeGateways">
-        Unsafe exclusive gateway
+      <option value="taskSplit">Implicit parallel gateway (Safeness)</option>
+      <option value="stuck">Cannot terminate (Option To Complete)</option>
+      <option value="unsafeGateways" selected="selected">
+        Exclusive gateway (Safeness)
       </option>
-      <option value="taskMerge">Unsafe implicit exclusive gateway</option>
-      <option value="reusedEndEvent">Reused end event</option>
-      <option value="showcase">Showcase</option>
-      <option value="deadActivity">Dead Activity</option>
-      <option value="poolsWithMessageFlows" selected="selected">Pools with message flows</option>
+      <option value="taskMerge">Implicit exclusive gateway (Safeness)</option>
+      <option value="reusedEndEvent">Reused end event (Proper Completion)</option>
+      <option value="deadActivity">Dead Activity (No Dead Activities)</option>
+      <option value="showcase">Complex scenario</option>
+      <option value="poolsWithMessageFlows">Counterexample with messages</option>
+      <option value="cycles">Quick fixes with cycles</option>
     </select>
   `);
 
