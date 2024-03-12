@@ -290,16 +290,20 @@ export default function QuickFixes(
   /**
    * @param {Connection} inFlow
    * @param {Shape[]} choices
+   * @param {Connection[]} seenFlows
    */
-  function findAllPrecedingSFChoices(inFlow, choices) {
-    // TODO: Cycles!
+  function findAllPrecedingSFChoices(inFlow, choices, seenFlows) {
     const source = inFlow.source;
     if (source.outgoing.length > 1 && source.type === "bpmn:ExclusiveGateway") {
       choices.push(source);
     }
     if (source.incoming) {
       for (const inFlow of source.incoming) {
-        findAllPrecedingSFChoices(inFlow, choices);
+        if (seenFlows.includes(inFlow)) {
+          continue;
+        }
+        seenFlows.push(inFlow);
+        findAllPrecedingSFChoices(inFlow, choices, seenFlows);
       }
     }
     return choices;
@@ -308,16 +312,20 @@ export default function QuickFixes(
   /**
    * @param {Connection} inFlow
    * @param {Shape[]} splits
+   * @param {Connection[]} seenFlows
    */
-  function findAllPrecedingSFSplits(inFlow, splits) {
-    // TODO: Cycles!
+  function findAllPrecedingSFSplits(inFlow, splits, seenFlows) {
     const source = inFlow.source;
     if (source.outgoing.length > 1 && source.type !== "bpmn:ExclusiveGateway") {
       splits.push(source);
     }
     if (source.incoming) {
       for (const inFlow of source.incoming) {
-        findAllPrecedingSFSplits(inFlow, splits);
+        if (seenFlows.includes(inFlow)) {
+          continue;
+        }
+        seenFlows.push(inFlow);
+        findAllPrecedingSFSplits(inFlow, splits, seenFlows);
       }
     }
     return splits;
@@ -441,7 +449,7 @@ export default function QuickFixes(
    */
   function findProperCompletionChoiceCause(pg) {
     const preceding_choices = pg.incoming.map((inFlow) =>
-      findAllPrecedingSFChoices(inFlow, []),
+      findAllPrecedingSFChoices(inFlow, [], []),
     );
     return findCommonSplitOrChoice(preceding_choices);
   }
@@ -451,7 +459,7 @@ export default function QuickFixes(
    */
   function findUnsafeCause(ex_gateway) {
     const preceding_splits = ex_gateway.incoming.map((inFlow) =>
-      findAllPrecedingSFSplits(inFlow, []),
+      findAllPrecedingSFSplits(inFlow, [], []),
     );
     return findCommonSplitOrChoice(preceding_splits);
   }
