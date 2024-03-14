@@ -8,8 +8,8 @@ import stuck from "../../../resources/stuck.bpmn";
 import deadActivity from "../../../resources/dead-activity.bpmn";
 import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.bpmn";
 import cycles from "../../../resources/cyclic.bpmn";
-import deadReceiveTask from "../../../resources/dead_receive_task.bpmn";
-import deadMice from "../../../resources/dead_mice.bpmn";
+import deadReceiveTask from "../../../resources/dead-receive-task.bpmn";
+import deadMice from "../../../resources/dead-mice.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -40,17 +40,17 @@ AnalysisExamples.prototype._init = function () {
     <select id="example-select" class="example-select">
       <option value="taskSplit">Implicit parallel gateway (Safeness)</option>
       <option value="stuck">Cannot terminate (Option To Complete)</option>
-      <option value="unsafeGateways">
+      <option value="unsafeGateways" selected="selected">
         Exclusive gateway (Safeness)
       </option>
       <option value="taskMerge">Implicit exclusive gateway (Safeness)</option>
       <option value="reusedEndEvent">Reused end event (Proper Completion)</option>
       <option value="deadActivity">Dead Activity (No Dead Activities)</option>
+      <option value="deadReceiveTask">Dead Receive Task (No Dead Activities)</option>
       <option value="showcase">Complex scenario</option>
       <option value="poolsWithMessageFlows">Counterexample with messages</option>
       <option value="cycles">Quick fixes with cycles</option>
-      <option value="deadMice">Quick Fix missing message flow MICE</option>
-      <option value="deadReceiveTask" selected="selected">Quick Fix missing message flow receive task</option>
+      <option value="deadMice">Blocking MICE (Option To Complete)</option>
     </select>
   `);
 

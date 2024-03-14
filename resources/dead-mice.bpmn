@@ -7,14 +7,6 @@
       <text>This should not be picked for a new MF as quick fix.</text>
     </textAnnotation>
     <association id="Association_09in8a1" associationDirection="None" sourceRef="Event_0irq846" targetRef="TextAnnotation_0x522ef" />
-    <textAnnotation id="TextAnnotation_1o55kwv">
-      <text>This could be picked for a new MF as quick fix. But MICE is better.</text>
-    </textAnnotation>
-    <association id="Association_1m0nxe4" associationDirection="None" sourceRef="Event_10suyeb" targetRef="TextAnnotation_1o55kwv" />
-    <textAnnotation id="TextAnnotation_1sdizh3">
-      <text>Best option for a new incoming MF for the receive task.</text>
-    </textAnnotation>
-    <association id="Association_049foqx" associationDirection="None" sourceRef="Event_012d94x" targetRef="TextAnnotation_1sdizh3" />
     <textAnnotation id="TextAnnotation_03t1sb5">
       <text>Cannot be executed due to missing MF.</text>
     </textAnnotation>
@@ -38,19 +30,13 @@
   </process>
   <process id="Process_1jpk9vo" isExecutable="false">
     <startEvent id="Event_10w6x6m">
-      <outgoing>Flow_1du73qn</outgoing>
+      <outgoing>Flow_1ju8swo</outgoing>
     </startEvent>
-    <sequenceFlow id="Flow_1du73qn" sourceRef="Event_10w6x6m" targetRef="Event_012d94x" />
-    <sequenceFlow id="Flow_15pyucx" sourceRef="Event_012d94x" targetRef="Event_10suyeb" />
-    <intermediateThrowEvent id="Event_012d94x" name="MICE">
-      <incoming>Flow_1du73qn</incoming>
-      <outgoing>Flow_15pyucx</outgoing>
-      <messageEventDefinition id="MessageEventDefinition_1upszsz" />
-    </intermediateThrowEvent>
     <endEvent id="Event_10suyeb">
-      <incoming>Flow_15pyucx</incoming>
+      <incoming>Flow_1ju8swo</incoming>
       <messageEventDefinition id="MessageEventDefinition_1qmha59" />
     </endEvent>
+    <sequenceFlow id="Flow_1ju8swo" sourceRef="Event_10w6x6m" targetRef="Event_10suyeb" />
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_40e0d24a-67a5-413e-aefc-dad265aaf73b">
     <bpmndi:BPMNPlane id="BPMNPlane_500f5dcb-d27a-4260-8cac-962e6eb35e01" bpmnElement="Collaboration_0k5zawz">
@@ -76,59 +62,33 @@
         <di:waypoint x="442" y="190" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="BPMNShape_1ytn0zr" bpmnElement="Participant_11uor0t" isHorizontal="true">
-        <dc:Bounds x="150" y="290" width="380" height="160" />
+        <dc:Bounds x="150" y="299" width="380" height="160" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_04p9mz1" bpmnElement="Event_10w6x6m">
-        <dc:Bounds x="202" y="352" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_07z7azi_di" bpmnElement="Event_012d94x">
-        <dc:Bounds x="322" y="352" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="326" y="395" width="29" height="14" />
-        </bpmndi:BPMNLabel>
+        <dc:Bounds x="202" y="361" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_09g6nyb_di" bpmnElement="Event_10suyeb">
-        <dc:Bounds x="442" y="352" width="36" height="36" />
+        <dc:Bounds x="442" y="361" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_1oqcvhn" bpmnElement="Flow_1du73qn">
-        <di:waypoint x="238" y="370" />
-        <di:waypoint x="322" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15pyucx_di" bpmnElement="Flow_15pyucx">
-        <di:waypoint x="358" y="370" />
-        <di:waypoint x="442" y="370" />
+      <bpmndi:BPMNEdge id="Flow_1ju8swo_di" bpmnElement="Flow_1ju8swo">
+        <di:waypoint x="238" y="379" />
+        <di:waypoint x="442" y="379" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0o0ylem_di" bpmnElement="Association_0o0ylem">
-        <di:waypoint x="348" y="174" />
-        <di:waypoint x="381" y="105" />
+        <di:waypoint x="354" y="178" />
+        <di:waypoint x="452" y="95" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_0x522ef_di" bpmnElement="TextAnnotation_0x522ef">
         <dc:Bounds x="560" y="150" width="100" height="70" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1o55kwv_di" bpmnElement="TextAnnotation_1o55kwv">
-        <dc:Bounds x="550" y="355" width="100" height="84" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1sdizh3_di" bpmnElement="TextAnnotation_1sdizh3">
-        <dc:Bounds x="390" y="520" width="100" height="70" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_09in8a1_di" bpmnElement="Association_09in8a1">
         <di:waypoint x="478" y="187" />
         <di:waypoint x="560" y="173" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1m0nxe4_di" bpmnElement="Association_1m0nxe4">
-        <di:waypoint x="478" y="370" />
-        <di:waypoint x="550" y="370" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_049foqx_di" bpmnElement="Association_049foqx">
-        <di:waypoint x="349" y="385" />
-        <di:waypoint x="431" y="520" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_03t1sb5_di" bpmnElement="TextAnnotation_03t1sb5">
-        <dc:Bounds x="350" y="50" width="100" height="55" />
+        <dc:Bounds x="440" y="40" width="100" height="55" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

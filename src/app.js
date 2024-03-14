@@ -2,7 +2,7 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/empty.bpmn";
 
-import initialBoardXML from "../resources/dead_receive_task.bpmn";
+import initialBoardXML from "../resources/unsafe-gateways.bpmn";
 
 import AnalysisClientModule from "./lib/analysis-client";
 import AnalysisOverlaysModule from "./lib/analysis-overlays";
