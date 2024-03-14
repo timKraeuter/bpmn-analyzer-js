@@ -93,9 +93,10 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} activity
+   * @param {string[]} dead_activity_ids
    * @returns {Shape | undefined}
    */
-  function findNearestConnectedFlowNode(activity) {
+  function findNearestConnectedFlowNode(activity, dead_activity_ids) {
     let nearest = undefined;
     activity.parent.children
       .filter(
@@ -104,7 +105,8 @@ export default function QuickFixes(
           is(child, "bpmn:FlowNode") &&
           child.type !== "label" &&
           isStartOrConnected(child) &&
-          !isAny(child, ["bpmn:EndEvent"]),
+          !isAny(child, ["bpmn:EndEvent"]) &&
+          !dead_activity_ids.includes(child.id),
       )
       .forEach((flowNode) => {
         if (!nearest) {
@@ -124,8 +126,16 @@ export default function QuickFixes(
     return is(child, "bpmn:StartEvent") || child.incoming.length > 0;
   }
 
-  function proposeAddIncomingSequenceFlowQuickFix(activity) {
-    const nearestFlowNode = findNearestConnectedFlowNode(activity);
+  /**
+   *
+   * @param {Shape} activity
+   * @param {string[]} dead_activities
+   */
+  function proposeAddIncomingSequenceFlowQuickFix(activity, dead_activities) {
+    const nearestFlowNode = findNearestConnectedFlowNode(
+      activity,
+      dead_activities,
+    );
     if (nearestFlowNode) {
       addQuickFixForShape(
         activity,
@@ -153,8 +163,16 @@ export default function QuickFixes(
     }
   }
 
-  function proposeAddIncomingMessageFlowQuickFix(activity) {
-    const nearestMessageProducer = findNearestMessageProducer(activity);
+  /**
+   *
+   * @param {Shape} activity
+   * @param {string[]} dead_activity_ids
+   */
+  function proposeAddIncomingMessageFlowQuickFix(activity, dead_activity_ids) {
+    const nearestMessageProducer = findNearestMessageProducer(
+      activity,
+      dead_activity_ids,
+    );
     if (nearestMessageProducer) {
       addQuickFixForShape(
         activity,
@@ -186,9 +204,10 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} activity
+   * @param {string[]} dead_activity_ids
    * @returns {Shape | undefined}
    */
-  function findNearestMessageProducer(activity) {
+  function findNearestMessageProducer(activity, dead_activity_ids) {
     if (!activity.parent.parent) {
       return undefined; // We are not in a collaboration.
     }
@@ -202,7 +221,8 @@ export default function QuickFixes(
           (flowNode.type !== "label" &&
             isAny(flowNode, ["bpmn:IntermediateThrowEvent", "bpmn:EndEvent"]) &&
             hasEventDefinition(flowNode, "bpmn:MessageEventDefinition")) ||
-          is(flowNode, "bpmn:SendTask"),
+          (is(flowNode, "bpmn:SendTask") &&
+            !dead_activity_ids.includes(flowNode.id)),
       );
 
     let nearest = undefined;
@@ -239,7 +259,10 @@ export default function QuickFixes(
     propertyResult.problematic_elements.forEach((deadActivityId) => {
       const activity = elementRegistry.get(deadActivityId);
       if (numberOfSequenceFlows(activity) === 0) {
-        proposeAddIncomingSequenceFlowQuickFix(activity);
+        proposeAddIncomingSequenceFlowQuickFix(
+          activity,
+          propertyResult.problematic_elements,
+        );
         return;
       }
       if (
