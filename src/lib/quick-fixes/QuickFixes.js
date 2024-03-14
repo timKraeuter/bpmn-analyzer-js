@@ -81,7 +81,10 @@ export default function QuickFixes(
             );
           }
           if (propertyResult.property === "OptionToComplete") {
-            addQuickFixesOptionToComplete(propertyResult);
+            addQuickFixesOptionToComplete(
+              propertyResult,
+              result.property_results,
+            );
           }
           if (propertyResult.property === "NoDeadActivities") {
             addQuickFixesForDeadActivities(propertyResult);
@@ -165,24 +168,29 @@ export default function QuickFixes(
 
   /**
    *
-   * @param {Shape} activity
+   * @param {Shape} flowNode
    * @param {string[]} dead_activity_ids
+   * @param {string} message
    */
-  function proposeAddIncomingMessageFlowQuickFix(activity, dead_activity_ids) {
+  function proposeAddIncomingMessageFlowQuickFix(
+    flowNode,
+    dead_activity_ids,
+    message,
+  ) {
     const nearestMessageProducer = findNearestMessageProducer(
-      activity,
+      flowNode,
       dead_activity_ids,
     );
     if (nearestMessageProducer) {
       addQuickFixForShape(
-        activity,
+        flowNode,
         {
           top: -45,
-          left: getLeftPositionForShape(activity),
+          left: getLeftPositionForShape(flowNode),
         },
-        "Click to add incoming message flow to fix the dead Receive Task.",
+        `Click to add incoming message flow to fix ${message}`,
         () => {
-          modeling.connect(nearestMessageProducer, activity);
+          modeling.connect(nearestMessageProducer, flowNode);
         },
         () => {
           const connection = elementFactory.createConnection({
@@ -190,7 +198,7 @@ export default function QuickFixes(
           });
           connection.waypoints = layouter.layoutConnection(connection, {
             source: nearestMessageProducer,
-            target: activity,
+            target: flowNode,
           });
           // TODO: The preview is not perfect if the source and target are vertically aligned.
           complexPreview.create({
@@ -269,7 +277,11 @@ export default function QuickFixes(
         is(activity, "bpmn:ReceiveTask") &&
         numberOfMessageFlows(activity) === 0
       ) {
-        proposeAddIncomingMessageFlowQuickFix(activity);
+        proposeAddIncomingMessageFlowQuickFix(
+          activity,
+          propertyResult.problematic_elements,
+          "the dead Receive Task.",
+        );
       }
     });
   }
@@ -291,8 +303,9 @@ export default function QuickFixes(
 
   /**
    * @param {PropertyResult} propertyResult
+   * @param {PropertyResult[]} propertyResults
    */
-  function addQuickFixesOptionToComplete(propertyResult) {
+  function addQuickFixesOptionToComplete(propertyResult, propertyResults) {
     const lastTransition = propertyResult.counter_example.transitions
       .slice(-1)
       .pop();
@@ -300,17 +313,48 @@ export default function QuickFixes(
       const lastState = lastTransition.next_state;
       lastState.snapshots.forEach((snapshot) => {
         tryFindBlockingPGsAndAddQuickFix(snapshot.tokens);
+        tryFindBlockingMessageEventsAndAddQuickFix(
+          snapshot.tokens,
+          propertyResults,
+        );
       });
     }
   }
 
+  /**
+   * @param {Tokens} tokens
+   * @param {PropertyResult[]} propertyResults
+   */
+  function tryFindBlockingMessageEventsAndAddQuickFix(tokens, propertyResults) {
+    const blockingMICEs = Object.keys(tokens)
+      .map((id) => elementRegistry.get(id).target)
+      .filter(
+        (flowNode) =>
+          is(flowNode, "bpmn:IntermediateCatchEvent") &&
+          hasEventDefinition(flowNode, "bpmn:MessageEventDefinition") &&
+          numberOfMessageFlows(flowNode) === 0,
+      );
+    const noDeadActivitiesProperty = propertyResults.find(
+      (propertyResult) => propertyResult.property === "NoDeadActivities",
+    );
+    blockingMICEs.forEach((mice) => {
+      proposeAddIncomingMessageFlowQuickFix(
+        mice,
+        noDeadActivitiesProperty.problematic_elements,
+        "the blocking Message Catch Event.",
+      );
+    });
+  }
+
+  /**
+   * @param {Tokens} tokens
+   */
   function tryFindBlockingPGsAndAddQuickFix(tokens) {
     const blockingPGs = Object.keys(tokens)
       .map((id) => elementRegistry.get(id).target)
       .filter(
         (flowNode) =>
-          flowNode.type === "bpmn:ParallelGateway" &&
-          flowNode.incoming.length > 1,
+          is(flowNode, "bpmn:ParallelGateway") && flowNode.incoming.length > 1,
       );
     if (blockingPGs.length === 1) {
       const problematicPG = blockingPGs.pop();
