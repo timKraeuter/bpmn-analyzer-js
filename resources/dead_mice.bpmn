@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="definitions_793d1020-e08a-4f53-b128-c61827f033c9" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="Camunda Modeler" exporterVersion="5.20.0">
+  <collaboration id="Collaboration_0k5zawz">
+    <participant id="Participant_0dxobkw" name="Process1" processRef="process_c648aa44-f99b-4cc0-8bba-9b1fafd7d01b" />
+    <participant id="Participant_11uor0t" name="Process2" processRef="Process_1jpk9vo" />
+    <textAnnotation id="TextAnnotation_0x522ef">
+      <text>This should not be picked for a new MF as quick fix.</text>
+    </textAnnotation>
+    <association id="Association_09in8a1" associationDirection="None" sourceRef="Event_0irq846" targetRef="TextAnnotation_0x522ef" />
+    <textAnnotation id="TextAnnotation_1o55kwv">
+      <text>This could be picked for a new MF as quick fix. But MICE is better.</text>
+    </textAnnotation>
+    <association id="Association_1m0nxe4" associationDirection="None" sourceRef="Event_10suyeb" targetRef="TextAnnotation_1o55kwv" />
+    <textAnnotation id="TextAnnotation_1sdizh3">
+      <text>Best option for a new incoming MF for the receive task.</text>
+    </textAnnotation>
+    <association id="Association_049foqx" associationDirection="None" sourceRef="Event_012d94x" targetRef="TextAnnotation_1sdizh3" />
+    <textAnnotation id="TextAnnotation_03t1sb5">
+      <text>Cannot be executed due to missing MF.</text>
+    </textAnnotation>
+    <association id="Association_0o0ylem" associationDirection="None" sourceRef="Event_1kb3eg2" targetRef="TextAnnotation_03t1sb5" />
+  </collaboration>
+  <process id="process_c648aa44-f99b-4cc0-8bba-9b1fafd7d01b" isExecutable="false">
+    <startEvent id="Event_03hdyxt">
+      <outgoing>Flow_038tgij</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_038tgij" sourceRef="Event_03hdyxt" targetRef="Event_1kb3eg2" />
+    <endEvent id="Event_0irq846">
+      <incoming>Flow_1lfeba5</incoming>
+      <messageEventDefinition id="MessageEventDefinition_0k3rgk1" />
+    </endEvent>
+    <sequenceFlow id="Flow_1lfeba5" sourceRef="Event_1kb3eg2" targetRef="Event_0irq846" />
+    <intermediateCatchEvent id="Event_1kb3eg2">
+      <incoming>Flow_038tgij</incoming>
+      <outgoing>Flow_1lfeba5</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_00tp03u" />
+    </intermediateCatchEvent>
+  </process>
+  <process id="Process_1jpk9vo" isExecutable="false">
+    <startEvent id="Event_10w6x6m">
+      <outgoing>Flow_1du73qn</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_1du73qn" sourceRef="Event_10w6x6m" targetRef="Event_012d94x" />
+    <sequenceFlow id="Flow_15pyucx" sourceRef="Event_012d94x" targetRef="Event_10suyeb" />
+    <intermediateThrowEvent id="Event_012d94x" name="MICE">
+      <incoming>Flow_1du73qn</incoming>
+      <outgoing>Flow_15pyucx</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_1upszsz" />
+    </intermediateThrowEvent>
+    <endEvent id="Event_10suyeb">
+      <incoming>Flow_15pyucx</incoming>
+      <messageEventDefinition id="MessageEventDefinition_1qmha59" />
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_40e0d24a-67a5-413e-aefc-dad265aaf73b">
+    <bpmndi:BPMNPlane id="BPMNPlane_500f5dcb-d27a-4260-8cac-962e6eb35e01" bpmnElement="Collaboration_0k5zawz">
+      <bpmndi:BPMNShape id="Participant_0dxobkw_di" bpmnElement="Participant_0dxobkw" isHorizontal="true">
+        <dc:Bounds x="150" y="110" width="380" height="160" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03hdyxt_di" bpmnElement="Event_03hdyxt">
+        <dc:Bounds x="202" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1m7j251_di" bpmnElement="Event_0irq846">
+        <dc:Bounds x="442" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16serj1_di" bpmnElement="Event_1kb3eg2">
+        <dc:Bounds x="322" y="172" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_038tgij_di" bpmnElement="Flow_038tgij">
+        <di:waypoint x="238" y="190" />
+        <di:waypoint x="322" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lfeba5_di" bpmnElement="Flow_1lfeba5">
+        <di:waypoint x="358" y="190" />
+        <di:waypoint x="442" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BPMNShape_1ytn0zr" bpmnElement="Participant_11uor0t" isHorizontal="true">
+        <dc:Bounds x="150" y="290" width="380" height="160" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_04p9mz1" bpmnElement="Event_10w6x6m">
+        <dc:Bounds x="202" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07z7azi_di" bpmnElement="Event_012d94x">
+        <dc:Bounds x="322" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="326" y="395" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09g6nyb_di" bpmnElement="Event_10suyeb">
+        <dc:Bounds x="442" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_1oqcvhn" bpmnElement="Flow_1du73qn">
+        <di:waypoint x="238" y="370" />
+        <di:waypoint x="322" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15pyucx_di" bpmnElement="Flow_15pyucx">
+        <di:waypoint x="358" y="370" />
+        <di:waypoint x="442" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0o0ylem_di" bpmnElement="Association_0o0ylem">
+        <di:waypoint x="348" y="174" />
+        <di:waypoint x="381" y="105" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0x522ef_di" bpmnElement="TextAnnotation_0x522ef">
+        <dc:Bounds x="560" y="150" width="100" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1o55kwv_di" bpmnElement="TextAnnotation_1o55kwv">
+        <dc:Bounds x="550" y="355" width="100" height="84" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1sdizh3_di" bpmnElement="TextAnnotation_1sdizh3">
+        <dc:Bounds x="390" y="520" width="100" height="70" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_09in8a1_di" bpmnElement="Association_09in8a1">
+        <di:waypoint x="478" y="187" />
+        <di:waypoint x="560" y="173" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1m0nxe4_di" bpmnElement="Association_1m0nxe4">
+        <di:waypoint x="478" y="370" />
+        <di:waypoint x="550" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_049foqx_di" bpmnElement="Association_049foqx">
+        <di:waypoint x="349" y="385" />
+        <di:waypoint x="431" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_03t1sb5_di" bpmnElement="TextAnnotation_03t1sb5">
+        <dc:Bounds x="350" y="50" width="100" height="55" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -12,6 +12,8 @@ import {
   previewAddedEndEvents,
 } from "./cmd/AddEndEventsForEachIncFlowCommand";
 import { TOGGLE_MODE_EVENT } from "../counter-example-visualization/util/EventHelper";
+import { hasEventDefinition } from "bpmn-js/lib/util/DiUtil";
+import { pointDistance } from "diagram-js/lib/util/Geometry";
 
 /**
  * @typedef {import('diagram-js/lib/model/Types').Shape} Shape
@@ -122,40 +124,129 @@ export default function QuickFixes(
     return is(child, "bpmn:StartEvent") || child.incoming.length > 0;
   }
 
+  function proposeAddIncomingSequenceFlowQuickFix(activity) {
+    const nearestFlowNode = findNearestConnectedFlowNode(activity);
+    if (nearestFlowNode) {
+      addQuickFixForShape(
+        activity,
+        {
+          top: -45,
+          left: getLeftPositionForShape(activity),
+        },
+        "Click to add incoming sequence flow to fix the dead Activity.",
+        () => {
+          modeling.connect(nearestFlowNode, activity);
+        },
+        () => {
+          const connection = elementFactory.createConnection({
+            type: "bpmn:SequenceFlow",
+          });
+          connection.waypoints = layouter.layoutConnection(connection, {
+            source: nearestFlowNode,
+            target: activity,
+          });
+          complexPreview.create({
+            created: [connection],
+          });
+        },
+      );
+    }
+  }
+
+  function proposeAddIncomingMessageFlowQuickFix(activity) {
+    const nearestMessageProducer = findNearestMessageProducer(activity);
+    if (nearestMessageProducer) {
+      addQuickFixForShape(
+        activity,
+        {
+          top: -45,
+          left: getLeftPositionForShape(activity),
+        },
+        "Click to add incoming message flow to fix the dead Receive Task.",
+        () => {
+          modeling.connect(nearestMessageProducer, activity);
+        },
+        () => {
+          const connection = elementFactory.createConnection({
+            type: "bpmn:MessageFlow",
+          });
+          connection.waypoints = layouter.layoutConnection(connection, {
+            source: nearestMessageProducer,
+            target: activity,
+          });
+          // TODO: The preview is not perfect if the source and target are vertically aligned.
+          complexPreview.create({
+            created: [connection],
+          });
+        },
+      );
+    }
+  }
+
+  /**
+   *
+   * @param {Shape} activity
+   * @returns {Shape | undefined}
+   */
+  function findNearestMessageProducer(activity) {
+    if (!activity.parent.parent) {
+      return undefined; // We are not in a collaboration.
+    }
+    const possibleProducers = activity.parent.parent.children
+      .filter(
+        (child) => is(child, "bpmn:Participant") && child !== activity.parent,
+      )
+      .flatMap((participant) => participant.children)
+      .filter(
+        (flowNode) =>
+          (flowNode.type !== "label" &&
+            isAny(flowNode, ["bpmn:IntermediateThrowEvent", "bpmn:EndEvent"]) &&
+            hasEventDefinition(flowNode, "bpmn:MessageEventDefinition")) ||
+          is(flowNode, "bpmn:SendTask"),
+      );
+
+    let nearest = undefined;
+    let distanceNearest = undefined;
+    possibleProducers.forEach((flowNode) => {
+      if (!nearest) {
+        nearest = flowNode;
+        distanceNearest = pointDistance(activity, nearest);
+      } else {
+        const distanceFlowNode = pointDistance(activity, flowNode);
+        if (distanceFlowNode < distanceNearest) {
+          nearest = flowNode;
+          distanceNearest = distanceFlowNode;
+        }
+      }
+    });
+    return nearest;
+  }
+
+  function numberOfSequenceFlows(flowNode) {
+    return flowNode.incoming.filter((flow) => is(flow, "bpmn:SequenceFlow"))
+      .length;
+  }
+
+  function numberOfMessageFlows(flowNode) {
+    return flowNode.incoming.filter((flow) => is(flow, "bpmn:MessageFlow"))
+      .length;
+  }
+
   /**
    * @param {PropertyResult} propertyResult
    */
   function addQuickFixForDeadActivities(propertyResult) {
     propertyResult.problematic_elements.forEach((deadActivityId) => {
       const activity = elementRegistry.get(deadActivityId);
-      if (activity.incoming.length > 0) {
+      if (numberOfSequenceFlows(activity) === 0) {
+        proposeAddIncomingSequenceFlowQuickFix(activity);
         return;
       }
-      const nearestFlowNode = findNearestConnectedFlowNode(activity);
-      if (nearestFlowNode) {
-        addQuickFixForShape(
-          activity,
-          {
-            top: -45,
-            left: getLeftPositionForShape(activity),
-          },
-          "Click to add incoming sequence flow to fix dead Activity.",
-          () => {
-            modeling.connect(nearestFlowNode, activity);
-          },
-          () => {
-            const connection = elementFactory.createConnection({
-              type: "bpmn:SequenceFlow",
-            });
-            connection.waypoints = layouter.layoutConnection(connection, {
-              source: nearestFlowNode,
-              target: activity,
-            });
-            complexPreview.create({
-              created: [connection],
-            });
-          },
-        );
+      if (
+        is(activity, "bpmn:ReceiveTask") &&
+        numberOfMessageFlows(activity) === 0
+      ) {
+        proposeAddIncomingMessageFlowQuickFix(activity);
       }
     });
   }
