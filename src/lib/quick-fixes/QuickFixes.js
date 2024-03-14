@@ -70,21 +70,21 @@ export default function QuickFixes(
         .filter((property) => !property.fulfilled)
         .forEach((propertyResult) => {
           if (propertyResult.property === "Safeness") {
-            addQuickFixUnsafeIfPossible(
+            addQuickFixesSafeness(
               propertyResult.problematic_elements[0],
               propertyResult,
             );
           }
           if (propertyResult.property === "ProperCompletion") {
-            addQuickFixProperCompletionIfPossible(
+            addQuickFixesProperCompletion(
               propertyResult.problematic_elements[0],
             );
           }
           if (propertyResult.property === "OptionToComplete") {
-            addQuickFixOptionToCompleteIfPossible(propertyResult);
+            addQuickFixesOptionToComplete(propertyResult);
           }
           if (propertyResult.property === "NoDeadActivities") {
-            addQuickFixForDeadActivities(propertyResult);
+            addQuickFixesForDeadActivities(propertyResult);
           }
         });
     },
@@ -255,7 +255,7 @@ export default function QuickFixes(
   /**
    * @param {PropertyResult} propertyResult
    */
-  function addQuickFixForDeadActivities(propertyResult) {
+  function addQuickFixesForDeadActivities(propertyResult) {
     propertyResult.problematic_elements.forEach((deadActivityId) => {
       const activity = elementRegistry.get(deadActivityId);
       if (numberOfSequenceFlows(activity) === 0) {
@@ -292,7 +292,7 @@ export default function QuickFixes(
   /**
    * @param {PropertyResult} propertyResult
    */
-  function addQuickFixOptionToCompleteIfPossible(propertyResult) {
+  function addQuickFixesOptionToComplete(propertyResult) {
     const lastTransition = propertyResult.counter_example.transitions
       .slice(-1)
       .pop();
@@ -341,7 +341,7 @@ export default function QuickFixes(
   /**
    * @param {string} problematicElementId
    */
-  function addQuickFixProperCompletionIfPossible(problematicElementId) {
+  function addQuickFixesProperCompletion(problematicElementId) {
     const problematicEndEvent = elementRegistry.get(problematicElementId);
     if (problematicEndEvent.incoming.length <= 1) {
       // Unsafe is the cause which has other quick fixes.
@@ -449,7 +449,7 @@ export default function QuickFixes(
    * @param {string} elementID
    * @param {PropertyResult} propertyResult
    */
-  function addQuickFixUnsafeIfPossible(elementID, propertyResult) {
+  function addQuickFixesSafeness(elementID, propertyResult) {
     const element = elementRegistry.get(elementID);
     const unsafeMerge = findUnsafeMerge(
       element,
