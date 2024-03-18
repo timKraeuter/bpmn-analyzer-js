@@ -5,8 +5,6 @@ import {
   event as domEvent,
 } from "min-dom";
 
-import { isTypedEvent } from "../util/ElementHelper";
-
 import { escapeHTML } from "diagram-js/lib/util/EscapeUtil";
 
 import {
@@ -63,36 +61,47 @@ export default function Log(
         icon: "bpmn-icon-business-rule",
         scope,
       });
-    } else if (is(element, "bpmn:SendTask")) {
+      return;
+    }
+    if (is(element, "bpmn:SendTask")) {
       this.log({
         text: elementName || "Send Task",
         icon: "bpmn-icon-send-task",
         scope,
       });
-    } else if (is(element, "bpmn:SubProcess")) {
+      return;
+    }
+    if (is(element, "bpmn:SubProcess")) {
       this.log({
         text: elementName || "Sub-process",
         icon: "bpmn-icon-subprocess-collapsed",
         scope,
       });
-    } else if (is(element, "bpmn:ReceiveTask")) {
+      return;
+    }
+    if (is(element, "bpmn:ReceiveTask")) {
       this.log({
         text: elementName || "Receive Task",
         icon: "bpmn-icon-receive-task",
         scope,
       });
-    } else if (is(element, "bpmn:IntermediateThrowEvent")) {
+      return;
+    }
+    if (is(element, "bpmn:IntermediateThrowEvent")) {
       this.log({
         text: elementName || "Intermediate Throw Event",
         icon: getIconForIntermediateEvent(element, "throw"),
         scope,
       });
-    } else if (is(element, "bpmn:IntermediateCatchEvent")) {
+      return;
+    }
+    if (is(element, "bpmn:IntermediateCatchEvent")) {
       this.log({
         text: elementName || "Intermediate Catch Event",
         icon: getIconForIntermediateEvent(element, "catch"),
         scope,
       });
+      return;
     }
     if (is(element, "bpmn:BoundaryEvent")) {
       this.log({
@@ -100,61 +109,81 @@ export default function Log(
         icon: "bpmn-icon-intermediate-event-none",
         scope,
       });
-    } else if (is(element, "bpmn:ManualTask")) {
+      return;
+    }
+    if (is(element, "bpmn:ManualTask")) {
       this.log({
         text: elementName || "Manual Task",
         icon: "bpmn-icon-manual",
         scope,
       });
-    } else if (is(element, "bpmn:ScriptTask")) {
+      return;
+    }
+    if (is(element, "bpmn:ScriptTask")) {
       this.log({
         text: elementName || "Script Task",
         icon: "bpmn-icon-script",
         scope,
       });
-    } else if (is(element, "bpmn:ServiceTask")) {
+      return;
+    }
+    if (is(element, "bpmn:ServiceTask")) {
       this.log({
         text: elementName || "Service Task",
         icon: "bpmn-icon-service",
         scope,
       });
-    } else if (is(element, "bpmn:UserTask")) {
+      return;
+    }
+    if (is(element, "bpmn:UserTask")) {
       this.log({
         text: elementName || "User Task",
         icon: "bpmn-icon-user",
         scope,
       });
-    } else if (element.type === "bpmn:Task") {
+      return;
+    }
+    if (is(element, "bpmn:Task")) {
       this.log({
         text: elementName || "Task",
         icon: "bpmn-icon-task",
         scope,
       });
-    } else if (is(element, "bpmn:ExclusiveGateway")) {
+      return;
+    }
+    if (is(element, "bpmn:ExclusiveGateway")) {
       this.log({
         text: elementName || "Exclusive Gateway",
         icon: "bpmn-icon-gateway-xor",
         scope,
       });
-    } else if (is(element, "bpmn:ParallelGateway")) {
+      return;
+    }
+    if (is(element, "bpmn:ParallelGateway")) {
       this.log({
         text: elementName || "Parallel Gateway",
         icon: "bpmn-icon-gateway-parallel",
         scope,
       });
-    } else if (is(element, "bpmn:EventBasedGateway")) {
+      return;
+    }
+    if (is(element, "bpmn:EventBasedGateway")) {
       this.log({
         text: elementName || "Event-based Gateway",
         icon: "bpmn-icon-gateway-eventbased",
         scope,
       });
-    } else if (is(element, "bpmn:StartEvent")) {
+      return;
+    }
+    if (is(element, "bpmn:StartEvent")) {
       this.log({
         text: elementName || "Start Event",
         icon: `bpmn-icon-start-event-${getEventTypeString(element)}`,
         scope,
       });
-    } else if (is(element, "bpmn:EndEvent")) {
+      return;
+    }
+    if (is(element, "bpmn:EndEvent")) {
       this.log({
         text: elementName || "End Event",
         icon: `bpmn-icon-end-event-${getEventTypeString(element)}`,
@@ -194,13 +223,11 @@ function getIconForIntermediateEvent(element, throwOrCatch) {
 }
 
 function getEventTypeString(element) {
-  if (
-    !element.businessObject.eventDefinitions ||
-    element.businessObject.eventDefinitions.length === 0
-  ) {
+  const bo = getBusinessObject(element);
+  if (bo.eventDefinitions.length === 0) {
     return "none";
   }
-  const eventDefinition = element.businessObject.eventDefinitions[0];
+  const eventDefinition = bo.eventDefinitions[0];
 
   if (is(eventDefinition, "bpmn:MessageEventDefinition")) {
     return "message";
@@ -218,10 +245,10 @@ function getEventTypeString(element) {
     return "escalation";
   }
   if (is(eventDefinition, "bpmn:CompensateEventDefinition")) {
-    return "compensate";
+    return "compensation";
   }
   if (is(eventDefinition, "bpmn:ConditionalEventDefinition")) {
-    return "conditional";
+    return "condition";
   }
   if (is(eventDefinition, "bpmn:LinkEventDefinition")) {
     return "link";
