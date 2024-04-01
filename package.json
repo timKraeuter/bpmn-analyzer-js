@@ -31,15 +31,15 @@
     "raw-loader": "^4.0.2",
     "serve": "^14.2.1",
     "style-loader": "^3.3.4",
-    "webpack": "^5.90.3",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "bpmn-js": "^17.0.2",
-    "diagram-js": "^14.1.0",
+    "diagram-js": "^14.3.1",
     "min-dash": "^4.2.1",
-    "min-dom": "^4.1.0",
-    "tiny-svg": "^3.0.1",
+    "min-dom": "^5.0.0",
+    "tiny-svg": "^4.0.0",
     "randomcolor": "^0.6.2"
   }
 }
