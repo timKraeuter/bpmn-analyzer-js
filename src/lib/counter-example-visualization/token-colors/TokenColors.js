@@ -1,10 +1,5 @@
-import {
-  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
-  START_COUNTER_EXAMPLE_VISUALIZATION,
-  TOGGLE_MODE_EVENT,
-} from "../util/EventHelper";
+import { START_COUNTER_EXAMPLE_VISUALIZATION } from "../util/EventHelper";
 import randomColor from "randomcolor";
-import { getBusinessObject } from "bpmn-js/lib/util/ModelUtil";
 
 const colors = randomColor({
   count: 60,
