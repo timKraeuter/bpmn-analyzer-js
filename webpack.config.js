@@ -11,7 +11,7 @@ module.exports = (env) => {
   let mode = "development";
   let devtool = "source-map";
   if (env.rust) {
-    outputPath = __dirname + "/../RustBPMNAnalyzer/public";
+    outputPath = __dirname + "/../rust_bpmn_analyzer/public";
     mode = "production";
     devtool = false;
   }
