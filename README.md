@@ -1,4 +1,4 @@
-This repository contains the prototype front-end for my rust-bpmn-analyzer, see [description](https://timkraeuter.com/rust-bpmn-analyzer/) and [code](https://github.com/timKraeuter/rust-bpmn-analyzer).
+This repository contains the prototype front-end for my rust-bpmn-analyzer, see [description](https://timkraeuter.com/rust-bpmn-analyzer/) and [code](https://github.com/timKraeuter/rust_bpmn_analyzer).
 
 # Demo
 
