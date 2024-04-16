@@ -32,6 +32,7 @@ export default function QuickFixes(
   modeling,
   commandStack,
   complexPreview,
+  connectionPreview,
   elementFactory,
   layouter,
 ) {
@@ -182,6 +183,13 @@ export default function QuickFixes(
       dead_activity_ids,
     );
     if (nearestMessageProducer) {
+      let context = {
+        getConnection: () => {
+          return elementFactory.createConnection({
+            type: "bpmn:MessageFlow",
+          });
+        },
+      };
       addQuickFixForShape(
         flowNode,
         {
@@ -193,17 +201,15 @@ export default function QuickFixes(
           modeling.connect(nearestMessageProducer, flowNode);
         },
         () => {
-          const connection = elementFactory.createConnection({
-            type: "bpmn:MessageFlow",
-          });
-          connection.waypoints = layouter.layoutConnection(connection, {
+          connectionPreview.drawPreview(context, true, {
             source: nearestMessageProducer,
             target: flowNode,
           });
-          // TODO: The preview is not perfect if the source and target are vertically aligned.
-          complexPreview.create({
-            created: [connection],
-          });
+        },
+        () => {
+          connectionPreview.cleanUp(context);
+          // Reset context since it is reused on each hover.
+          context.connectionPreviewGfx = undefined;
         },
       );
     }
@@ -658,6 +664,7 @@ export default function QuickFixes(
    * @param {string} text
    * @param applyFunction
    * @param previewFunction
+   * @param previewCleanupFunction
    */
   function addQuickFixForShape(
     shape,
@@ -665,6 +672,7 @@ export default function QuickFixes(
     text,
     applyFunction,
     previewFunction,
+    previewCleanupFunction = () => complexPreview.cleanUp(),
   ) {
     if (quickFixExistsAtShape(shape)) {
       return;
@@ -678,14 +686,14 @@ export default function QuickFixes(
     });
 
     document.getElementById(shape.id).addEventListener("click", () => {
-      complexPreview.cleanUp();
+      previewCleanupFunction();
       applyFunction();
     });
     document.getElementById(shape.id).addEventListener("mouseenter", () => {
       previewFunction();
     });
     document.getElementById(shape.id).addEventListener("mouseleave", () => {
-      complexPreview.cleanUp();
+      previewCleanupFunction();
     });
   }
 
@@ -727,6 +735,7 @@ QuickFixes.$inject = [
   "modeling",
   "commandStack",
   "complexPreview",
+  "connectionPreview",
   "elementFactory",
   "layouter",
 ];
