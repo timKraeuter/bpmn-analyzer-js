@@ -201,6 +201,8 @@ export default function QuickFixes(
           modeling.connect(nearestMessageProducer, flowNode);
         },
         () => {
+          // Reset context since it is reused on each hover.
+          context.connectionPreviewGfx = undefined;
           connectionPreview.drawPreview(context, true, {
             source: nearestMessageProducer,
             target: flowNode,
@@ -208,8 +210,6 @@ export default function QuickFixes(
         },
         () => {
           connectionPreview.cleanUp(context);
-          // Reset context since it is reused on each hover.
-          context.connectionPreviewGfx = undefined;
         },
       );
     }
