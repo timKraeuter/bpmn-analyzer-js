@@ -4,8 +4,8 @@ This repository contains a BPMN modeler (using [bpmn-js](https://github.com/bpmn
 
 A demo version of the application is hosted [here](https://bpm-2024.whitefield-c9fed487.northeurope.azurecontainerapps.io/).
 
-The following screenshot shows a simple situation where the control flow in BPMN can get stuck (violates the Option To Complete property).
-A counter-example shows the token flow in the diagram leading to this situation.
+The following screenshot shows a simple situation where the control flow in BPMN can get stuck (violates the **Option To Complete** property).
+A **counter-example** shows the token flow in the diagram leading to this situation.
 [![image](https://github.com/timKraeuter/bpmn-analyzer-js/assets/21026858/f9f96508-a17b-48ae-be2e-554f59c04cad)](https://bpm-2024.whitefield-c9fed487.northeurope.azurecontainerapps.io/)
 
 # Setup
