@@ -1,3 +1,5 @@
+[![Lint & Build](https://github.com/timKraeuter/bpmn-analyzer-js/actions/workflows/ci.yml/badge.svg)](https://github.com/timKraeuter/bpmn-analyzer-js/actions/workflows/ci.yml)
+
 This repository contains the prototype front-end for my rust-bpmn-analyzer, see [description](https://timkraeuter.com/rust-bpmn-analyzer/) and [code](https://github.com/timKraeuter/rust_bpmn_analyzer).
 
 # Demo
