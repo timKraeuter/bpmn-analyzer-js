@@ -3,6 +3,10 @@
 This repository contains a BPMN modeler (using [bpmn-js](https://github.com/bpmn-io/bpmn-js)) with continuous integrated **control-flow analysis**, **error visualization**, and potential **quick-fixes** using my [rust_bpmn_analyzer](https://github.com/timKraeuter/rust_bpmn_analyzer), see detailed [description](https://timkraeuter.com/rust-bpmn-analyzer/) on my website.
 
 A demo version of the application is hosted [here](https://bpm-2024.whitefield-c9fed487.northeurope.azurecontainerapps.io/).
+The following screenshot shows a simple situation where the control flow in BPMN can get stuck (violates the Option To Complete property).
+A counter-example shows the token flow in the diagram leading to this situation.
+![image](https://github.com/timKraeuter/bpmn-analyzer-js/assets/21026858/f9f96508-a17b-48ae-be2e-554f59c04cad)
+
 
 # Setup
 
