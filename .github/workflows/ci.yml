@@ -1,4 +1,4 @@
-name: Lint & Build
+name: Lint, Format & Build
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -28,7 +28,6 @@ jobs:
             ${{ runner.OS }}-node-
             ${{ runner.OS }}-
 
-      #  Check modeler
       - name: Install dependencies
         run: npm install
 
