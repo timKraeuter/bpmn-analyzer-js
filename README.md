@@ -1,8 +1,6 @@
 [![Lint, Format & Build](https://github.com/timKraeuter/bpmn-analyzer-js/actions/workflows/ci.yml/badge.svg)](https://github.com/timKraeuter/bpmn-analyzer-js/actions/workflows/ci.yml)
 
-This repository contains the front-end for my rust-bpmn-analyzer, see [description](https://timkraeuter.com/rust-bpmn-analyzer/) and [code](https://github.com/timKraeuter/rust_bpmn_analyzer).
-
-# Demonstration
+This repository contains a BPMN modeler (using [bpmn-js](https://github.com/bpmn-io/bpmn-js)) with continuous integrated **control-flow analysis**, **error visualization**, and potential **quick-fixes** using my [rust_bpmn_analyzer](https://github.com/timKraeuter/rust_bpmn_analyzer), see detailed [description](https://timkraeuter.com/rust-bpmn-analyzer/) on my website.
 
 A demo version of the application is hosted [here](https://bpm-2024.whitefield-c9fed487.northeurope.azurecontainerapps.io/).
 
