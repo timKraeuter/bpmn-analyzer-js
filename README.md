@@ -54,13 +54,13 @@ You need to have [Rust installed](https://www.rust-lang.org/tools/install).
 
 ## Build the application
 
-To build the application using webpack for the **rust_bpmn_analyzer** you can run the following command:
+To build the application using webpack for the **rust_bpmn_analyzer**, you can run the following command:
 
 ```bash
 npm run build:rust
 ```
 
-This builds the application for the **rust_bpmn_analyzer** which is expected to be located in next to this project (`/../rust_bpmn_analyzer`).
+This builds the application for the **rust_bpmn_analyzer**, which is expected to be located next to this project (`/../rust_bpmn_analyzer`).
 
 # Code Linting & Style
 
