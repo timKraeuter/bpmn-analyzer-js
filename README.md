@@ -7,7 +7,6 @@ The following screenshot shows a simple situation where the control flow in BPMN
 A counter-example shows the token flow in the diagram leading to this situation.
 ![image](https://github.com/timKraeuter/bpmn-analyzer-js/assets/21026858/f9f96508-a17b-48ae-be2e-554f59c04cad)
 
-
 # Setup
 
 The setup is standard for projects using **npm**.
