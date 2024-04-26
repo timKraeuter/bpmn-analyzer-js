@@ -25,22 +25,21 @@ npm start
 This expects the **rust_bpmn_analyzer** to provide the model checking web service on port **3001**.
 
 There are two ways to run the **rust_bpmn_analyzer** for this project:
+#### 1. Docker (recommended)
 
-1. **Docker (image is only 4MB compressed)**
-
-Pull the container:
+Pull the container image (image is only 4MB compressed):
 
 ```bash
 docker pull tkra/rust_bpmn_analyzer
 ```
 
-Run the container on port 3001:
+Run a container on port 3001:
 
 ```bash
 docker run -p 3001:8080 tkra/rust_bpmn_analyzer
 ```
 
-2. **Compiling from source using Rust**
+#### 2. Running from source using Rust
 
 Clone the [**rust_bpmn_analyzer**](https://github.com/timKraeuter/rust_bpmn_analyzer) and run the following command in the **webserver** subdirectory:
 
