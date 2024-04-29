@@ -20,7 +20,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/preset-env": "^7.24.3",
+    "@babel/core": "^7.24.5",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
@@ -41,6 +41,7 @@
     "min-dom": "^5.0.0",
     "randomcolor": "^0.6.2",
     "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-string": "^3.0.0",
     "tiny-svg": "^4.0.0"
   }
 }
