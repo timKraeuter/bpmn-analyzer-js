@@ -1,4 +1,4 @@
-import init, { check_bpmn } from "../../pkg";
+import init, { check_bpmn } from "../../analysis";
 
 export default function AnalysisClient(eventBus) {
   eventBus.on("analysis.start", (diagramXML) => {
