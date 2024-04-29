@@ -141,8 +141,8 @@ export default function CounterExampleVisualizer(
     );
 
     if (
-      state.messages.length === 0 &&
-      snapshotsDelta.every((snapshot) => snapshot.tokens.length === 0)
+      state.messages.size === 0 &&
+      snapshotsDelta.every((snapshot) => snapshot.tokens.size === 0)
     ) {
       visualizeNextState(property, state.snapshots, transitions, index + 1);
       return;
@@ -176,7 +176,6 @@ export default function CounterExampleVisualizer(
     });
 
     // Visualize tokens
-    console.log(snapshotsDelta);
     snapshotsDelta.forEach((snapshot) => {
       snapshot.tokens.forEach((tokenAmount, key) => {
         const element = elementRegistry.get(key);
