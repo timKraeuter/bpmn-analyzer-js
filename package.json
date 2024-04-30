@@ -9,7 +9,6 @@
     "build": "rollup -c",
     "lint": "eslint .",
     "start": "run-s dev",
-    "dev": "run-p build:watch serve",
     "serve": "serve public",
     "pCheck": "prettier . --check",
     "pWrite": "prettier . --write"
