@@ -8,14 +8,13 @@ import { string } from "rollup-plugin-string";
 import copy from "rollup-plugin-copy";
 
 const outputDir = "public";
-// TODO: Add copying bpmn-js css
 
 const configs = [
   {
-    input: `./src/app.js`,
+    input: `./src/analyzer.js`,
     output: {
       name: "bpmn-analyzer-js",
-      file: `${outputDir}/app.js`, // new config for production and -c configName in npm
+      file: `${outputDir}/analyzer.js`, // new config for production and -c configName in npm
       format: "umd",
     },
     plugins: pgl(
@@ -48,7 +47,11 @@ function pgl(plugins = [], env = "production") {
       targets: [
         { src: "src/index.html", dest: `${outputDir}/` },
         { src: "src/favicon.ico", dest: `${outputDir}/` },
-        { src: "src/css/**", dest: `${outputDir}/css` },
+        { src: "src/assets/**", dest: `${outputDir}/assets` },
+        {
+          src: "node_modules/bpmn-js/dist/assets/*",
+          dest: `${outputDir}/assets/bpmn-js`,
+        },
       ],
     }),
     nodeResolve(),

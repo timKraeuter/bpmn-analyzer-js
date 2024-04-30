@@ -2,13 +2,15 @@
   "name": "bpmn-analyzer-js",
   "version": "0.0.1",
   "description": "bpmn-js including analysis after each save",
-  "main": "src/app.js",
+  "main": "src/analyzer.js",
   "type": "module",
   "scripts": {
     "all": "run-s lint pCheck build",
     "build": "rollup -c",
     "lint": "eslint .",
     "start": "run-s dev",
+    "build:watch": "rollup -c -w",
+    "dev": "run-p build:watch serve",
     "serve": "serve public",
     "pCheck": "prettier . --check",
     "pWrite": "prettier . --write"
