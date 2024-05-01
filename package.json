@@ -23,7 +23,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.24.5",
     "copy-webpack-plugin": "^12.0.2",
-    "css-loader": "^6.10.0",
+    "css-loader": "^7.1.1",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-bpmn-io": "^1.0.0",
@@ -31,13 +31,13 @@
     "prettier": "^3.2.5",
     "raw-loader": "^4.0.2",
     "serve": "^14.2.3",
-    "style-loader": "^3.3.4",
+    "style-loader": "^4.0.0",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "bpmn-js": "^17.0.2",
-    "diagram-js": "^14.3.1",
+    "bpmn-js": "^17.6.0",
+    "diagram-js": "^14.4.1",
     "min-dash": "^4.2.1",
     "min-dom": "^5.0.0",
     "tiny-svg": "^4.0.0",
