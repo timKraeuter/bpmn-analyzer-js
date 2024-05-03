@@ -16,7 +16,7 @@ module.exports = (env) => {
     devtool = false;
   }
   if (env.ghPages) {
-    outputPath = __dirname + "/gh-pages/";
+    outputPath = __dirname + "/docs/";
     mode = "production";
     devtool = false;
   }
