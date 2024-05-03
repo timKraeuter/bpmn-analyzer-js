@@ -1,12 +1,12 @@
-import init, { check_bpmn } from "../../analysis";
+import init, { check_bpmn } from "./generated";
 
-export default function AnalysisClient(eventBus) {
+export default function WASMAnalysis(eventBus) {
   eventBus.on("analysis.start", (diagramXML) => {
     startAnalysis(diagramXML, eventBus);
   });
 }
 
-AnalysisClient.$inject = ["eventBus"];
+WASMAnalysis.$inject = ["eventBus"];
 
 function startAnalysis(diagramXML, eventBus) {
   init().then(() => {

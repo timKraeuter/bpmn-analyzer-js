@@ -1,4 +1,4 @@
 public/
 node_modules
 *.html
-analysis/
+**/generated

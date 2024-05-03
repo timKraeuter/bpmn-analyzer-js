@@ -4,7 +4,8 @@ import emptyBoardXML from "../resources/empty.bpmn";
 
 import initialBoardXML from "../resources/unsafe-gateways.bpmn";
 
-import AnalysisClientModule from "./lib/analysis-client";
+import AnalysisClientModule from "./lib/analysis/wasm"; // WASM analysis
+// Webservice analysis
 import AnalysisOverlaysModule from "./lib/analysis-overlays";
 import QuickFixesModule from "./lib/quick-fixes";
 import CounterExampleVisualizationModule from "./lib/counter-example-visualization";
