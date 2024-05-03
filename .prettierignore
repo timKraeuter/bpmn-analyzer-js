@@ -1,4 +1,5 @@
 node_modules/
 public/
 .idea/
-docs/
+**/generated
+gh-pages/

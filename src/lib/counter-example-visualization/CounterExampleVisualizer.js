@@ -141,10 +141,8 @@ export default function CounterExampleVisualizer(
     );
 
     if (
-      Object.keys(state.messages).length === 0 &&
-      snapshotsDelta.every(
-        (snapshot) => Object.keys(snapshot.tokens).length === 0,
-      )
+      state.messages.size === 0 &&
+      snapshotsDelta.every((snapshot) => snapshot.tokens.size === 0)
     ) {
       visualizeNextState(property, state.snapshots, transitions, index + 1);
       return;
@@ -152,7 +150,7 @@ export default function CounterExampleVisualizer(
 
     let semaphore = 0;
     // Visualize messages
-    Object.entries(state.messages).forEach(([key, messageAmount]) => {
+    state.messages.forEach((messageAmount, key) => {
       const element = elementRegistry.get(key);
       const scope = {
         element,
@@ -179,7 +177,7 @@ export default function CounterExampleVisualizer(
 
     // Visualize tokens
     snapshotsDelta.forEach((snapshot) => {
-      Object.entries(snapshot.tokens).forEach(([key, tokenAmount]) => {
+      snapshot.tokens.forEach((tokenAmount, key) => {
         const element = elementRegistry.get(key);
         const scope = { element, colors: tokenColors.getColor(snapshot.id) };
         for (let i = 0; i < tokenAmount; i++) {
@@ -211,21 +209,21 @@ export default function CounterExampleVisualizer(
     // Make a copy we can edit.
     const snapshotDiff = snapshots.map((snapshot) => {
       return {
-        tokens: Object.assign({}, snapshot.tokens),
+        tokens: new Map(snapshot.tokens),
         id: snapshot.id,
       };
     });
     // Remove all tokens that are in the previous snapshots
     previousSnapshots.forEach((oldSnapshot) => {
-      Object.entries(oldSnapshot.tokens).forEach(([key, tokenAmount]) => {
+      oldSnapshot.tokens.forEach((tokenAmount, key) => {
         const newSnapshot = snapshotDiff.find(
           (snapshot) => snapshot.id === oldSnapshot.id,
         );
-        const newAmount = newSnapshot.tokens[key] - tokenAmount;
+        const newAmount = newSnapshot.tokens.get(key) - tokenAmount;
         if (newAmount > 0) {
-          newSnapshot.tokens[key] = newAmount;
+          newSnapshot.tokens.set(key, newAmount);
         } else {
-          delete newSnapshot.tokens[key];
+          newSnapshot.tokens.delete(key);
         }
       });
     });

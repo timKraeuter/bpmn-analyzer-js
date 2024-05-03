@@ -15,6 +15,11 @@ module.exports = (env) => {
     mode = "production";
     devtool = false;
   }
+  if (env.ghPages) {
+    outputPath = __dirname + "/gh-pages/";
+    mode = "production";
+    devtool = false;
+  }
   return {
     entry: {
       bundle: [`./${path}/app.js`],

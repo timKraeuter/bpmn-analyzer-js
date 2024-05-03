@@ -328,40 +328,51 @@ export default function QuickFixes(
   }
 
   /**
-   * @param {Tokens} tokens
+   * @param {Map<string, number>} tokens
    * @param {PropertyResult[]} propertyResults
    */
   function tryFindBlockingMessageEventsAndAddQuickFix(tokens, propertyResults) {
-    const blockingMICEs = Object.keys(tokens)
-      .map((id) => elementRegistry.get(id).target)
-      .filter(
-        (flowNode) =>
-          is(flowNode, "bpmn:IntermediateCatchEvent") &&
-          hasEventDefinition(flowNode, "bpmn:MessageEventDefinition") &&
-          numberOfMessageFlows(flowNode) === 0,
-      );
     const noDeadActivitiesProperty = propertyResults.find(
       (propertyResult) => propertyResult.property === "NoDeadActivities",
     );
-    blockingMICEs.forEach((mice) => {
-      proposeAddIncomingMessageFlowQuickFix(
-        mice,
-        noDeadActivitiesProperty.problematic_elements,
-        "the blocking Message Catch Event.",
-      );
+    tokens.forEach((_, id) => {
+      const blockingElement = elementRegistry.get(id).target;
+      if (
+        is(blockingElement, "bpmn:IntermediateCatchEvent") &&
+        hasEventDefinition(blockingElement, "bpmn:MessageEventDefinition") &&
+        numberOfMessageFlows(blockingElement) === 0
+      ) {
+        proposeAddIncomingMessageFlowQuickFix(
+          blockingElement,
+          noDeadActivitiesProperty.problematic_elements,
+          "the blocking Message Catch Event.",
+        );
+      }
     });
   }
 
   /**
-   * @param {Tokens} tokens
+   * @param {Map<string, number>} tokens
+   */
+  function findBlockingPGs(tokens) {
+    let blockingPGs = [];
+    tokens.forEach((_, id) => {
+      const blockingElement = elementRegistry.get(id).target;
+      if (
+        is(blockingElement, "bpmn:ParallelGateway") &&
+        blockingElement.incoming.length > 1
+      ) {
+        blockingPGs.push(blockingElement);
+      }
+    });
+    return blockingPGs;
+  }
+
+  /**
+   * @param {Map<string, number>} tokens
    */
   function tryFindBlockingPGsAndAddQuickFix(tokens) {
-    const blockingPGs = Object.keys(tokens)
-      .map((id) => elementRegistry.get(id).target)
-      .filter(
-        (flowNode) =>
-          is(flowNode, "bpmn:ParallelGateway") && flowNode.incoming.length > 1,
-      );
+    const blockingPGs = findBlockingPGs(tokens);
     if (blockingPGs.length === 1) {
       const problematicPG = blockingPGs.pop();
       addOptionToCompleteExclusiveQuickFix(problematicPG);

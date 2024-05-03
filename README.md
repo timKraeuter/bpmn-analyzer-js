@@ -20,13 +20,19 @@ npm i
 
 ## Run the application
 
+The following command will start the application ready to be used.
+
 ```bash
 npm start
 ```
 
-This expects the **rust_bpmn_analyzer** to provide the model checking web service on port **3001**.
+Model checking is provided using the WebAssembly module cross-compiled from the **rust_bpmn_analyzer**.
 
-There are two ways to run the **rust_bpmn_analyzer** for this project:
+As an alternative, one can use the **rust_bpmn_analyzer** natively to provide a model checking web service on port **3001**.
+
+To switch between the implementations one can change the `AnalysisClientModule` **import** in `app.js`.
+
+There are two ways to run the **rust_bpmn_analyzer** webservice for this project:
 
 #### 1. Docker (recommended)
 
@@ -54,7 +60,7 @@ You need to have [Rust installed](https://www.rust-lang.org/tools/install).
 
 ## Build the application
 
-To build the application using webpack for the **rust_bpmn_analyzer**, you can run the following command:
+To build the application for the **rust_bpmn_analyzer**, you can run the following command:
 
 ```bash
 npm run build:rust

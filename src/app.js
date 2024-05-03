@@ -4,7 +4,8 @@ import emptyBoardXML from "../resources/empty.bpmn";
 
 import initialBoardXML from "../resources/unsafe-gateways.bpmn";
 
-import AnalysisClientModule from "./lib/analysis-client";
+import AnalysisModule from "./lib/analysis/wasm"; // Analysis using WASM
+// import AnalysisModule from "./lib/analysis/webclient"; // Analysis using a webservice (requires a running server on port 3001)
 import AnalysisOverlaysModule from "./lib/analysis-overlays";
 import QuickFixesModule from "./lib/quick-fixes";
 import CounterExampleVisualizationModule from "./lib/counter-example-visualization";
@@ -15,7 +16,7 @@ import PropertiesSummaryModule from "./lib/properties-summary";
 const modeler = new BpmnModeler({
   container: "#canvas",
   additionalModules: [
-    AnalysisClientModule,
+    AnalysisModule,
     AnalysisOverlaysModule,
     PropertiesSummaryModule,
     QuickFixesModule,

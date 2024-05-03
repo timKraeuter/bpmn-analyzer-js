@@ -17,20 +17,12 @@ export interface CounterExample {
 
 export interface State {
   snapshots: Snapshot[];
-  messages: Messages;
-}
-
-export interface Messages {
-  [key: string]: number;
+  messages: Map<string, number>;
 }
 
 export interface Snapshot {
   id: string;
-  tokens: Tokens;
-}
-
-export interface Tokens {
-  [key: string]: number;
+  tokens: Map<string, number>;
 }
 
 export interface Transition {
