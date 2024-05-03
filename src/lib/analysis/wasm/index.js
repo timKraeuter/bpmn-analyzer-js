@@ -1,6 +1,6 @@
 import WASMAnalysis from "./WASMAnalysis";
 
 export default {
-  __init__: ["analysisClient"],
-  analysisClient: ["type", WASMAnalysis],
+  __init__: ["wasmAnalysis"],
+  wasmAnalysis: ["type", WASMAnalysis],
 };
