@@ -40,7 +40,7 @@
     "bpmn-js": "^17.6.0",
     "diagram-js": "^14.4.1",
     "min-dash": "^4.2.1",
-    "min-dom": "^5.0.0",
+    "min-dom": "^5.1.1",
     "tiny-svg": "^4.1.2",
     "randomcolor": "^0.6.2"
   }
