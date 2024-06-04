@@ -1,24 +1,23 @@
 import {
-  domify,
   classes as domClasses,
-  query as domQuery,
+  domify,
   event as domEvent,
+  query as domQuery,
 } from "min-dom";
 
 import { escapeHTML } from "diagram-js/lib/util/EscapeUtil";
 
 import {
-  TOGGLE_MODE_EVENT,
-  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
-  TRACE_EVENT,
   COUNTER_EXAMPLE_VISUALIZATION_STARTED,
+  RESTART_COUNTER_EXAMPLE_VISUALIZATION,
+  TOGGLE_MODE_EVENT,
+  TRACE_EVENT,
 } from "../util/EventHelper";
 
 import { InfoIcon, LogIcon, TimesIcon } from "../icons";
+import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 
 const ICON_INFO = InfoIcon();
-
-import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 
 function getElementName(element) {
   const name = element.di.bpmnElement.name;
@@ -208,10 +207,24 @@ export default function Log(
     this.clear();
     this.toggle(true);
     const property = domify(
-      `<p class="bts-entry placeholder">${data.propertyResult.property}</p>`,
+      `<p class="bts-entry placeholder">${mapProperty(
+        data.propertyResult.property,
+      )}</p>`,
     );
     this._content.prepend(property);
   });
+}
+
+function mapProperty(propertyName) {
+  switch (propertyName) {
+    case "ProperCompletion":
+      return "Unique end event execution";
+    case "Safeness":
+      return "Synchronization";
+    case "OptionToComplete":
+      return "Guaranteed termination";
+  }
+  return "";
 }
 
 function getIconForIntermediateEvent(element, throwOrCatch) {
