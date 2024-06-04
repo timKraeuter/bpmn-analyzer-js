@@ -16,7 +16,7 @@ export default function RestartCounterExample(
 
 RestartCounterExample.prototype._init = function () {
   this._paletteEntry = domify(`
-    <div class="bts-entry" title="Restart Counter example">
+    <div class="bts-entry" title="Restart execution example">
       ${RestartIcon()}
     </div>
   `);

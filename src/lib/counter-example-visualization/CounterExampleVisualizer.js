@@ -71,18 +71,18 @@ export default function CounterExampleVisualizer(
     eventBus.fire(COUNTER_EXAMPLE_VISUALIZATION_STARTED, { propertyResult });
 
     notifications.showNotification({
-      text: "Visualizing counter example started.",
+      text: "Visualizing execution example started.",
     });
 
-    visualizeCounterExample(propertyResult);
+    visualizeExecutionExample(propertyResult);
   }
 
   /**
-   * Visualize the counter example on click.
+   * Visualize the execution example on click.
    * Removes all ongoing animations and token counts and starts the animation.
    * @param {PropertyResult} propertyResult
    */
-  function visualizeCounterExample(propertyResult) {
+  function visualizeExecutionExample(propertyResult) {
     visualizeStateChanges(
       propertyResult.property,
       {
@@ -104,7 +104,7 @@ export default function CounterExampleVisualizer(
   function visualizeNextState(property, previousState, transitions, index) {
     if (index >= transitions.length) {
       notifications.showNotification({
-        text: "Visualizing counter example finished.",
+        text: "Visualizing execution example finished.",
       });
       return;
     }

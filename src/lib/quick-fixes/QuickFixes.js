@@ -37,7 +37,7 @@ export default function QuickFixes(
   layouter,
 ) {
   eventBus.on(TOGGLE_MODE_EVENT, (event) => {
-    // Hide/Show quick fixes when the counter example visualization is active/inactive.
+    // Hide/Show quick fixes when the execution example visualization is active/inactive.
     const overlaysRoot = document
       .getElementsByClassName("djs-overlay-container")
       .item(0);
@@ -147,7 +147,7 @@ export default function QuickFixes(
           top: -45,
           left: getLeftPositionForShape(activity),
         },
-        "Click to add incoming sequence flow to fix the dead Activity.",
+        "Click to add an incoming sequence flow to fix the dead Activity.",
         () => {
           modeling.connect(nearestFlowNode, activity);
         },
@@ -299,7 +299,7 @@ export default function QuickFixes(
         top: -45,
         left: 7.5,
       },
-      "Click to change gateway to parallel to fix Option To Complete.",
+      "Click to change gateway to parallel to guarantee termination.",
       () => {
         replaceWithParallelGateway(exclusiveGateway);
       },
@@ -391,7 +391,7 @@ export default function QuickFixes(
         top: -45,
         left: 7.5,
       },
-      "Click to change gateway to exclusive to fix Option To Complete.",
+      "Click to change gateway to exclusive to guarantee termination.",
       () => {
         replaceWithExclusiveGateway(problematicPG);
       },
@@ -414,7 +414,7 @@ export default function QuickFixes(
         top: -45,
         left: 0,
       },
-      "Click to create an additional end event to fix Proper Completion.",
+      "Click to create additional end events.",
       () => {
         commandStack.execute("addEndEventsForEachIncFlowCommand", {
           problematicEndEvent,
@@ -550,7 +550,7 @@ export default function QuickFixes(
         top: -45,
         left: getLeftPositionForShape(unsafeMerge),
       },
-      "Click to add preceding parallel gateway to fix Safeness.",
+      "Click to add preceding parallel gateway to fix synchronization.",
       () =>
         commandStack.execute("addPrecedingParallelGatewayCommand", {
           unsafeMerge,
@@ -573,7 +573,7 @@ export default function QuickFixes(
         top: -45,
         left: getLeftPositionForShape(unsafeCause),
       },
-      "Click to add subsequent exclusive gateway to fix Safeness.",
+      "Click to add subsequent exclusive gateway to fix synchronization.",
       () =>
         commandStack.execute("addSubsequentExclusiveGatewayCommand", {
           unsafeCause,
@@ -611,7 +611,7 @@ export default function QuickFixes(
         top: -45,
         left: 7.5,
       },
-      "Click to change gateway to exclusive to fix Safeness.",
+      "Click to change gateway to exclusive to fix synchronization.",
       () => {
         replaceWithExclusiveGateway(gateway);
       },
@@ -661,7 +661,7 @@ export default function QuickFixes(
         top: -45,
         left: 7.5,
       },
-      "Click to change gateway to parallel to fix Safeness.",
+      "Click to change gateway to fix synchronization.",
       () => {
         replaceWithParallelGateway(exclusiveGateway);
       },

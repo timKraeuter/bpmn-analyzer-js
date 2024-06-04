@@ -40,7 +40,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
           bottom: -5,
           left: 5,
         },
-        "Unsafe",
+        "Two or more tokens",
         "small-note clickable",
       );
       document
@@ -93,7 +93,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
       position,
       html: `<div id="${problematicElement}_counter" class="property-note tooltip ${cssClasses}">
                ${text}
-               ${cssClasses.includes("clickable") ? '<span class="tooltipText">Click to show counter example.</span>' : ""}
+               ${cssClasses.includes("clickable") ? '<span class="tooltipText">Click to visualize an execution example.</span>' : ""}
              </div>`,
     });
   }

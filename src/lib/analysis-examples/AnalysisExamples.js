@@ -38,19 +38,19 @@ AnalysisExamples.prototype._init = function () {
   `);
   const select = domify(`
     <select id="example-select" class="example-select">
-      <option value="taskSplit">Implicit parallel gateway (Safeness)</option>
-      <option value="stuck">Cannot terminate (Option To Complete)</option>
+      <option value="taskSplit">Implicit parallel gateway (Synchronization)</option>
+      <option value="stuck">Cannot terminate</option>
       <option value="unsafeGateways" selected="selected">
-        Exclusive gateway (Safeness)
+        Exclusive gateway (Synchronization)
       </option>
-      <option value="taskMerge">Implicit exclusive gateway (Safeness)</option>
-      <option value="reusedEndEvent">Reused end event (Proper Completion)</option>
-      <option value="deadActivity">Dead Activity (No Dead Activities)</option>
-      <option value="deadReceiveTask">Dead Receive Task (No Dead Activities)</option>
+      <option value="taskMerge">Implicit exclusive gateway (Synchronization)</option>
+      <option value="reusedEndEvent">Reused end event (Unique End Events)</option>
+      <option value="deadActivity">Dead Activity (Dead Activities)</option>
+      <option value="deadReceiveTask">Dead Receive Task (Dead Activities)</option>
       <option value="showcase">Complex scenario</option>
       <option value="poolsWithMessageFlows">Counterexample with messages</option>
       <option value="cycles">Quick fixes with cycles</option>
-      <option value="deadMice">Blocking MICE (Option To Complete)</option>
+      <option value="deadMice">Blocking MICE (Termination)</option>
     </select>
   `);
 

@@ -99,11 +99,11 @@ export default function PropertiesSummary(
 PropertiesSummary.prototype._init = function () {
   const html = domify(`
     <div class="properties">
-      <div id="Safeness">Safeness</div>
+      <div id="Safeness">Synchronization</div>
       <div id="Safeness-icon" class="icon-question general-icon"></div>
-      <div id="OptionToComplete">Option to complete</div>
+      <div id="OptionToComplete">Guaranteed termination</div>
       <div id="OptionToComplete-icon" class="icon-question general-icon"></div>
-      <div id="ProperCompletion">Proper completion</div>
+      <div id="ProperCompletion">Unique end event execution</div>
       <div id="ProperCompletion-icon" class="icon-question general-icon"></div>
       <div id="NoDeadActivities">No dead activities</div>
       <div id="NoDeadActivities-icon" class="icon-question general-icon"></div>
