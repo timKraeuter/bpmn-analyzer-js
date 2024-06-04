@@ -85,7 +85,10 @@ export default function CounterExampleVisualizer(
   function visualizeCounterExample(propertyResult) {
     visualizeStateChanges(
       propertyResult.property,
-      [],
+      {
+        snapshots: [],
+        messages: new Map(),
+      },
       propertyResult.counter_example.start_state,
       propertyResult.counter_example.transitions,
       -1,
@@ -94,11 +97,11 @@ export default function CounterExampleVisualizer(
 
   /**
    * @param {string} property
-   * @param {Snapshot[]} previousSnapshots
+   * @param {State} previousState
    * @param {Transition[]} transitions
    * @param {number} index
    */
-  function visualizeNextState(property, previousSnapshots, transitions, index) {
+  function visualizeNextState(property, previousState, transitions, index) {
     if (index >= transitions.length) {
       notifications.showNotification({
         text: "Visualizing counter example finished.",
@@ -113,7 +116,7 @@ export default function CounterExampleVisualizer(
 
     visualizeStateChanges(
       property,
-      previousSnapshots,
+      previousState,
       transition.next_state,
       transitions,
       index,
@@ -122,14 +125,14 @@ export default function CounterExampleVisualizer(
 
   /**
    * @param {string} property
-   * @param {Snapshot[]} previousSnapshots
+   * @param {State} previousState
    * @param {State} state
    * @param {Transition[]} transitions
    * @param {number} index
    */
   function visualizeStateChanges(
     property,
-    previousSnapshots,
+    previousState,
     state,
     transitions,
     index,
@@ -137,20 +140,22 @@ export default function CounterExampleVisualizer(
     // works but can probably be optimized
     const snapshotsDelta = calcSnapshotTokenAdditions(
       state.snapshots,
-      previousSnapshots,
+      previousState.snapshots,
     );
 
+    const messageDelta = calcMessageAdditions(state, previousState);
+
     if (
-      state.messages.size === 0 &&
+      messageDelta.size === 0 &&
       snapshotsDelta.every((snapshot) => snapshot.tokens.size === 0)
     ) {
-      visualizeNextState(property, state.snapshots, transitions, index + 1);
+      visualizeNextState(property, state, transitions, index + 1);
       return;
     }
 
     let semaphore = 0;
-    // Visualize messages
-    state.messages.forEach((messageAmount, key) => {
+    // Visualize message changes
+    messageDelta.forEach((messageAmount, key) => {
       const element = elementRegistry.get(key);
       const scope = {
         element,
@@ -164,12 +169,7 @@ export default function CounterExampleVisualizer(
         animation.animate(element, scope, () => {
           semaphore--;
           if (semaphore === 0) {
-            visualizeNextState(
-              property,
-              state.snapshots,
-              transitions,
-              index + 1,
-            );
+            visualizeNextState(property, state, transitions, index + 1);
           }
         });
       }
@@ -187,12 +187,7 @@ export default function CounterExampleVisualizer(
             semaphore--;
             tokenCount.increaseTokenCount(element.target, scope.colors);
             if (semaphore === 0) {
-              visualizeNextState(
-                property,
-                state.snapshots,
-                transitions,
-                index + 1,
-              );
+              visualizeNextState(property, state, transitions, index + 1);
             }
           });
         }
@@ -228,6 +223,26 @@ export default function CounterExampleVisualizer(
       });
     });
     return snapshotDiff;
+  }
+
+  /**
+   * @param {State} previousState
+   * @param {State} current
+   * @returns {Map<string, number>}
+   */
+  function calcMessageAdditions(current, previousState) {
+    // Make a copy we can edit.
+    const messageAdditions = new Map(current.messages);
+    // Remove all messages that are in the previous state
+    previousState.messages.forEach((tokenAmount, key) => {
+      const newAmount = messageAdditions.get(key) - tokenAmount;
+      if (newAmount > 0) {
+        messageAdditions.set(key, newAmount);
+      } else {
+        messageAdditions.delete(key);
+      }
+    });
+    return messageAdditions;
   }
 }
 
