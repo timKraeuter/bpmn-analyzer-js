@@ -70,7 +70,7 @@ This builds the application for the **rust_bpmn_analyzer**, which is expected to
 
 # Code Linting & Style
 
-For linting I use [eslint](https://eslint.org) and to maintain a a consistent code style I use [prettier](https://prettier.io/).
+For linting I use [eslint](https://eslint.org) and to maintain a consistent code style I use [prettier](https://prettier.io/).
 Both are checked using GitHub actions on every code change.
 
 Run eslint and prettier using the following command:
