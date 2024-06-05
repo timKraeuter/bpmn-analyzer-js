@@ -312,6 +312,10 @@ export default function QuickFixes(
    * @param {PropertyResult[]} propertyResults
    */
   function addQuickFixesOptionToComplete(propertyResult, propertyResults) {
+    if (!propertyResult.counter_example) {
+      return;
+    }
+
     const lastTransition = propertyResult.counter_example.transitions
       .slice(-1)
       .pop();
