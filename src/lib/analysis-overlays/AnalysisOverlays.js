@@ -29,6 +29,12 @@ export default function AnalysisOverlays(eventBus, overlays) {
       ) {
         addOverlaysForNoDeadActivities(propertyResult);
       }
+      if (
+        propertyResult.property === "OptionToComplete" &&
+        !propertyResult.fulfilled
+      ) {
+        addOverlaysForOptionToComplete(propertyResult);
+      }
     }
   }
 
@@ -83,6 +89,20 @@ export default function AnalysisOverlays(eventBus, overlays) {
           left: 17.5,
         },
         "Dead Activity",
+        "big-note",
+      );
+    }
+  }
+
+  function addOverlaysForOptionToComplete(propertyResult) {
+    for (const problematicElement of propertyResult.problematic_elements) {
+      addPropertyOverlay(
+        problematicElement,
+        {
+          bottom: -5,
+          left: 5,
+        },
+        "Flow can contain more than 50 tokens.",
         "big-note",
       );
     }
