@@ -21,6 +21,10 @@ export default function PropertiesSummary(
       return;
     }
 
+    if (result.property_results.length !== 4) {
+      resetPropertiesSummary();
+    }
+
     for (const propertyResult of result.property_results) {
       setPropertyColorAndIcon(propertyResult);
     }
