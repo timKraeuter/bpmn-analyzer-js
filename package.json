@@ -11,8 +11,8 @@
     "dev": "run-p build:watch serve",
     "build:watch": "webpack -w",
     "serve": "serve public",
-    "build:gh-pages": "webpack --env ghPages",
-    "build:rust": "webpack --env rust",
+    "build:gh-pages": "rimraf ./docs && webpack --env ghPages",
+    "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && webpack --env rust",
     "pCheck": "prettier . --check",
     "pWrite": "prettier . --write"
   },
@@ -31,6 +31,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
     "raw-loader": "^4.0.2",
+    "rimraf": "^5.0.7",
     "serve": "^14.2.3",
     "style-loader": "^4.0.0",
     "webpack": "^5.91.0",
@@ -41,7 +42,7 @@
     "diagram-js": "^14.4.1",
     "min-dash": "^4.2.1",
     "min-dom": "^5.1.1",
-    "tiny-svg": "^4.1.2",
-    "randomcolor": "^0.6.2"
+    "randomcolor": "^0.6.2",
+    "tiny-svg": "^4.1.2"
   }
 }
