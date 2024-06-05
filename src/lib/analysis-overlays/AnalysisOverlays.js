@@ -112,7 +112,6 @@ export default function AnalysisOverlays(eventBus, overlays) {
       document
         .getElementById(problematicElement + "_counter")
         .addEventListener("click", () => {
-          console.log("click");
           eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
             propertyResult,
           });
