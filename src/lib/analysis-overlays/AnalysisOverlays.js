@@ -96,6 +96,10 @@ export default function AnalysisOverlays(eventBus, overlays) {
 
   function addOverlaysForOptionToComplete(propertyResult) {
     for (const problematicElement of propertyResult.problematic_elements) {
+      // Remove other overlay from Safeness, otherwise they will clash.
+      overlays.remove({
+        element: problematicElement,
+      });
       addPropertyOverlay(
         problematicElement,
         {
@@ -103,8 +107,16 @@ export default function AnalysisOverlays(eventBus, overlays) {
           left: 5,
         },
         "Flow can contain more than 50 tokens.",
-        "big-note",
+        "big-note clickable",
       );
+      document
+        .getElementById(problematicElement + "_counter")
+        .addEventListener("click", () => {
+          console.log("click");
+          eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
+            propertyResult,
+          });
+        });
     }
   }
 
@@ -113,7 +125,11 @@ export default function AnalysisOverlays(eventBus, overlays) {
       position,
       html: `<div id="${problematicElement}_counter" class="property-note tooltip ${cssClasses}">
                ${text}
-               ${cssClasses.includes("clickable") ? '<span class="tooltipText">Click to visualize an execution example.</span>' : ""}
+               ${
+                 cssClasses.includes("clickable")
+                   ? '<span class="tooltipText">Click to visualize an execution example.</span>'
+                   : ""
+               }
              </div>`,
     });
   }
