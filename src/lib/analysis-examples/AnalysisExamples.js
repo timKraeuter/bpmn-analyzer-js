@@ -10,6 +10,9 @@ import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.b
 import cycles from "../../../resources/cyclic.bpmn";
 import deadReceiveTask from "../../../resources/dead-receive-task.bpmn";
 import deadMice from "../../../resources/dead-mice.bpmn";
+import starvation from "../../../resources/starvation.bpmn";
+import livelock from "../../../resources/livelock.bpmn";
+import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -23,6 +26,9 @@ const example_boards = {
   cycles,
   deadReceiveTask,
   deadMice,
+  starvation,
+  livelock,
+  deadTasksConnected,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -39,18 +45,21 @@ AnalysisExamples.prototype._init = function () {
   const select = domify(`
     <select id="example-select" class="example-select">
       <option value="taskSplit">Implicit parallel gateway (Synchronization)</option>
-      <option value="stuck">Cannot terminate</option>
       <option value="unsafeGateways" selected="selected">
         Exclusive gateway (Synchronization)
       </option>
       <option value="taskMerge">Implicit exclusive gateway (Synchronization)</option>
+      <option value="deadActivity">Dead Activity</option>
+      <option value="deadTasksConnected">Connected Dead Activities</option>
+      <option value="deadReceiveTask">Dead Receive Task</option>
+      <option value="stuck">Blocking PG (Termination)</option>
+      <option value="deadMice">Blocking MICE (Termination)</option>
+      <option value="starvation">Message Starvation (Termination)</option>
+      <option value="livelock">Livelock (Termination)</option>
       <option value="reusedEndEvent">Reused end event (Unique End Events)</option>
-      <option value="deadActivity">Dead Activity (Dead Activities)</option>
-      <option value="deadReceiveTask">Dead Receive Task (Dead Activities)</option>
       <option value="showcase">Complex scenario</option>
       <option value="poolsWithMessageFlows">Counterexample with messages</option>
       <option value="cycles">Quick fixes with cycles</option>
-      <option value="deadMice">Blocking MICE (Termination)</option>
     </select>
   `);
 
