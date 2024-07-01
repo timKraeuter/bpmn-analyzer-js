@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@babel/preset-env": "^7.24.6",
+    "@babel/preset-env": "^7.24.7",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.1",
     "eslint": "^8.57.0",
