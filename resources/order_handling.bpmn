@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://tk/schema/1.0/bt" targetNamespace="" exporter="Camunda Modeler" exporterVersion="5.20.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <collaboration id="Collaboration">
+    <extensionElements>
+      <bt:processSnapshot id="ProcessSnapshot_0yu1fss" />
+    </extensionElements>
+    <participant id="Order_handling_p" name="Order handling" processRef="Order_handling" />
+    <association id="Association_0y4i2zy" sourceRef="Order_handling_p" />
+  </collaboration>
+  <process id="Order_handling" name="Order_handling" processType="None" isClosed="false" isExecutable="false">
+    <extensionElements>
+      <bt:token id="Token_0avkqrt" shouldExist="false" processSnapshot="ProcessSnapshot_0yu1fss" />
+    </extensionElements>
+    <laneSet id="sid-b167d0d7-e761-4636-9200-76b7f0e8e83a">
+      <lane id="lane">
+        <flowNodeRef>start-event</flowNodeRef>
+        <flowNodeRef>OD</flowNodeRef>
+        <flowNodeRef>Retrieve_payment</flowNodeRef>
+        <flowNodeRef>Fetch_goods</flowNodeRef>
+        <flowNodeRef>SP</flowNodeRef>
+        <flowNodeRef>EG</flowNodeRef>
+        <flowNodeRef>PG</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="start-event" name="Order placed">
+      <outgoing>Flow_1</outgoing>
+    </startEvent>
+    <endEvent id="OD" name="Order delivered">
+      <incoming>Flow_7</incoming>
+    </endEvent>
+    <serviceTask id="Retrieve_payment" name="Retrieve payment">
+      <incoming>Flow_2</incoming>
+      <outgoing>Flow_4</outgoing>
+    </serviceTask>
+    <userTask id="Fetch_goods" name="Fetch goods">
+      <incoming>Flow_3</incoming>
+      <outgoing>Flow_5</outgoing>
+    </userTask>
+    <userTask id="SP" name="Ship goods">
+      <incoming>Flow_6</incoming>
+      <outgoing>Flow_7</outgoing>
+    </userTask>
+    <sequenceFlow id="Flow_1" name="1" sourceRef="start-event" targetRef="EG" />
+    <sequenceFlow id="Flow_2" name="2" sourceRef="EG" targetRef="Retrieve_payment" />
+    <sequenceFlow id="Flow_3" name="3" sourceRef="EG" targetRef="Fetch_goods" />
+    <sequenceFlow id="Flow_7" name="7" sourceRef="SP" targetRef="OD" />
+    <sequenceFlow id="Flow_4" name="4" sourceRef="Retrieve_payment" targetRef="PG" />
+    <sequenceFlow id="Flow_5" name="5" sourceRef="Fetch_goods" targetRef="PG" />
+    <sequenceFlow id="Flow_6" name="6" sourceRef="PG" targetRef="SP" />
+    <exclusiveGateway id="EG" name="EG">
+      <incoming>Flow_1</incoming>
+      <outgoing>Flow_2</outgoing>
+      <outgoing>Flow_3</outgoing>
+    </exclusiveGateway>
+    <parallelGateway id="PG" name="PG">
+      <incoming>Flow_4</incoming>
+      <incoming>Flow_5</incoming>
+      <outgoing>Flow_6</outgoing>
+    </parallelGateway>
+    <association id="Association_1gubk35" sourceRef="SP" />
+  </process>
+  <bpmndi:BPMNDiagram id="sid-74620812-92c4-44e5-949c-aa47393d3830">
+    <bpmndi:BPMNPlane id="sid-cdcae759-2af7-4a6d-bd02-53f3352a731d" bpmnElement="Collaboration">
+      <bpmndi:BPMNShape id="sid-87F4C1D6-25E1-4A45-9DA7-AD945993D06F_gui" bpmnElement="Order_handling_p" isHorizontal="true">
+        <omgdc:Bounds x="160" y="50" width="569" height="260" />
+        <bpmndi:BPMNLabel labelStyle="sid-84cb49fd-2f7c-44fb-8950-83c3fa153d3b" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sid-57E4FE0D-18E4-478D-BC5D-B15164E93254_gui" bpmnElement="lane" isHorizontal="true">
+        <omgdc:Bounds x="190" y="50" width="539" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0l6sgn0_di" bpmnElement="start-event">
+        <omgdc:Bounds x="211" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="198" y="159" width="64" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qcvv2g_di" bpmnElement="OD">
+        <omgdc:Bounds x="671" y="122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="651" y="165" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1oob6z8_di" bpmnElement="Retrieve_payment">
+        <omgdc:Bounds x="349" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_11kif52_di" bpmnElement="Fetch_goods">
+        <omgdc:Bounds x="349" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w8qyby_di" bpmnElement="SP">
+        <omgdc:Bounds x="549" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0rzxwom_di" bpmnElement="EG" isMarkerVisible="true">
+        <omgdc:Bounds x="274" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="291" y="93" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0jjh0f5_di" bpmnElement="PG">
+        <omgdc:Bounds x="474" y="115" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="491" y="93" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0wq8dog_di" bpmnElement="Flow_1">
+        <omgdi:waypoint x="247" y="140" />
+        <omgdi:waypoint x="274" y="140" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="257" y="122" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u9a0g3_di" bpmnElement="Flow_2">
+        <omgdi:waypoint x="324" y="140" />
+        <omgdi:waypoint x="349" y="140" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="333" y="122" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mtm8jg_di" bpmnElement="Flow_3">
+        <omgdi:waypoint x="299" y="165" />
+        <omgdi:waypoint x="299" y="250" />
+        <omgdi:waypoint x="349" y="250" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="319" y="229" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14fhivy_di" bpmnElement="Flow_7">
+        <omgdi:waypoint x="649" y="140" />
+        <omgdi:waypoint x="671" y="140" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="657" y="122" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1flhoxp_di" bpmnElement="Flow_4">
+        <omgdi:waypoint x="449" y="140" />
+        <omgdi:waypoint x="474" y="140" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="458" y="122" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1n9ng49_di" bpmnElement="Flow_5">
+        <omgdi:waypoint x="449" y="250" />
+        <omgdi:waypoint x="499" y="250" />
+        <omgdi:waypoint x="499" y="165" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="471" y="232" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14i9c18_di" bpmnElement="Flow_6">
+        <omgdi:waypoint x="524" y="140" />
+        <omgdi:waypoint x="549" y="140" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="533" y="122" width="7" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="sid-e0502d32-f8d1-41cf-9c4a-cbb49fecf581">
+      <omgdc:Font name="Arial" size="11" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="sid-84cb49fd-2f7c-44fb-8950-83c3fa153d3b">
+      <omgdc:Font name="Arial" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" />
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -2,8 +2,6 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 
 import emptyBoardXML from "../resources/empty.bpmn";
 
-import initialBoardXML from "../resources/unsafe-gateways.bpmn";
-
 import AnalysisModule from "./lib/analysis/wasm"; // Analysis using WASM
 // import AnalysisModule from "./lib/analysis/webclient"; // Analysis using a webservice (requires a running server on port 3001)
 import AnalysisOverlaysModule from "./lib/analysis-overlays";
@@ -185,7 +183,7 @@ openExistingBoard.addEventListener("click", function () {
   fileInput.click();
 });
 
-openBoard(initialBoardXML);
+modeler._emit("example.init", {});
 
 // helpers //////////////////////
 

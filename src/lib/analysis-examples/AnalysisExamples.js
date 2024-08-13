@@ -13,6 +13,7 @@ import deadMice from "../../../resources/dead-mice.bpmn";
 import starvation from "../../../resources/starvation.bpmn";
 import livelock from "../../../resources/livelock.bpmn";
 import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn";
+import orderHandling from "../../../resources/order_handling.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -29,6 +30,7 @@ const example_boards = {
   starvation,
   livelock,
   deadTasksConnected,
+  orderHandling,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -60,6 +62,7 @@ AnalysisExamples.prototype._init = function () {
       <option value="showcase">Complex scenario</option>
       <option value="poolsWithMessageFlows">Counterexample with messages</option>
       <option value="cycles">Quick fixes with cycles</option>
+      <option value="orderHandling">Order handling example</option>
     </select>
   `);
 
@@ -74,6 +77,21 @@ AnalysisExamples.prototype._init = function () {
       const xml = example_boards[value];
       this._eventBus.fire("example.import", { xml });
     });
+
+  // Respond to the init event using
+  const modelValue = new URLSearchParams(window.location.search).get("model");
+  if (modelValue && example_boards[modelValue]) {
+    this._eventBus.on("example.init", () => {
+      const xml = example_boards[modelValue];
+      this._eventBus.fire("example.import", { xml });
+      document.getElementById("example-select").value = modelValue;
+    });
+  } else {
+    this._eventBus.on("example.init", () => {
+      const xml = example_boards["unsafeGateways"]; // matches selected above
+      this._eventBus.fire("example.import", { xml });
+    });
+  }
 };
 
 AnalysisExamples.$inject = ["eventBus", "canvas"];
