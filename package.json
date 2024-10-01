@@ -38,7 +38,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "bpmn-js": "^17.9.2",
+    "bpmn-js": "^17.11.1",
     "diagram-js": "^14.9.0",
     "min-dash": "^4.2.1",
     "min-dom": "^5.1.1",
