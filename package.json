@@ -20,6 +20,16 @@
     "name": "Tim Kräuter",
     "url": "https://timkraeuter.com/"
   },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "engines": {
+    "node": ">= 16"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
   "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.25.4",

@@ -3,11 +3,12 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 import emptyBoardXML from "../resources/empty.bpmn";
 
 import BPMNAnalyzerModule from "./lib/modeler";
+import AnalysisExamplesModule from "./lib/analysis-examples";
 
 // modeler instance
 const modeler = new BpmnModeler({
   container: "#canvas",
-  additionalModules: [BPMNAnalyzerModule],
+  additionalModules: [BPMNAnalyzerModule, AnalysisExamplesModule],
   keyboard: {
     bindTo: window,
   },
