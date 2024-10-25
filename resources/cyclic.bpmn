@@ -81,7 +81,7 @@
         <dc:Bounds x="252" y="332" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1k9hlq7_di" bpmnElement="Activity_1k9hlq7">
-        <dc:Bounds x="430" y="150" width="100" height="80" />
+        <dc:Bounds x="430" y="170" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_0y9eh5z_di" bpmnElement="TextAnnotation_0y9eh5z">
@@ -94,14 +94,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k243p1_di" bpmnElement="Flow_0k243p1">
         <di:waypoint x="355" y="210" />
-        <di:waypoint x="393" y="210" />
-        <di:waypoint x="393" y="190" />
-        <di:waypoint x="430" y="190" />
+        <di:waypoint x="430" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0msbshj_di" bpmnElement="Flow_0msbshj">
-        <di:waypoint x="530" y="190" />
-        <di:waypoint x="558" y="190" />
-        <di:waypoint x="558" y="210" />
+        <di:waypoint x="530" y="210" />
         <di:waypoint x="585" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0yhwwde_di" bpmnElement="Flow_0yhwwde">
