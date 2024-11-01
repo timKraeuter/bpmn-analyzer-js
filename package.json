@@ -53,6 +53,6 @@
     "min-dash": "^4.2.1",
     "min-dom": "^5.1.1",
     "randomcolor": "^0.6.2",
-    "tiny-svg": "^4.1.2"
+    "tiny-svg": "^4.1.3"
   }
 }
