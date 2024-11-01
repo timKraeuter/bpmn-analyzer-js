@@ -50,7 +50,7 @@
   "dependencies": {
     "bpmn-js": "^17.11.1",
     "diagram-js": "^14.11.3",
-    "min-dash": "^4.2.1",
+    "min-dash": "^4.2.2",
     "min-dom": "^5.1.1",
     "randomcolor": "^0.6.2",
     "tiny-svg": "^4.1.3"
