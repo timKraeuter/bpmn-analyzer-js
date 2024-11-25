@@ -1,12 +1,13 @@
 {
   "name": "rust_bpmn_analyzer_wasm",
+  "type": "module",
   "version": "2.0.0",
   "files": [
     "rust_bpmn_analyzer_wasm_bg.wasm",
     "rust_bpmn_analyzer_wasm.js",
     "rust_bpmn_analyzer_wasm.d.ts"
   ],
-  "module": "rust_bpmn_analyzer_wasm.js",
+  "main": "rust_bpmn_analyzer_wasm.js",
   "types": "rust_bpmn_analyzer_wasm.d.ts",
   "sideEffects": [
     "./snippets/*"
