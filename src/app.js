@@ -9,9 +9,6 @@ import AnalysisExamplesModule from "./lib/analysis-examples";
 const modeler = new BpmnModeler({
   container: "#canvas",
   additionalModules: [BPMNAnalyzerModule, AnalysisExamplesModule],
-  keyboard: {
-    bindTo: window,
-  },
 });
 
 /* screen interaction */
