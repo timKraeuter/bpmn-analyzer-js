@@ -6,7 +6,7 @@ A demo version of the application is hosted [here](https://timkraeuter.com/bpmn-
 
 The following screenshot shows a simple situation where the control flow in BPMN can get stuck (violates the **Option To Complete** property).
 A **counter-example** shows the token flow in the diagram leading to this situation.
-[![image](https://github.com/timKraeuter/bpmn-analyzer-js/assets/21026858/f9f96508-a17b-48ae-be2e-554f59c04cad)](https://rust-bpmn-analyzer.wittyrock-9d6a3c00.northeurope.azurecontainerapps.io)
+[![image](https://github.com/timKraeuter/bpmn-analyzer-js/assets/21026858/f9f96508-a17b-48ae-be2e-554f59c04cad)](https://timkraeuter.com/bpmn-analyzer-js/)
 
 # Setup
 
