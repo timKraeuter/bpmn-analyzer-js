@@ -30,22 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
-      - name: Setup puppeteer/chrome apparmor profile
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: |
-          cat | sudo tee /etc/apparmor.d/chrome-puppeteer <<EOF
-          abi <abi/4.0>,
-          include <tunables/global>
-          
-          profile chrome /@{HOME}/.cache/puppeteer/chrome/*/chrome-linux64/chrome flags=(unconfined) {
-            userns,
-          
-            include if exists <local/chrome>
-          }
-          EOF
-          sudo service apparmor reload
 
       - name: Lint & Test ubuntu
         if: matrix.os == 'ubuntu-latest'
