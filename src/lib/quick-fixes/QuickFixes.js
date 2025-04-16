@@ -665,7 +665,7 @@ export default function QuickFixes(
         top: -45,
         left: 7.5,
       },
-      "Click to change gateway to fix synchronization.",
+      "Click to change gateway to parallel to fix synchronization.",
       () => {
         replaceWithParallelGateway(exclusiveGateway);
       },
