@@ -43,7 +43,7 @@
     "rimraf": "^6.0.1",
     "serve": "^14.2.3",
     "style-loader": "^4.0.0",
-    "webpack": "^5.101.0",
+    "webpack": "^5.101.3",
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
