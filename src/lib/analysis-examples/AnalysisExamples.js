@@ -14,6 +14,7 @@ import starvation from "../../../resources/starvation.bpmn";
 import livelock from "../../../resources/livelock.bpmn";
 import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn";
 import orderHandling from "../../../resources/order_handling.bpmn";
+import orderHandlingSynchronization from "../../../resources/order_handling_synchronization.bpmn";
 
 const example_boards = {
   taskSplit,
@@ -31,6 +32,7 @@ const example_boards = {
   livelock,
   deadTasksConnected,
   orderHandling,
+  orderHandlingSynchronization,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -62,7 +64,8 @@ AnalysisExamples.prototype._init = function () {
       <option value="showcase">Complex scenario</option>
       <option value="poolsWithMessageFlows">Counterexample with messages</option>
       <option value="cycles">Quick fixes with cycles</option>
-      <option value="orderHandling">Order handling example</option>
+      <option value="orderHandling">Order handling example (No Termination)</option>
+      <option value="orderHandlingSynchronization">Order handling example (No Synchronization)</option>
     </select>
   `);
 
