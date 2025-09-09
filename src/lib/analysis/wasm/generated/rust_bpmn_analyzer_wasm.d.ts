@@ -1,16 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
-/**
- * @param {string} bpmn_content
- * @returns {any}
- */
 export function check_bpmn(bpmn_content: string): any;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly check_bpmn: (a: number, b: number) => Array;
+  readonly check_bpmn: (a: number, b: number) => [number, number, number];
   readonly __wbindgen_export_0: WebAssembly.Table;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
