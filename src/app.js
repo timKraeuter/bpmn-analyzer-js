@@ -215,29 +215,27 @@ export async function main() {
 
   const client = new AzureOpenAI(options);
   console.time("gpt-response");
+  let message_content =
+    "Write a short account of a solo backpacking adventure through Norway.";
+  console.log("Message:", message_content);
   const response = await client.chat.completions.create({
     messages: [
       { role: "system", content: "You are a helpful assistant." },
       {
         role: "user",
-        content:
-          "Write a short account of a solo backpacking adventure through Norway.",
+        content: message_content,
       },
     ],
     max_tokens: 8192,
-    temperature: 0.7,
-    top_p: 0.95,
-    frequency_penalty: 0,
-    presence_penalty: 0,
     model: modelName,
   });
 
   if (response?.error !== undefined && response.status !== "200") {
     throw response.error;
   }
-  console.timeEnd("gpt-response");
+  console.timeEnd("Model response time");
   console.log("Model chosen by the router: ", response.model);
-  console.log(response.choices[0].message.content);
+  console.log("Response:", response.choices[0].message.content);
 }
 
 main().catch((err) => {
