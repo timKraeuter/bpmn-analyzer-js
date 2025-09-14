@@ -1,4 +1,5 @@
 node_modules/
 public/
 .idea/sonarlint
+.idea/copilot*
 src/config.js
