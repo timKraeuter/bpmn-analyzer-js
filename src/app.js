@@ -204,7 +204,7 @@ const modelName = "gpt-5-chat";
 const deployment = "gpt-5-chat";
 const apiVersion = "2024-04-01-preview";
 
-export async function queryAI() {
+async function queryAI(prompt) {
   const options = {
     endpoint,
     apiKey,
@@ -214,16 +214,14 @@ export async function queryAI() {
   };
 
   const client = new AzureOpenAI(options);
-  console.time("gpt-response");
-  let message_content =
-    "Write a short account of a solo backpacking adventure through Norway.";
-  console.log("Message:", message_content);
+  console.time("Model response time");
+  console.log("Prompt:\n", prompt);
   const response = await client.chat.completions.create({
     messages: [
       { role: "system", content: "You are a helpful assistant." },
       {
         role: "user",
-        content: message_content,
+        content: prompt,
       },
     ],
     max_tokens: 16384,
@@ -235,27 +233,73 @@ export async function queryAI() {
   if (response?.error !== undefined && response.status !== "200") {
     throw response.error;
   }
-  console.timeEnd("Model response time");
-  console.log("Response: ", response);
+  let responseContent = response.choices[0].message.content;
+  console.log("Response:", responseContent);
   console.log("Model: ", response.model);
-  console.log("Response:", response.choices[0].message.content);
+  console.timeEnd("Model response time");
+  return responseContent;
 }
 
-document.getElementById("js-chatgpt").addEventListener("click", aiClicked);
+document
+  .getElementById("js-chatgpt")
+  .addEventListener("click", fixWithAiClicked);
 
-function aiClicked() {
+async function fixWithAiClicked() {
   if (analysisResults.unsupported_elements.length > 0) {
     console.log("Unsupported elements -> no AI action available.");
     return;
   }
-  if (analysisResults.property_results.every((value) => value.fulfilled)) {
+  let propertyResult = analysisResults.property_results.find(
+    (property) => !property.fulfilled,
+  );
+  if (!propertyResult) {
     console.log("No properties violated -> no AI action available.");
     return;
   }
-  console.log("Querying AI for help!");
-  // queryAI().catch((err) => {
-  //   console.error("Encountered an error querying chatGPT:", err);
-  // });
+  console.log(`Querying ${modelName} to fix ${propertyResult.property}...`);
+  let prompt = buildPrompt(propertyResult);
+  let response = await queryAI(prompt);
+  let xml = extractXML(response);
+  // console.log("Extracted XML:", xml);
+  if (xml) {
+    openBoard(xml);
+  }
+}
+
+function extractXML(response) {
+  // Match markdown xml block
+  const xmlMatch = response.match(/```xml\s*([\s\S]*?)\s*```/);
+  if (xmlMatch) {
+    return xmlMatch[1];
+  }
+  // If no XML code block found, try to find XML content directly
+  const xmlDirectMatch = response.match(/<\?xml[\s\S]*<\/definitions>/);
+  if (xmlDirectMatch) {
+    return xmlDirectMatch[0];
+  }
+  console.warn("No XML found in AI response");
+  return undefined;
+}
+
+function buildPrompt(propertyResult) {
+  const commonSuffix =
+    `Please provide the entire fixed BPMN model in a markdown xml codeblock as an answer and keep your changes minimal. If there are multiple ways to fix it choose one of them.\n` +
+    `Here is the BPMN model:\n` +
+    analysisResults.xml;
+  let problematicElement = propertyResult.problematic_elements.find(() => true);
+  switch (propertyResult.property) {
+    case "Safeness":
+      return `Fix my BPMN model which has an error such that it contains multiple tokens at the element with id "${problematicElement}".\n${commonSuffix}`;
+    case "ProperCompletion":
+      return `Fix my BPMN model which has an error such that the end event with id "${problematicElement}" consumes multiple tokens. Each end event should only consume one token.\n${commonSuffix}`;
+    case "OptionToComplete":
+      let counterExample = propertyResult.counter_example.transitions
+        .map((transition) => transition.label)
+        .join(" -> ");
+      return `Fix my BPMN model which has an error such that it might deadlock due to the following order of actions "${counterExample}".\n${commonSuffix}`;
+    case "NoDeadActivities":
+      return `Fix my BPMN model which has a dead activity with the id "${problematicElement}".\n${commonSuffix}`;
+  }
 }
 
 // Pass analysis results to the variable for AI later.
