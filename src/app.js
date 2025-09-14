@@ -5,6 +5,9 @@ import emptyBoardXML from "../resources/empty.bpmn";
 import BPMNAnalyzerModule from "./lib/modeler";
 import AnalysisExamplesModule from "./lib/analysis-examples";
 
+import { APP_CONFIG } from "./config.js";
+import { AzureOpenAI } from "openai/azure";
+
 // modeler instance
 const modeler = new BpmnModeler({
   container: "#canvas",
@@ -183,3 +186,60 @@ function debounce(fn, timeout) {
     timer = setTimeout(fn, timeout);
   };
 }
+
+// Test AI
+
+const apiKey = APP_CONFIG.AZURE_OPENAI_API_KEY;
+const endpoint = APP_CONFIG.AZURE_OPENAI_ENDPOINT;
+
+if (!apiKey || apiKey === "your_api_key_here") {
+  throw new Error("Please set your actual API key in config.js");
+}
+
+if (!endpoint || endpoint === "") {
+  throw new Error("Please set your endpoint in config.js");
+}
+
+const modelName = "model-router";
+const deployment = "model-router";
+const apiVersion = "2024-12-01-preview";
+
+export async function main() {
+  const options = {
+    endpoint,
+    apiKey,
+    deployment,
+    apiVersion,
+    dangerouslyAllowBrowser: true,
+  };
+
+  const client = new AzureOpenAI(options);
+  console.time("gpt-response");
+  const response = await client.chat.completions.create({
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      {
+        role: "user",
+        content:
+          "Write a short account of a solo backpacking adventure through Norway.",
+      },
+    ],
+    max_tokens: 8192,
+    temperature: 0.7,
+    top_p: 0.95,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    model: modelName,
+  });
+
+  if (response?.error !== undefined && response.status !== "200") {
+    throw response.error;
+  }
+  console.timeEnd("gpt-response");
+  console.log("Model chosen by the router: ", response.model);
+  console.log(response.choices[0].message.content);
+}
+
+main().catch((err) => {
+  console.error("The sample encountered an error:", err);
+});

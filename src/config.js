@@ -1,0 +1,4 @@
+export const APP_CONFIG = {
+  AZURE_OPENAI_API_KEY: "",
+  AZURE_OPENAI_ENDPOINT: "",
+};
