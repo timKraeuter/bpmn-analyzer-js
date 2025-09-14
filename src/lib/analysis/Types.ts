@@ -1,3 +1,9 @@
+export interface CheckingResponseWithXml {
+  property_results: PropertyResult[];
+  unsupported_elements: string[];
+  xml: string;
+}
+
 export interface CheckingResponse {
   property_results: PropertyResult[];
   unsupported_elements: string[];

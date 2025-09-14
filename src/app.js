@@ -200,9 +200,9 @@ if (!endpoint || endpoint === "") {
   throw new Error("Please set your endpoint in config.js");
 }
 
-const modelName = "model-router";
-const deployment = "model-router";
-const apiVersion = "2024-12-01-preview";
+const modelName = "gpt-5-chat";
+const deployment = "gpt-5-chat";
+const apiVersion = "2024-04-01-preview";
 
 export async function queryAI() {
   const options = {
@@ -226,7 +226,9 @@ export async function queryAI() {
         content: message_content,
       },
     ],
-    max_tokens: 8192,
+    max_tokens: 16384,
+    temperature: 1,
+    top_p: 1,
     model: modelName,
   });
 
@@ -234,13 +236,32 @@ export async function queryAI() {
     throw response.error;
   }
   console.timeEnd("Model response time");
-  console.log("Model chosen by the router: ", response.model);
+  console.log("Response: ", response);
+  console.log("Model: ", response.model);
   console.log("Response:", response.choices[0].message.content);
 }
 
-document.getElementById("js-chatgpt").addEventListener("click", function () {
-  console.log("AI button clicked.");
+document.getElementById("js-chatgpt").addEventListener("click", aiClicked);
+
+function aiClicked() {
+  if (analysisResults.unsupported_elements.length > 0) {
+    console.log("Unsupported elements -> no AI action available.");
+    return;
+  }
+  if (analysisResults.property_results.every((value) => value.fulfilled)) {
+    console.log("No properties violated -> no AI action available.");
+    return;
+  }
+  console.log("Querying AI for help!");
   // queryAI().catch((err) => {
-  //   console.error("Encountered an error:", err);
+  //   console.error("Encountered an error querying chatGPT:", err);
   // });
+}
+
+// Pass analysis results to the variable for AI later.
+/** @type {CheckingResponseWithXml} */
+let analysisResults;
+
+modeler.on("analysis.done", (result) => {
+  analysisResults = result;
 });

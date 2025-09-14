@@ -233,7 +233,7 @@ button {
   cursor: pointer;
 }
 
-.tooltip {
+.tooltip .tooltipBelow {
   position: relative;
   display: inline-block;
 }
@@ -255,8 +255,34 @@ button {
   z-index: 1;
 }
 
+.tooltipBelow .tooltipText {
+  visibility: hidden;
+  width: 100px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  top: 105%;
+  left: 90%;
+  transform: translateX(-50%);
+  position: absolute;
+  z-index: 1;
+}
+
 .tooltip:hover .tooltipText {
   visibility: visible;
+}
+
+.tooltipBelow:hover .tooltipText {
+  visibility: visible;
+  font-weight: normal;
+  border-radius: 5px;
+  font-family: Arial, serif;
+  font-size: 12px;
+  padding: 5px;
 }
 
 .keybindings {

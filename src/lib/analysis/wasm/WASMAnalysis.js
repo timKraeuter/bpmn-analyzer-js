@@ -20,6 +20,11 @@ function startAnalysis(diagramXML, eventBus) {
 
     console.log("BPMN analysis runtime (wasm): " + runtime + " ms");
 
-    eventBus.fire("analysis.done", result);
+    const resultWithXml = {
+      ...result,
+      xml: diagramXML.xml,
+    };
+
+    eventBus.fire("analysis.done", resultWithXml);
   });
 }
