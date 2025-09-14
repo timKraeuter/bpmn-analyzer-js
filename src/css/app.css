@@ -288,3 +288,9 @@ button {
 .binding {
   font-family: monospace;
 }
+
+#js-chatgpt svg {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}

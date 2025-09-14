@@ -204,7 +204,7 @@ const modelName = "model-router";
 const deployment = "model-router";
 const apiVersion = "2024-12-01-preview";
 
-export async function main() {
+export async function queryAI() {
   const options = {
     endpoint,
     apiKey,
@@ -238,6 +238,9 @@ export async function main() {
   console.log("Response:", response.choices[0].message.content);
 }
 
-main().catch((err) => {
-  console.error("The sample encountered an error:", err);
+document.getElementById("js-chatgpt").addEventListener("click", function () {
+  console.log("AI button clicked.");
+  // queryAI().catch((err) => {
+  //   console.error("Encountered an error:", err);
+  // });
 });
