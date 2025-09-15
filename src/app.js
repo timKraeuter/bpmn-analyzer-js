@@ -187,16 +187,16 @@ function debounce(fn, timeout) {
   };
 }
 
-// Test AI
+// Test LLM
 
 const apiKey = APP_CONFIG.AZURE_OPENAI_API_KEY;
 const endpoint = APP_CONFIG.AZURE_OPENAI_ENDPOINT;
 
-if (!apiKey || apiKey === "your_api_key_here") {
+if (!apiKey || apiKey === "your_azure_openai_api_key_here") {
   throw new Error("Please set your actual API key in config.js");
 }
 
-if (!endpoint || endpoint === "") {
+if (!endpoint || endpoint === "your_azure_openai_endpoint_here") {
   throw new Error("Please set your endpoint in config.js");
 }
 
@@ -204,7 +204,7 @@ const modelName = "gpt-5-chat";
 const deployment = "gpt-5-chat";
 const apiVersion = "2024-04-01-preview";
 
-async function queryAI(prompt) {
+async function queryLLM(prompt) {
   const options = {
     endpoint,
     apiKey,
@@ -242,31 +242,31 @@ async function queryAI(prompt) {
 
 document
   .getElementById("js-chatgpt")
-  .addEventListener("click", fixWithAiClicked);
+  .addEventListener("click", fixWithLLMClicked);
 
-async function fixWithAiClicked() {
+async function fixWithLLMClicked() {
   if (analysisResults.unsupported_elements.length > 0) {
-    console.log("Unsupported elements -> no AI action available.");
+    console.log("Unsupported elements -> no LLM action available.");
     return;
   }
   let propertyResult = analysisResults.property_results.find(
     (property) => !property.fulfilled,
   );
   if (!propertyResult) {
-    console.log("No properties violated -> no AI action available.");
+    console.log("No properties violated -> no LLM action available.");
     return;
   }
   console.log(`Querying ${modelName} to fix ${propertyResult.property}...`);
   let prompt = buildPrompt(propertyResult);
-  let response = await queryAI(prompt);
-  let xml = extractXML(response);
+  let response = await queryLLM(prompt);
+  let xml = extractXMLFromLLMResponse(response);
   // console.log("Extracted XML:", xml);
   if (xml) {
     openBoard(xml);
   }
 }
 
-function extractXML(response) {
+function extractXMLFromLLMResponse(response) {
   // Match markdown xml block
   const xmlMatch = response.match(/```xml\s*([\s\S]*?)\s*```/);
   if (xmlMatch) {
@@ -277,7 +277,7 @@ function extractXML(response) {
   if (xmlDirectMatch) {
     return xmlDirectMatch[0];
   }
-  console.warn("No XML found in AI response");
+  console.warn("No XML found in LLM response");
   return undefined;
 }
 
@@ -302,7 +302,7 @@ function buildPrompt(propertyResult) {
   }
 }
 
-// Pass analysis results to the variable for AI later.
+// Pass analysis results to the variable for LLM later.
 /** @type {CheckingResponseWithXml} */
 let analysisResults;
 
