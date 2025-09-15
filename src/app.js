@@ -234,7 +234,7 @@ async function queryLLM(prompt) {
     throw response.error;
   }
   let responseContent = response.choices[0].message.content;
-  console.log("Response:", responseContent);
+  console.log("Response:\n", responseContent);
   console.log("Model: ", response.model);
   console.timeEnd("Model response time");
   return responseContent;
@@ -256,7 +256,9 @@ async function fixWithLLMClicked() {
     console.log("No properties violated -> no LLM action available.");
     return;
   }
-  console.log(`Querying ${modelName} to fix ${propertyResult.property}...`);
+  console.log(
+    `Querying ${modelName} to fix ${mapPropertyName(propertyResult.property)}...`,
+  );
   let prompt = buildPrompt(propertyResult);
   let response = await queryLLM(prompt);
   let xml = extractXMLFromLLMResponse(response);
@@ -300,6 +302,20 @@ function buildPrompt(propertyResult) {
     case "NoDeadActivities":
       return `Fix my BPMN model which has a dead activity with the id "${problematicElement}".\n${commonSuffix}`;
   }
+}
+
+function mapPropertyName(propertyName) {
+  switch (propertyName) {
+    case "ProperCompletion":
+      return "Unique end event execution";
+    case "Safeness":
+      return "Synchronization";
+    case "OptionToComplete":
+      return "Guaranteed termination";
+    case "NoDeadActivities":
+      return "No dead activities";
+  }
+  return propertyName;
 }
 
 // Pass analysis results to the variable for LLM later.
