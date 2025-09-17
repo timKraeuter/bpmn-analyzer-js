@@ -32,7 +32,20 @@ export default defineConfig(({ command, mode }) => {
     build: {
       outDir: "../../rust_bpmn_analyzer/webserver/public",
       emptyOutDir: true,
-      sourcemap: mode === "development",
+      sourcemap: false, // Disable sourcemap for rust build
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Separate bpmn-js and diagram-js into their own chunk
+            "bpmn-core": ["bpmn-js", "diagram-js"],
+            // Separate OpenAI and Azure dependencies
+            "ai-services": ["openai", "@azure/identity"],
+            // Separate utility libraries
+            utilities: ["min-dash", "min-dom", "tiny-svg", "randomcolor"],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 600, // Increase limit slightly to reduce warnings for remaining chunks
     },
     define: {
       "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION),

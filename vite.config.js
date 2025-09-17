@@ -33,6 +33,19 @@ export default defineConfig(({ command, mode }) => {
       outDir: "../public",
       emptyOutDir: true,
       sourcemap: mode === "development",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Separate bpmn-js and diagram-js into their own chunk
+            "bpmn-core": ["bpmn-js", "diagram-js"],
+            // Separate OpenAI and Azure dependencies
+            "ai-services": ["openai", "@azure/identity"],
+            // Separate utility libraries
+            utilities: ["min-dash", "min-dom", "tiny-svg", "randomcolor"],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 600, // Increase limit slightly to reduce warnings for remaining chunks
     },
     define: {
       "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION),
