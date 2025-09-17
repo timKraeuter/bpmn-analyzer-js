@@ -334,8 +334,8 @@ function addChatMessage(content, type, timing = null) {
   const contentDiv = document.createElement("div");
   contentDiv.className = "chat-message-content";
 
-  // Abbreviate XML markdown blocks for better readability
-  contentDiv.textContent = abbreviateXMLBlocks(content);
+  // Format markdown content as HTML instead of plain text
+  contentDiv.innerHTML = formatMarkdownContent(abbreviateXMLBlocks(content));
 
   messageDiv.appendChild(labelDiv);
   messageDiv.appendChild(contentDiv);
@@ -349,6 +349,18 @@ function addChatMessage(content, type, timing = null) {
 
   messagesContainer.appendChild(messageDiv);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function formatMarkdownContent(content) {
+  // Convert markdown XML to HTML format
+  // This is a simplified converter, you might want to use a library for complex cases
+  return content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/`{3}xml\n?/, "<pre><code class='language-xml'>")
+    .replace(/`{3}/g, "</code></pre>")
+    .replace(/\n/g, "<br>");
 }
 
 function abbreviateXMLBlocks(content) {

@@ -423,11 +423,52 @@ button {
 }
 
 .chat-message-content {
-  font-family: monospace;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 13px;
   line-height: 1.4;
-  white-space: pre-wrap;
   color: #333;
+}
+
+/* Code block styling */
+.chat-message-content pre {
+  background: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 8px 0;
+  overflow-x: auto;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.chat-message-content code {
+  background: #f6f8fa;
+  border-radius: 3px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+/* Inline code */
+.chat-message-content p code,
+.chat-message-content span code {
+  padding: 2px 4px;
+  background: #f6f8fa;
+  border: 1px solid #e1e4e8;
+}
+
+/* Code block syntax highlighting for XML */
+.chat-message-content .language-xml {
+  background: #f6f8fa;
+  color: #24292e;
+}
+
+/* Simple XML syntax highlighting */
+.chat-message-content pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
 }
 
 .chat-timing {
