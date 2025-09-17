@@ -1,19 +1,19 @@
-import { defineConfig } from 'vite';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
-import fs from 'fs';
-import path from 'path';
+import { defineConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
+import fs from "fs";
+import path from "path";
 
 // Load environment variables from .env file
 function loadEnvVars() {
-  const envPath = path.resolve(__dirname, '.env');
+  const envPath = path.resolve(__dirname, ".env");
   const envVars = {};
 
   if (fs.existsSync(envPath)) {
-    const envContent = fs.readFileSync(envPath, 'utf8');
-    envContent.split('\n').forEach((line) => {
-      const [key, ...valueParts] = line.split('=');
+    const envContent = fs.readFileSync(envPath, "utf8");
+    envContent.split("\n").forEach((line) => {
+      const [key, ...valueParts] = line.split("=");
       if (key && valueParts.length > 0) {
-        const value = valueParts.join('=').trim();
+        const value = valueParts.join("=").trim();
         envVars[key.trim()] = value;
       }
     });
@@ -24,42 +24,47 @@ function loadEnvVars() {
 
 export default defineConfig(({ command, mode }) => {
   const envVars = loadEnvVars();
-  const SOURCE_VERSION = process.env.SOURCE_VERSION || process.env.npm_package_gitHead || 'dev';
+  const SOURCE_VERSION =
+    process.env.SOURCE_VERSION || process.env.npm_package_gitHead || "dev";
 
   // Determine output directory based on environment
-  let outDir = 'public';
-  if (process.env.VITE_BUILD_TARGET === 'rust') {
-    outDir = '../rust_bpmn_analyzer/webserver/public';
-  } else if (process.env.VITE_BUILD_TARGET === 'ghPages') {
-    outDir = 'docs';
+  let outDir = "public";
+  if (process.env.VITE_BUILD_TARGET === "rust") {
+    outDir = "../rust_bpmn_analyzer/webserver/public";
+  } else if (process.env.VITE_BUILD_TARGET === "ghPages") {
+    outDir = "docs";
   }
 
   return {
-    root: 'src',
+    root: "src",
     build: {
       outDir: `../${outDir}`,
       emptyOutDir: true,
-      sourcemap: mode === 'development',
+      sourcemap: mode === "development",
     },
     define: {
-      'process.env.SOURCE_VERSION': JSON.stringify(SOURCE_VERSION),
-      'process.env.AZURE_OPENAI_API_KEY': JSON.stringify(envVars.AZURE_OPENAI_API_KEY || ''),
-      'process.env.AZURE_OPENAI_ENDPOINT': JSON.stringify(envVars.AZURE_OPENAI_ENDPOINT || ''),
+      "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION),
+      "process.env.AZURE_OPENAI_API_KEY": JSON.stringify(
+        envVars.AZURE_OPENAI_API_KEY || "",
+      ),
+      "process.env.AZURE_OPENAI_ENDPOINT": JSON.stringify(
+        envVars.AZURE_OPENAI_ENDPOINT || "",
+      ),
     },
-    assetsInclude: ['**/*.bpmn'],
+    assetsInclude: ["**/*.bpmn"],
     plugins: [
       viteStaticCopy({
         targets: [
           {
-            src: '../node_modules/bpmn-js/dist/assets/*',
-            dest: '.'
-          }
-        ]
-      })
+            src: "../node_modules/bpmn-js/dist/assets/*",
+            dest: ".",
+          },
+        ],
+      }),
     ],
     server: {
       port: 3000,
-      open: true
-    }
+      open: true,
+    },
   };
 });
