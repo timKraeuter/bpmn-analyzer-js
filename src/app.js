@@ -1,6 +1,6 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
-import emptyBoardXMLUrl from "../resources/empty.bpmn?url";
+import emptyBoardXML from "../resources/empty.bpmn?raw";
 
 import BPMNAnalyzerModule from "./lib/modeler";
 import AnalysisExamplesModule from "./lib/analysis-examples";
@@ -162,24 +162,8 @@ modeler.on("import.done", exportArtifacts);
 modeler.on("example.import", (data) => openBoard(data.xml));
 
 // Load empty BPMN content asynchronously
-let emptyBoardXML = "";
-fetch(emptyBoardXMLUrl)
-  .then((response) => response.text())
-  .then((xml) => {
-    emptyBoardXML = xml;
-  })
-  .catch((err) => console.error("Failed to load empty BPMN:", err));
-
 openNew.addEventListener("click", function () {
-  if (emptyBoardXML) {
-    openBoard(emptyBoardXML);
-  } else {
-    // If not loaded yet, fetch it directly
-    fetch(emptyBoardXMLUrl)
-      .then((response) => response.text())
-      .then((xml) => openBoard(xml))
-      .catch((err) => console.error("Failed to load empty BPMN:", err));
-  }
+  openBoard(emptyBoardXML);
 });
 
 openExistingBoard.addEventListener("click", function () {

@@ -1,38 +1,38 @@
 import { domify } from "min-dom";
-import taskSplitUrl from "../../../resources/implicit-task-split.bpmn?url";
-import taskMergeUrl from "../../../resources/implicit-task-merge.bpmn?url";
-import showcaseUrl from "../../../resources/showcase.bpmn?url";
-import unsafeGatewaysUrl from "../../../resources/unsafe-gateways.bpmn?url";
-import reusedEndEventUrl from "../../../resources/reused-end-event.bpmn?url";
-import stuckUrl from "../../../resources/stuck.bpmn?url";
-import deadActivityUrl from "../../../resources/dead-activity.bpmn?url";
-import poolsWithMessageFlowsUrl from "../../../resources/pools-with-message-flows.bpmn?url";
-import cyclesUrl from "../../../resources/cyclic.bpmn?url";
-import deadReceiveTaskUrl from "../../../resources/dead-receive-task.bpmn?url";
-import deadMiceUrl from "../../../resources/dead-mice.bpmn?url";
-import starvationUrl from "../../../resources/starvation.bpmn?url";
-import livelockUrl from "../../../resources/livelock.bpmn?url";
-import deadTasksConnectedUrl from "../../../resources/dead_tasks_connected.bpmn?url";
-import orderHandlingUrl from "../../../resources/order_handling.bpmn?url";
-import orderHandlingSynchronizationUrl from "../../../resources/order_handling_synchronization.bpmn?url";
+import taskSplitXml from "../../../resources/implicit-task-split.bpmn?raw";
+import taskMergeXml from "../../../resources/implicit-task-merge.bpmn?raw";
+import showcaseXml from "../../../resources/showcase.bpmn?raw";
+import unsafeGatewaysXml from "../../../resources/unsafe-gateways.bpmn?raw";
+import reusedEndEventXml from "../../../resources/reused-end-event.bpmn?raw";
+import stuckXml from "../../../resources/stuck.bpmn?raw";
+import deadActivityXml from "../../../resources/dead-activity.bpmn?raw";
+import poolsWithMessageFlowsXml from "../../../resources/pools-with-message-flows.bpmn?raw";
+import cyclesXml from "../../../resources/cyclic.bpmn?raw";
+import deadReceiveTaskXml from "../../../resources/dead-receive-task.bpmn?raw";
+import deadMiceXml from "../../../resources/dead-mice.bpmn?raw";
+import starvationXml from "../../../resources/starvation.bpmn?raw";
+import livelockXml from "../../../resources/livelock.bpmn?raw";
+import deadTasksConnectedXml from "../../../resources/dead_tasks_connected.bpmn?raw";
+import orderHandlingXml from "../../../resources/order_handling.bpmn?raw";
+import orderHandlingSynchronizationXml from "../../../resources/order_handling_synchronization.bpmn?raw";
 
 const example_boards = {
-  taskSplitUrl,
-  taskMergeUrl,
-  showcaseUrl,
-  unsafeGatewaysUrl,
-  reusedEndEventUrl,
-  stuckUrl,
-  deadActivityUrl,
-  poolsWithMessageFlowsUrl,
-  cyclesUrl,
-  deadReceiveTaskUrl,
-  deadMiceUrl,
-  starvationUrl,
-  livelockUrl,
-  deadTasksConnectedUrl,
-  orderHandlingUrl,
-  orderHandlingSynchronizationUrl,
+  taskSplit: taskSplitXml,
+  taskMerge: taskMergeXml,
+  showcase: showcaseXml,
+  unsafeGateways: unsafeGatewaysXml,
+  reusedEndEvent: reusedEndEventXml,
+  stuck: stuckXml,
+  deadActivity: deadActivityXml,
+  poolsWithMessageFlows: poolsWithMessageFlowsXml,
+  cycles: cyclesXml,
+  deadReceiveTask: deadReceiveTaskXml,
+  deadMice: deadMiceXml,
+  starvation: starvationXml,
+  livelock: livelockXml,
+  deadTasksConnected: deadTasksConnectedXml,
+  orderHandling: orderHandlingXml,
+  orderHandlingSynchronization: orderHandlingSynchronizationXml,
 };
 
 export default function AnalysisExamples(eventBus, canvas) {
@@ -75,44 +75,26 @@ AnalysisExamples.prototype._init = function () {
 
   document
     .getElementById("example-select")
-    .addEventListener("change", async (event) => {
+    .addEventListener("change", (event) => {
       const value = event.currentTarget.value;
-      const xmlUrl = example_boards[value + "Url"];
-      if (xmlUrl) {
-        try {
-          const response = await fetch(xmlUrl);
-          const xml = await response.text();
-          this._eventBus.fire("example.import", { xml });
-        } catch (err) {
-          console.error("Failed to load BPMN example:", err);
-        }
+      const xml = example_boards[value];
+      if (xml) {
+        this._eventBus.fire("example.import", { xml });
       }
     });
 
   // Respond to the init event using
   const modelValue = new URLSearchParams(window.location.search).get("model");
-  if (modelValue && example_boards[modelValue + "Url"]) {
-    this._eventBus.on("example.init", async () => {
-      const xmlUrl = example_boards[modelValue + "Url"];
-      try {
-        const response = await fetch(xmlUrl);
-        const xml = await response.text();
-        this._eventBus.fire("example.import", { xml });
-        document.getElementById("example-select").value = modelValue;
-      } catch (err) {
-        console.error("Failed to load BPMN example:", err);
-      }
+  if (modelValue && example_boards[modelValue]) {
+    this._eventBus.on("example.init", () => {
+      const xml = example_boards[modelValue];
+      this._eventBus.fire("example.import", { xml });
+      document.getElementById("example-select").value = modelValue;
     });
   } else {
-    this._eventBus.on("example.init", async () => {
-      const xmlUrl = example_boards.unsafeGatewaysUrl; // matches selected above
-      try {
-        const response = await fetch(xmlUrl);
-        const xml = await response.text();
-        this._eventBus.fire("example.import", { xml });
-      } catch (err) {
-        console.error("Failed to load BPMN example:", err);
-      }
+    this._eventBus.on("example.init", () => {
+      const xml = example_boards.unsafeGateways; // matches selected above
+      this._eventBus.fire("example.import", { xml });
     });
   }
 };
