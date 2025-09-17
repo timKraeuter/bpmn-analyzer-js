@@ -471,6 +471,12 @@ button {
   padding: 0;
 }
 
+/* Bold text styling */
+.chat-message-content strong {
+  font-weight: bold;
+  color: #24292e;
+}
+
 .chat-timing {
   font-size: 11px;
   color: #888;

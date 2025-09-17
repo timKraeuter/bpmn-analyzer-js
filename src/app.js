@@ -352,15 +352,22 @@ function addChatMessage(content, type, timing = null) {
 }
 
 function formatMarkdownContent(content) {
-  // Convert markdown XML to HTML format
-  // This is a simplified converter, you might want to use a library for complex cases
-  return content
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/`{3}xml\n?/, "<pre><code class='language-xml'>")
-    .replace(/`{3}/g, "</code></pre>")
-    .replace(/\n/g, "<br>");
+  // Convert markdown to HTML format
+  return (
+    content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      // Handle code blocks first (triple backticks)
+      .replace(/`{3}xml\n?/, "<pre><code class='language-xml'>")
+      .replace(/`{3}/g, "</code></pre>")
+      // Handle inline code (single backticks) - avoid matching triple backticks
+      .replace(/(?<!`)`([^`\n]+)`(?!`)/g, "<code>$1</code>")
+      // Handle bold text (**text**)
+      .replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>")
+      // Convert line breaks to <br> tags
+      .replace(/\n/g, "<br>")
+  );
 }
 
 function abbreviateXMLBlocks(content) {
