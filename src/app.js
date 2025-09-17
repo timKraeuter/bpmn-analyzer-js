@@ -204,6 +204,20 @@ const modelName = "gpt-5-chat";
 const deployment = "gpt-5-chat";
 const apiVersion = "2024-04-01-preview";
 
+// Helper: format response time (ms) -> "XXXms" if <=1000 else "X.XXs"
+function formatResponseTime(ms) {
+  if (ms > 1000) {
+    const seconds = ms / 1000;
+    // Show up to 2 decimals, trim trailing zeros
+    let str = seconds.toFixed(2);
+    if (str.indexOf(".") !== -1) {
+      str = str.replace(/\.0+$/, "").replace(/(\.[0-9]*?)0+$/, "$1");
+    }
+    return `${str}s`;
+  }
+  return `${ms}ms`;
+}
+
 // Chat Dialog Functions
 function openChatDialog() {
   const chatDialog = document.getElementById("chat-dialog");
@@ -468,7 +482,7 @@ async function queryLLM(prompt) {
 
     const endTime = performance.now();
     const responseTime = Math.round(endTime - startTime);
-    const timing = `Response time: ${responseTime}ms | Model: ${response.model}`;
+    const timing = `Response time: ${formatResponseTime(responseTime)} | Model: ${response.model}`;
 
     let responseContent = response.choices[0].message.content;
 
@@ -479,7 +493,7 @@ async function queryLLM(prompt) {
   } catch (error) {
     const endTime = performance.now();
     const responseTime = Math.round(endTime - startTime);
-    const timing = `Error after ${responseTime}ms`;
+    const timing = `Error after ${formatResponseTime(responseTime)}`;
 
     addChatMessage(`Error: ${error.message || error}`, "assistant", timing);
     throw error;
