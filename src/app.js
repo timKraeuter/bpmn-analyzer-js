@@ -329,7 +329,7 @@ function addChatMessage(content, type, timing = null) {
 
   const labelDiv = document.createElement("div");
   labelDiv.className = "chat-message-label";
-  labelDiv.textContent = type === "user" ? "Prompt" : "AI Response";
+  labelDiv.textContent = type === "user" ? "Prompt" : "LLM Response";
 
   const contentDiv = document.createElement("div");
   contentDiv.className = "chat-message-content";
