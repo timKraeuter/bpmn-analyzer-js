@@ -334,10 +334,10 @@ button {
   background: white;
   z-index: 1002;
   position: fixed;
-  width: 600px;
+  width: 800px;
   max-width: 90vw;
-  height: 500px;
-  max-height: 80vh;
+  height: 650px;
+  max-height: 85vh;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
