@@ -204,6 +204,182 @@ const modelName = "gpt-5-chat";
 const deployment = "gpt-5-chat";
 const apiVersion = "2024-04-01-preview";
 
+// Chat Dialog Functions
+function openChatDialog() {
+  const chatDialog = document.getElementById("chat-dialog");
+  chatDialog.classList.add("io-dialog-open");
+}
+
+function closeChatDialog() {
+  const chatDialog = document.getElementById("chat-dialog");
+  chatDialog.classList.remove("io-dialog-open");
+}
+
+// Draggable functionality for chat dialog
+let isDragging = false;
+let currentX = 0;
+let currentY = 0;
+let initialX = 0;
+let initialY = 0;
+let xOffset = 0;
+let yOffset = 0;
+
+function initializeDragAndDrop() {
+  const chatHeader = document.querySelector(".chat-header");
+  const chatDialog = document.querySelector(".chat-dialog-content");
+
+  if (!chatHeader || !chatDialog) {
+    return; // Elements not ready yet
+  }
+
+  chatHeader.addEventListener("mousedown", dragStart);
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", dragEnd);
+
+  function dragStart(e) {
+    // Don't drag if clicking on the close button
+    if (
+      e.target.classList.contains("chat-close") ||
+      e.target.closest(".chat-close")
+    ) {
+      return;
+    }
+
+    // Prevent default to avoid text selection
+    e.preventDefault();
+
+    // Get current computed style to see actual position
+    const rect = chatDialog.getBoundingClientRect();
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight / 2;
+
+    // Calculate current offset from center
+    currentX = rect.left + rect.width / 2 - viewportCenterX;
+    currentY = rect.top + rect.height / 2 - viewportCenterY;
+
+    // Store initial mouse position relative to current dialog position
+    initialX = e.clientX - currentX;
+    initialY = e.clientY - currentY;
+
+    xOffset = currentX;
+    yOffset = currentY;
+
+    if (e.target === chatHeader || chatHeader.contains(e.target)) {
+      isDragging = true;
+      // Ensure dialog has the correct initial transform
+      chatDialog.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`;
+    }
+  }
+
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+
+      xOffset = currentX;
+      yOffset = currentY;
+
+      // Apply boundary constraints to keep dialog visible
+      const dialogWidth = chatDialog.offsetWidth;
+      const dialogHeight = chatDialog.offsetHeight;
+      const minVisibleArea = 50; // pixels that must remain visible
+
+      const maxX = window.innerWidth / 2 - minVisibleArea;
+      const minX = -(window.innerWidth / 2) + minVisibleArea;
+      const maxY = window.innerHeight / 2 - minVisibleArea;
+      const minY = -(window.innerHeight / 2) + minVisibleArea;
+
+      currentX = Math.max(minX, Math.min(currentX, maxX));
+      currentY = Math.max(minY, Math.min(currentY, maxY));
+
+      chatDialog.style.transform = `translate(calc(-50% + ${currentX}px), calc(-50% + ${currentY}px))`;
+    }
+  }
+
+  function dragEnd(e) {
+    if (isDragging) {
+      isDragging = false;
+
+      // Store the final position
+      xOffset = currentX;
+      yOffset = currentY;
+    }
+  }
+}
+
+// Reset dialog position when opened
+function resetDialogPosition() {
+  const chatDialog = document.querySelector(".chat-dialog-content");
+  if (chatDialog) {
+    currentX = 0;
+    currentY = 0;
+    xOffset = 0;
+    yOffset = 0;
+    chatDialog.style.transform = "translate(-50%, -50%)";
+  }
+}
+
+function addChatMessage(content, type, timing = null) {
+  const messagesContainer = document.getElementById("chat-messages");
+
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `chat-message ${type}`;
+
+  const labelDiv = document.createElement("div");
+  labelDiv.className = "chat-message-label";
+  labelDiv.textContent = type === "user" ? "Prompt" : "AI Response";
+
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "chat-message-content";
+  contentDiv.textContent = content;
+
+  messageDiv.appendChild(labelDiv);
+  messageDiv.appendChild(contentDiv);
+
+  if (timing) {
+    const timingDiv = document.createElement("div");
+    timingDiv.className = "chat-timing";
+    timingDiv.textContent = timing;
+    messageDiv.appendChild(timingDiv);
+  }
+
+  messagesContainer.appendChild(messageDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function clearChatMessages() {
+  const messagesContainer = document.getElementById("chat-messages");
+  messagesContainer.innerHTML = "";
+}
+
+// Add event listeners for chat dialog when DOM is loaded
+function setupChatEventListeners() {
+  document
+    .getElementById("chat-close-btn")
+    .addEventListener("click", closeChatDialog);
+
+  // Close dialog when clicking on background
+  document
+    .getElementById("chat-dialog")
+    .addEventListener("click", function (e) {
+      if (e.target === this) {
+        closeChatDialog();
+      }
+    });
+
+  // Initialize drag and drop
+  initializeDragAndDrop();
+}
+
+// Initialize when DOM is ready
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", setupChatEventListeners);
+} else {
+  setupChatEventListeners();
+}
+
 async function queryLLM(prompt) {
   const options = {
     endpoint,
@@ -214,30 +390,54 @@ async function queryLLM(prompt) {
   };
 
   const client = new AzureOpenAI(options);
-  console.time("Model response time");
-  console.log("Prompt:\n", prompt);
-  const response = await client.chat.completions.create({
-    messages: [
-      { role: "system", content: "You are a helpful assistant." },
-      {
-        role: "user",
-        content: prompt,
-      },
-    ],
-    max_tokens: 16384,
-    temperature: 1,
-    top_p: 1,
-    model: modelName,
-  });
 
-  if (response?.error !== undefined && response.status !== "200") {
-    throw response.error;
+  // Clear previous messages and open chat dialog
+  clearChatMessages();
+  resetDialogPosition(); // Reset position when opening
+  openChatDialog();
+
+  // Add the prompt to chat
+  addChatMessage(prompt, "user");
+
+  const startTime = performance.now();
+
+  try {
+    const response = await client.chat.completions.create({
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+      max_tokens: 16384,
+      temperature: 1,
+      top_p: 1,
+      model: modelName,
+    });
+
+    if (response?.error !== undefined && response.status !== "200") {
+      throw response.error;
+    }
+
+    const endTime = performance.now();
+    const responseTime = Math.round(endTime - startTime);
+    const timing = `Response time: ${responseTime}ms | Model: ${response.model}`;
+
+    let responseContent = response.choices[0].message.content;
+
+    // Add the response to chat
+    addChatMessage(responseContent, "assistant", timing);
+
+    return responseContent;
+  } catch (error) {
+    const endTime = performance.now();
+    const responseTime = Math.round(endTime - startTime);
+    const timing = `Error after ${responseTime}ms`;
+
+    addChatMessage(`Error: ${error.message || error}`, "assistant", timing);
+    throw error;
   }
-  let responseContent = response.choices[0].message.content;
-  console.log("Response:\n", responseContent);
-  console.log("Model: ", response.model);
-  console.timeEnd("Model response time");
-  return responseContent;
 }
 
 document
