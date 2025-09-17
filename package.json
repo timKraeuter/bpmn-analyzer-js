@@ -11,8 +11,8 @@
     "dev": "vite",
     "build:watch": "vite build --watch",
     "serve": "vite preview",
-    "build:gh-pages": "rimraf ./docs && VITE_BUILD_TARGET=ghPages vite build",
-    "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && VITE_BUILD_TARGET=rust vite build",
+    "build:gh-pages": "rimraf ./docs && vite build --config vite.config.gh-pages.js",
+    "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && vite build --config vite.config.rust.js",
     "pCheck": "prettier . --check",
     "pWrite": "prettier . --write"
   },

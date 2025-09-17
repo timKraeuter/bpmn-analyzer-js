@@ -30,7 +30,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     root: "src",
     build: {
-      outDir: "../public",
+      outDir: "../../rust_bpmn_analyzer/webserver/public",
       emptyOutDir: true,
       sourcemap: mode === "development",
     },

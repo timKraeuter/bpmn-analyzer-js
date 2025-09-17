@@ -30,7 +30,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     root: "src",
     build: {
-      outDir: "../public",
+      outDir: "../docs",
       emptyOutDir: true,
       sourcemap: mode === "development",
     },
