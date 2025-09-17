@@ -333,7 +333,9 @@ function addChatMessage(content, type, timing = null) {
 
   const contentDiv = document.createElement("div");
   contentDiv.className = "chat-message-content";
-  contentDiv.textContent = content;
+
+  // Abbreviate XML markdown blocks for better readability
+  contentDiv.textContent = abbreviateXMLBlocks(content);
 
   messageDiv.appendChild(labelDiv);
   messageDiv.appendChild(contentDiv);
@@ -347,6 +349,31 @@ function addChatMessage(content, type, timing = null) {
 
   messagesContainer.appendChild(messageDiv);
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function abbreviateXMLBlocks(content) {
+  // Replace XML markdown blocks with abbreviated versions
+  return content.replace(/```xml\s*([\s\S]*?)\s*```/g, (match, xmlContent) => {
+    const lines = xmlContent.trim().split("\n");
+
+    if (lines.length <= 5) {
+      // If XML is short, keep it as is
+      return match;
+    }
+
+    // Show first 3 lines and last line with indication of truncation
+    const firstLines = lines.slice(0, 3);
+    const lastLine = lines[lines.length - 1];
+    const truncatedLines = lines.length - 4; // 4 = 3 first + 1 last
+
+    const abbreviatedXml = [
+      ...firstLines,
+      `... [${truncatedLines} lines truncated] ...`,
+      lastLine,
+    ].join("\n");
+
+    return `\`\`\`xml\n${abbreviatedXml}\n\`\`\``;
+  });
 }
 
 function clearChatMessages() {
@@ -487,7 +514,10 @@ function buildPrompt(propertyResult) {
   const commonSuffix =
     `Please provide the entire fixed BPMN model in a markdown xml codeblock as an answer and keep your changes minimal. If there are multiple ways to fix it choose one of them.\n` +
     `Here is the BPMN model:\n` +
-    analysisResults.xml;
+    `\`\`\`xml\n` +
+    analysisResults.xml +
+    "\n" +
+    `\`\`\``;
   let problematicElement = propertyResult.problematic_elements.find(() => true);
   switch (propertyResult.property) {
     case "Safeness":
