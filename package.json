@@ -5,14 +5,14 @@
   "main": "app/index.js",
   "scripts": {
     "all": "run-s lint pCheck build",
-    "build": "webpack",
+    "build": "vite build",
     "lint": "eslint .",
     "start": "run-s dev",
-    "dev": "run-p build:watch serve",
-    "build:watch": "webpack -w",
-    "serve": "serve public",
-    "build:gh-pages": "rimraf ./docs && webpack --env ghPages",
-    "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && webpack --env rust",
+    "dev": "vite",
+    "build:watch": "vite build --watch",
+    "serve": "vite preview",
+    "build:gh-pages": "rimraf ./docs && VITE_BUILD_TARGET=ghPages vite build",
+    "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && VITE_BUILD_TARGET=rust vite build",
     "pCheck": "prettier . --check",
     "pWrite": "prettier . --write"
   },
@@ -33,26 +33,23 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.28.3",
-    "copy-webpack-plugin": "^13.0.1",
-    "css-loader": "^7.1.2",
+    "@vitejs/plugin-legacy": "^7.2.1",
     "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.6.2",
-    "raw-loader": "^4.0.2",
     "rimraf": "^6.0.1",
     "serve": "^14.2.3",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^6.0.1"
+    "vite": "^7.1.5",
+    "vite-plugin-static-copy": "^3.1.2"
   },
   "dependencies": {
-    "openai": "latest",
     "@azure/identity": "latest",
     "bpmn-js": "^18.6.3",
     "diagram-js": "^15.3.0",
     "min-dash": "^4.2.3",
     "min-dom": "^5.1.1",
+    "openai": "latest",
     "randomcolor": "^0.6.2",
     "tiny-svg": "^4.1.3"
   }
