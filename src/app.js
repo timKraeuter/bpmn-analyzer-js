@@ -531,7 +531,7 @@ function extractXMLFromLLMResponse(response) {
 
 function buildPrompt(propertyResult) {
   const commonSuffix =
-    `Please provide the entire fixed BPMN model in a markdown xml codeblock as an answer and keep your changes minimal. If there are multiple ways to fix it choose one of them.\n` +
+    `\n\nPlease provide the entire fixed BPMN model in a markdown xml codeblock as an answer and keep your changes minimal. If there are multiple ways to fix it choose one of them.\n\n` +
     `Here is the BPMN model:\n` +
     `\`\`\`xml\n` +
     analysisResults.xml +
@@ -540,16 +540,16 @@ function buildPrompt(propertyResult) {
   let problematicElement = propertyResult.problematic_elements.find(() => true);
   switch (propertyResult.property) {
     case "Safeness":
-      return `Fix my BPMN model which has an error such that it contains multiple tokens at the element with id "${problematicElement}".\n${commonSuffix}`;
+      return `Fix my BPMN model which has an error such that it contains multiple tokens at the element with id \`${problematicElement}\`.${commonSuffix}`;
     case "ProperCompletion":
-      return `Fix my BPMN model which has an error such that the end event with id "${problematicElement}" consumes multiple tokens. Each end event should only consume one token.\n${commonSuffix}`;
+      return `Fix my BPMN model which has an error such that the end event with id \`${problematicElement}\` consumes multiple tokens. Each end event should only consume one token.\n${commonSuffix}`;
     case "OptionToComplete":
       let counterExample = propertyResult.counter_example.transitions
         .map((transition) => transition.label)
         .join(" -> ");
-      return `Fix my BPMN model which has an error such that it might deadlock due to the following order of actions "${counterExample}".\n${commonSuffix}`;
+      return `Fix my BPMN model which has an error such that it might deadlock due to the following order of actions \`${counterExample}\`.${commonSuffix}`;
     case "NoDeadActivities":
-      return `Fix my BPMN model which has a dead activity with the id "${problematicElement}".\n${commonSuffix}`;
+      return `Fix my BPMN model which has a dead activity with the id \`${problematicElement}\`.${commonSuffix}`;
   }
 }
 
