@@ -17,6 +17,7 @@ The setup is standard for projects using **npm**.
 If you want to use AI-powered features, you need to configure Azure OpenAI credentials:
 
 1. Copy the `.env.example` file to create a `.env` file:
+
    ```bash
    cp .env.example .env
    ```
