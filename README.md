@@ -41,7 +41,7 @@ The following command will start the application ready to be used.
 npm start
 ```
 
-Model checking is provided using the WebAssembly module cross-compiled from the **rust_bpmn_analyzer**.
+Model checking is provided using the WebAssembly module cross-compiled from the **rust_bpmn_analyzer** so it will work automatically by running the browser.
 
 As an alternative, one can use the **rust_bpmn_analyzer** natively to provide a model checking web service on port **3001**.
 
