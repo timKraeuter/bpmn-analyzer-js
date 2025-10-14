@@ -12,6 +12,21 @@ A **counter-example** shows the token flow in the diagram leading to this situat
 
 The setup is standard for projects using **npm**.
 
+## Environment Configuration (Optional)
+
+If you want to use AI-powered features, you need to configure Azure OpenAI credentials:
+
+1. Copy the `.env.example` file to create a `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit the `.env` file and add your Azure OpenAI credentials:
+   - `AZURE_OPENAI_API_KEY`: Your Azure OpenAI API key
+   - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL (including the deployment name and API version)
+
+**⚠️ Security Warning**: These credentials will be exposed in the browser if you host the application online. This configuration is intended for local development and demo purposes only!
+
 ## Installing dependencies
 
 ```bash
