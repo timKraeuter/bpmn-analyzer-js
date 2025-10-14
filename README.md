@@ -27,6 +27,7 @@ If you want to use AI-powered features, you need to configure Azure OpenAI crede
    - `AZURE_OPENAI_ENDPOINT`: Your Azure OpenAI endpoint URL (including the deployment name and API version)
 
 **⚠️ Security Warning**: These credentials will be exposed in the browser if you host the application online. This configuration is intended for local development and demo purposes only!
+I used credentials from https://ai.azure.com with location set to swedencentral.
 
 ## Installing dependencies
 
