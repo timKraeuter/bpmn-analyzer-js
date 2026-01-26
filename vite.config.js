@@ -21,7 +21,11 @@ export default defineConfig(({ mode }) => {
 
   const isProduction = mode === "rust" || mode === "ghPages";
 
+  // Use subdirectory base path for GitHub Pages
+  const base = mode === "ghPages" ? "/bpmn-analyzer-js/" : "/";
+
   return {
+    base,
     root: ".",
     publicDir: false,
     build: {
