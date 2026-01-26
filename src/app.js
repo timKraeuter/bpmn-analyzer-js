@@ -1,6 +1,13 @@
 import BpmnModeler from "bpmn-js/lib/Modeler";
 
-import emptyBoardXML from "../resources/empty.bpmn";
+// Import CSS
+import "./css/bpmn-js-token-simulation.css";
+import "./css/app.css";
+import "bpmn-js/dist/assets/diagram-js.css";
+import "bpmn-js/dist/assets/bpmn-js.css";
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
+
+import emptyBoardXML from "../resources/empty.bpmn?raw";
 
 import BPMNAnalyzerModule from "./lib/modeler";
 import AnalysisExamplesModule from "./lib/analysis-examples";

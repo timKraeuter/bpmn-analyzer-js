@@ -1,20 +1,20 @@
 import { domify } from "min-dom";
-import taskSplit from "../../../resources/implicit-task-split.bpmn";
-import taskMerge from "../../../resources/implicit-task-merge.bpmn";
-import showcase from "../../../resources/showcase.bpmn";
-import unsafeGateways from "../../../resources/unsafe-gateways.bpmn";
-import reusedEndEvent from "../../../resources/reused-end-event.bpmn";
-import stuck from "../../../resources/stuck.bpmn";
-import deadActivity from "../../../resources/dead-activity.bpmn";
-import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.bpmn";
-import cycles from "../../../resources/cyclic.bpmn";
-import deadReceiveTask from "../../../resources/dead-receive-task.bpmn";
-import deadMice from "../../../resources/dead-mice.bpmn";
-import starvation from "../../../resources/starvation.bpmn";
-import livelock from "../../../resources/livelock.bpmn";
-import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn";
-import orderHandling from "../../../resources/order_handling.bpmn";
-import orderHandlingSynchronization from "../../../resources/order_handling_synchronization.bpmn";
+import taskSplit from "../../../resources/implicit-task-split.bpmn?raw";
+import taskMerge from "../../../resources/implicit-task-merge.bpmn?raw";
+import showcase from "../../../resources/showcase.bpmn?raw";
+import unsafeGateways from "../../../resources/unsafe-gateways.bpmn?raw";
+import reusedEndEvent from "../../../resources/reused-end-event.bpmn?raw";
+import stuck from "../../../resources/stuck.bpmn?raw";
+import deadActivity from "../../../resources/dead-activity.bpmn?raw";
+import poolsWithMessageFlows from "../../../resources/pools-with-message-flows.bpmn?raw";
+import cycles from "../../../resources/cyclic.bpmn?raw";
+import deadReceiveTask from "../../../resources/dead-receive-task.bpmn?raw";
+import deadMice from "../../../resources/dead-mice.bpmn?raw";
+import starvation from "../../../resources/starvation.bpmn?raw";
+import livelock from "../../../resources/livelock.bpmn?raw";
+import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn?raw";
+import orderHandling from "../../../resources/order_handling.bpmn?raw";
+import orderHandlingSynchronization from "../../../resources/order_handling_synchronization.bpmn?raw";
 
 const example_boards = {
   taskSplit,
