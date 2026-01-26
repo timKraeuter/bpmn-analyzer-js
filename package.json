@@ -4,7 +4,7 @@
   "description": "bpmn-js including analysis after each save",
   "main": "app/index.js",
   "scripts": {
-    "all": "run-s lint pCheck build",
+    "all": "run-s lint pCheck test:run build",
     "build": "webpack",
     "lint": "eslint .",
     "start": "run-s dev",
@@ -14,7 +14,9 @@
     "build:gh-pages": "rimraf ./docs && webpack --env ghPages",
     "build:rust": "rimraf ../rust_bpmn_analyzer/webserver/public && webpack --env rust",
     "pCheck": "prettier . --check",
-    "pWrite": "prettier . --write"
+    "pWrite": "prettier . --write",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "author": {
     "name": "Tim Kräuter",
@@ -43,6 +45,7 @@
     "rimraf": "^6.1.2",
     "serve": "^14.2.3",
     "style-loader": "^4.0.0",
+    "vitest": "^4.0.18",
     "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1"
   },
