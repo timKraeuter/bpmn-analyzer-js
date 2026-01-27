@@ -61,10 +61,6 @@ MessageCount.prototype.addMessageCountOverlay = function (
 };
 
 MessageCount.prototype.increaseMessageCount = function (element, colors) {
-  if (!element) {
-    return;
-  }
-
   let messageCount = 1;
   const existingOverlayIDAndCount = this.overlayIdsAndCount[element.id];
   if (existingOverlayIDAndCount) {
