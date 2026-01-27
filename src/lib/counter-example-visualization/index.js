@@ -1,6 +1,7 @@
 import CounterExampleVisualizer from "./CounterExampleVisualizer";
 import AnimationModule from "./animation";
 import TokenCountModule from "./token-count";
+import MessageCountModule from "./message-count";
 import TokenColorsModule from "./token-colors";
 import NotificationsModule from "./notifications";
 import LogModule from "./log";
@@ -15,6 +16,7 @@ export default {
   __depends__: [
     AnimationModule,
     TokenCountModule,
+    MessageCountModule,
     TokenColorsModule,
     NotificationsModule,
     LogModule,

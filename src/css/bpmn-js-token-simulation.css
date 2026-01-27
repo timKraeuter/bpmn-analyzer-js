@@ -116,6 +116,50 @@
   background-color: var(--token-simulation-green-base-44, #10d070);
 }
 
+.bts-message-count-parent {
+  white-space: nowrap;
+}
+
+.bts-message-count {
+  background-color: #999;
+  border-radius: 12px;
+  min-width: 25px;
+  height: 25px;
+  font-size: 14px;
+  color: #fff;
+  user-select: none;
+  animation: bts-jump 1s infinite;
+  animation-timing-function: ease;
+  position: relative;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+
+.bts-message-count .bts-count-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.bts-message-count.inactive {
+  display: none;
+}
+
+.bts-message-count + .bts-message-count {
+  margin-left: -8px;
+}
+
+.bts-message-count.waiting {
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  background-color: #999;
+}
+
 @keyframes bts-jump {
   50% {
     top: 5px;

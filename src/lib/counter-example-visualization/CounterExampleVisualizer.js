@@ -11,6 +11,7 @@ export default function CounterExampleVisualizer(
   eventBus,
   elementRegistry,
   tokenCount,
+  messageCount,
   notifications,
   tokenColors,
 ) {
@@ -64,6 +65,7 @@ export default function CounterExampleVisualizer(
 
     animation.clearAnimations();
     tokenCount.clearTokenCounts();
+    messageCount.clearMessageCounts();
 
     eventBus.fire(TOGGLE_MODE_EVENT, {
       active: true,
@@ -145,6 +147,18 @@ export default function CounterExampleVisualizer(
 
     const messageDelta = calcMessageAdditions(state, previousState);
 
+    // Handle message removals immediately (messages consumed in this state)
+    const messageRemovals = calcMessageRemovals(state, previousState);
+    messageRemovals.forEach((count, key) => {
+      const element = elementRegistry.get(key);
+      if (element && element.target) {
+        const colors = { primary: "#999", auxiliary: "#FFF" };
+        for (let i = 0; i < count; i++) {
+          messageCount.decreaseMessageCount(element.target, colors);
+        }
+      }
+    });
+
     if (
       messageDelta.size === 0 &&
       snapshotsDelta.every((snapshot) => snapshot.tokens.size === 0)
@@ -154,9 +168,12 @@ export default function CounterExampleVisualizer(
     }
 
     let semaphore = 0;
-    // Visualize message changes
+    // Visualize message changes (animate new messages)
     messageDelta.forEach((messageAmount, key) => {
       const element = elementRegistry.get(key);
+      if (!element) {
+        return;
+      }
       const scope = {
         element,
         colors: {
@@ -168,6 +185,10 @@ export default function CounterExampleVisualizer(
         semaphore++;
         animation.animate(element, scope, () => {
           semaphore--;
+          // Show message count after animation finishes
+          if (element.target) {
+            messageCount.increaseMessageCount(element.target, scope.colors);
+          }
           if (semaphore === 0) {
             visualizeNextState(property, state, transitions, index + 1);
           }
@@ -193,6 +214,24 @@ export default function CounterExampleVisualizer(
         }
       });
     });
+  }
+
+  /**
+   * Calculate messages that were removed (consumed) from the previous state.
+   * @param {State} current
+   * @param {State} previousState
+   * @returns {Map<string, number>}
+   */
+  function calcMessageRemovals(current, previousState) {
+    const messageRemovals = new Map();
+    previousState.messages.forEach((previousAmount, key) => {
+      const currentAmount = current.messages.get(key) || 0;
+      const removedAmount = previousAmount - currentAmount;
+      if (removedAmount > 0) {
+        messageRemovals.set(key, removedAmount);
+      }
+    });
+    return messageRemovals;
   }
 
   /**
@@ -251,6 +290,7 @@ CounterExampleVisualizer.$inject = [
   "eventBus",
   "elementRegistry",
   "tokenCount",
+  "messageCount",
   "notifications",
   "tokenColors",
 ];

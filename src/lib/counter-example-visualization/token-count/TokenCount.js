@@ -70,8 +70,8 @@ TokenCount.prototype.addTokenCountOverlay = function (
   const position = { bottom: OFFSET_BOTTOM, left: OFFSET_LEFT };
 
   return this._overlays.add(element, TOKEN_COUNT_OVERLAY_TYPE, {
-    position: position,
-    html: html,
+    position,
+    html,
     show: {
       minZoom: 0.5,
     },
