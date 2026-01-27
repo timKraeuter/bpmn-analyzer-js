@@ -12,6 +12,10 @@ const OFFSET_RIGHT = -5;
 
 const MESSAGE_COUNT_OVERLAY_TYPE = "message-count";
 
+const MESSAGE_ICON_SVG = `<svg class="bts-count-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+  <path d="M1 4v9h14V4H1zm1.5 1h11L8 8.5 2.5 5zm-.5 7V5.5l6 4 6-4V12H2z"/>
+</svg>`;
+
 /**
  * Manages message count overlays for BPMN message flows.
  * Messages are shown persistently until they disappear in the state.
@@ -148,9 +152,7 @@ MessageCount.prototype._getMessageHTML = function (
     <div class="bts-message-count waiting"
          style="color: ${colors.auxiliary}; background: ${colors.primary}">
       ${messageCount}
-      <svg class="bts-count-icon" viewBox="0 0 16 16" fill="currentColor">
-        <path d="M1 4v9h14V4H1zm1.5 1h11L8 8.5 2.5 5zm-.5 7V5.5l6 4 6-4V12H2z"/>
-      </svg>
+      ${MESSAGE_ICON_SVG}
     </div>
   `;
 };
