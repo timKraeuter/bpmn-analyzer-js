@@ -118,32 +118,6 @@ MessageCount.prototype.decreaseMessageCount = function (element, colors) {
   this.decreaseMessageCountBy(element, 1, colors);
 };
 
-/**
- * Set the message count for an element directly.
- * If count is 0, removes the overlay.
- */
-MessageCount.prototype.setMessageCount = function (element, count, colors) {
-  if (!element) {
-    return;
-  }
-
-  // Remove existing overlay if any
-  const existingOverlayIDAndCount = this.overlayIdsAndCount[element.id];
-  if (existingOverlayIDAndCount) {
-    this._overlays.remove(existingOverlayIDAndCount.id);
-    delete this.overlayIdsAndCount[element.id];
-  }
-
-  // Add new overlay if count > 0
-  if (count > 0) {
-    const overlayID = this.addMessageCountOverlay(element, count, colors);
-    this.overlayIdsAndCount[element.id] = {
-      id: overlayID,
-      count,
-    };
-  }
-};
-
 MessageCount.prototype._getMessageHTML = function (messageCount, colors) {
   colors = colors || this._getDefaultColors();
 
