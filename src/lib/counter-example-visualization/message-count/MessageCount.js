@@ -148,6 +148,9 @@ MessageCount.prototype._getMessageHTML = function (
     <div class="bts-message-count waiting"
          style="color: ${colors.auxiliary}; background: ${colors.primary}">
       ${messageCount}
+      <svg class="bts-count-icon" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M1 4v9h14V4H1zm1.5 1h11L8 8.5 2.5 5zm-.5 7V5.5l6 4 6-4V12H2z"/>
+      </svg>
     </div>
   `;
 };
