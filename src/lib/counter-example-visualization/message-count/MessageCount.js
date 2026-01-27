@@ -16,6 +16,9 @@ const MESSAGE_ICON_SVG = `<svg class="bts-count-icon" viewBox="0 0 16 16" fill="
   <path d="M1 4v9h14V4H1zm1.5 1h11L8 8.5 2.5 5zm-.5 7V5.5l6 4 6-4V12H2z"/>
 </svg>`;
 
+const DEFAULT_PRIMARY_COLOR = "--token-simulation-grey-lighten-56";
+const DEFAULT_AUXILIARY_COLOR = "--token-simulation-white";
+
 /**
  * Manages message count overlays for BPMN message flows.
  * Messages are shown persistently until they disappear in the state.
@@ -42,15 +45,15 @@ MessageCount.prototype.addMessageCountOverlay = function (
 ) {
   const html = domify(`
     <div class="bts-message-count-parent">
-      ${this._getMessageHTML(element, messageCount, colors)}
+      ${this._getMessageHTML(messageCount, colors)}
     </div>
   `);
 
   const position = { top: OFFSET_TOP, right: OFFSET_RIGHT };
 
   return this._overlays.add(element, MESSAGE_COUNT_OVERLAY_TYPE, {
-    position: position,
-    html: html,
+    position,
+    html,
     show: {
       minZoom: 0.5,
     },
@@ -136,16 +139,12 @@ MessageCount.prototype.setMessageCount = function (element, count, colors) {
     const overlayID = this.addMessageCountOverlay(element, count, colors);
     this.overlayIdsAndCount[element.id] = {
       id: overlayID,
-      count: count,
+      count,
     };
   }
 };
 
-MessageCount.prototype._getMessageHTML = function (
-  element,
-  messageCount,
-  colors,
-) {
+MessageCount.prototype._getMessageHTML = function (messageCount, colors) {
   colors = colors || this._getDefaultColors();
 
   return `
@@ -159,8 +158,8 @@ MessageCount.prototype._getMessageHTML = function (
 
 MessageCount.prototype._getDefaultColors = function () {
   return {
-    primary: "#999",
-    auxiliary: "#FFF",
+    primary: `var(${DEFAULT_PRIMARY_COLOR})`,
+    auxiliary: `var(${DEFAULT_AUXILIARY_COLOR})`,
   };
 };
 
