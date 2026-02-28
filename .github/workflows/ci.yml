@@ -1,4 +1,4 @@
-name: Lint, Format & Build
+name: CI
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -38,3 +38,19 @@ jobs:
       - name: Lint & Test others
         if: matrix.os != 'ubuntu-latest'
         run: npm run all
+
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Run E2E tests
+        run: npx playwright test
