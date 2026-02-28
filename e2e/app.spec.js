@@ -1,36 +1,42 @@
 import { test, expect } from "@playwright/test";
 
+/**
+ * Wait for the WASM analysis to complete by checking that no property icons
+ * are still in the initial "question" state.
+ */
+async function waitForAnalysis(page) {
+  await expect(page.locator(".properties .icon-question")).toHaveCount(0, {
+    timeout: 15_000,
+  });
+}
+
+/** Assert that a property is fulfilled. */
+async function expectFulfilled(page, property) {
+  await expect(page.locator(`#${property}`)).toHaveClass(/fulfilled/);
+}
+
+/** Assert that a property is violated. */
+async function expectViolated(page, property) {
+  await expect(page.locator(`#${property}`)).toHaveClass(/violated/);
+}
+
 test("exactly Synchronization and Unique end event execution are violated", async ({
   page,
 }) => {
   await page.goto("/");
+  await waitForAnalysis(page);
 
-  // Wait for analysis to complete: all 4 property icons should transition
-  // from icon-question to either icon-check (fulfilled) or icon-xmark (violated).
-  await expect(page.locator(".properties .icon-question")).toHaveCount(0, {
-    timeout: 15_000,
-  });
-
-  // Synchronization (Safeness) should be violated.
-  await expect(page.locator("#Safeness")).toHaveClass(/violated/);
-  // Unique end event execution (ProperCompletion) should be violated.
-  await expect(page.locator("#ProperCompletion")).toHaveClass(/violated/);
-
-  // Guaranteed termination (OptionToComplete) should be fulfilled.
-  await expect(page.locator("#OptionToComplete")).toHaveClass(/fulfilled/);
-  // No dead activities (NoDeadActivities) should be fulfilled.
-  await expect(page.locator("#NoDeadActivities")).toHaveClass(/fulfilled/);
+  await expectViolated(page, "Safeness");
+  await expectViolated(page, "ProperCompletion");
+  await expectFulfilled(page, "OptionToComplete");
+  await expectFulfilled(page, "NoDeadActivities");
 });
 
 test("applying quick fix resolves all property violations", async ({
   page,
 }) => {
   await page.goto("/");
-
-  // Wait for initial analysis to complete.
-  await expect(page.locator(".properties .icon-question")).toHaveCount(0, {
-    timeout: 15_000,
-  });
+  await waitForAnalysis(page);
 
   // Two quick fix lightbulbs should be visible (one on each gateway).
   await expect(page.locator(".quick-fix-note")).toHaveCount(2);
@@ -40,13 +46,15 @@ test("applying quick fix resolves all property violations", async ({
   await page.locator("#Gateway_17yykq8").click();
 
   // After applying the fix, re-analysis is triggered (debounced 500ms).
-  // Wait for all properties to become fulfilled.
+  // Wait for Safeness to flip to fulfilled before checking the rest.
   await expect(page.locator("#Safeness")).toHaveClass(/fulfilled/, {
     timeout: 15_000,
   });
-  await expect(page.locator("#ProperCompletion")).toHaveClass(/fulfilled/);
-  await expect(page.locator("#OptionToComplete")).toHaveClass(/fulfilled/);
-  await expect(page.locator("#NoDeadActivities")).toHaveClass(/fulfilled/);
+
+  await expectFulfilled(page, "Safeness");
+  await expectFulfilled(page, "ProperCompletion");
+  await expectFulfilled(page, "OptionToComplete");
+  await expectFulfilled(page, "NoDeadActivities");
 
   // No quick fix lightbulbs should remain.
   await expect(page.locator(".quick-fix-note")).toHaveCount(0);
