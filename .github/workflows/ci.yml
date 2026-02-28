@@ -39,13 +39,18 @@ jobs:
         if: matrix.os != 'ubuntu-latest'
         run: npm run all
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run E2E tests ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: xvfb-run npm run test:e2e
-
-      - name: Run E2E tests others
-        if: matrix.os != 'ubuntu-latest'
-        run: npm run test:e2e
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Run E2E tests
+        run: npx playwright test
