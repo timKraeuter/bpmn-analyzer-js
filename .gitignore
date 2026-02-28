@@ -2,3 +2,5 @@ node_modules/
 public/
 .idea/sonarlint
 .idea/copilot*.xml
+test-results/
+playwright-report/

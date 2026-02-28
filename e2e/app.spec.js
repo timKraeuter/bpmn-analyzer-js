@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("at least 2 of 4 properties are fulfilled after analysis", async ({
+test("exactly Synchronization and Unique end event execution are violated", async ({
   page,
 }) => {
   await page.goto("/");
@@ -11,10 +11,13 @@ test("at least 2 of 4 properties are fulfilled after analysis", async ({
     timeout: 15_000,
   });
 
-  // Count fulfilled properties (icon has both 'fulfilled' and 'icon-check' classes).
-  const fulfilledCount = await page
-    .locator(".properties .fulfilled.icon-check")
-    .count();
+  // Synchronization (Safeness) should be violated.
+  await expect(page.locator("#Safeness")).toHaveClass(/violated/);
+  // Unique end event execution (ProperCompletion) should be violated.
+  await expect(page.locator("#ProperCompletion")).toHaveClass(/violated/);
 
-  expect(fulfilledCount).toBeGreaterThanOrEqual(2);
+  // Guaranteed termination (OptionToComplete) should be fulfilled.
+  await expect(page.locator("#OptionToComplete")).toHaveClass(/fulfilled/);
+  // No dead activities (NoDeadActivities) should be fulfilled.
+  await expect(page.locator("#NoDeadActivities")).toHaveClass(/fulfilled/);
 });
