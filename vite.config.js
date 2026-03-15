@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
       outDir,
       emptyOutDir: true,
       sourcemap: !isProduction,
+      chunkSizeWarningLimit: 750,
       rolldownOptions: {
         input: resolve(__dirname, "index.html"),
         output: {
