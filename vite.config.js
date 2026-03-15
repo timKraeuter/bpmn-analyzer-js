@@ -32,12 +32,31 @@ export default defineConfig(({ mode }) => {
       outDir,
       emptyOutDir: true,
       sourcemap: !isProduction,
-      rollupOptions: {
+      rolldownOptions: {
         input: resolve(__dirname, "index.html"),
         output: {
           entryFileNames: "app.js",
           chunkFileNames: "[name].js",
           assetFileNames: "[name][extname]",
+          codeSplitting: {
+            groups: [
+              {
+                name: "diagram-vendor",
+                test: /node_modules[\\/]diagram-js/,
+                priority: 20,
+              },
+              {
+                name: "bpmn-vendor",
+                test: /node_modules[\\/](bpmn-js|bpmn-moddle|moddle)/,
+                priority: 15,
+              },
+              {
+                name: "vendor",
+                test: /node_modules/,
+                priority: 10,
+              },
+            ],
+          },
         },
       },
     },
