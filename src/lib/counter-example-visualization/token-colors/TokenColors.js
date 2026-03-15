@@ -3,7 +3,7 @@ import randomColor from "randomcolor";
 
 const colors = randomColor({
   count: 60,
-}).filter((c) => getContrastYIQ(c.substring(1)) < 200);
+}).filter((c) => getContrastYIQ(c) < 200);
 
 let colorsIdx = 0;
 let snapshotColorMap = new Map();

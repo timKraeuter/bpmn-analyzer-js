@@ -196,16 +196,8 @@ Animation.prototype._getTokenSVG = function (scope) {
 Animation.prototype._getGroup = function (scope) {
   const canvas = this._canvas;
 
-  let layer, root;
-
-  // bpmn-js@9 compatibility:
-  // show animation tokens on plane layers
-  if ("findRoot" in canvas) {
-    root = canvas.findRoot(scope.element);
-    layer = canvas._findPlaneForRoot(root).layer;
-  } else {
-    layer = domQuery(".viewport", canvas._svg);
-  }
+  const root = canvas.findRoot(scope.element);
+  const layer = canvas._findPlaneForRoot(root).layer;
 
   let group = domQuery(".bts-animation-tokens", layer);
 

@@ -13,8 +13,6 @@ export default function AnalysisWebClient(eventBus) {
   });
 }
 
-AnalysisWebClient.$inject = ["eventBus"];
-
 function getCheckerPort() {
   const port = window.location.port;
   // Dev is served at + 1.
@@ -114,3 +112,5 @@ async function requestAnalysis(checker_port, diagramXML) {
     console.error("Error:", error);
   }
 }
+
+AnalysisWebClient.$inject = ["eventBus"];
