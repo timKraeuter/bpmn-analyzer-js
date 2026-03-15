@@ -105,7 +105,7 @@ function createMockDependencies() {
 
 describe("QuickFixes", () => {
   let deps;
-  let quickFixes;
+  let _quickFixes;
 
   // Mock document for DOM operations
   beforeEach(() => {
@@ -126,7 +126,7 @@ describe("QuickFixes", () => {
       })),
     };
 
-    quickFixes = new QuickFixes(
+    _quickFixes = new QuickFixes(
       deps.bpmnReplace,
       deps.elementRegistry,
       deps.eventBus,
@@ -280,7 +280,7 @@ describe("QuickFixes", () => {
       // Arrange
       // Create a proper chain: startEvent -> task1 -> exclusiveGateway
       //                        startEvent -> task2 -> exclusiveGateway
-      const startEvent = createMockShape({
+      const _startEvent = createMockShape({
         id: "start",
         type: "bpmn:StartEvent",
         x: 50,

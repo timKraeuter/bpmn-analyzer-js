@@ -20,27 +20,11 @@ const modeler = new BpmnModeler({
 
 /* screen interaction */
 function enterFullscreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
-  }
+  element.requestFullscreen();
 }
 
 function exitFullscreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    document.mozCancelFullScreen();
-  } else if (document.webkitExitFullscreen) {
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) {
-    document.msExitFullscreen();
-  }
+  document.exitFullscreen();
 }
 
 const state = {
@@ -79,14 +63,6 @@ document
 
 /* file functions */
 function openFile(file, callback) {
-  // check file api availability
-  if (!window.FileReader) {
-    return window.alert(
-      "Looks like you use an older browser that does not support drag and drop. " +
-        "Try using a modern browser such as Chrome, Firefox or Internet Explorer > 10.",
-    );
-  }
-
   // no file chosen
   if (!file) {
     return;
@@ -157,7 +133,7 @@ const exportArtifacts = debounce(function () {
 
   saveBoard().then(function (result) {
     setEncoded(downloadLink, "bpmn.bpmn", result.xml);
-    modeler._emit("analysis.start", result);
+    modeler.get("eventBus").fire("analysis.start", result);
   });
 }, 500);
 
@@ -175,7 +151,7 @@ openExistingBoard.addEventListener("click", function () {
   fileInput.click();
 });
 
-modeler._emit("example.init", {});
+modeler.get("eventBus").fire("example.init", {});
 
 // helpers //////////////////////
 

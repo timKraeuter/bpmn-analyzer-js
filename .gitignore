@@ -1,6 +1,7 @@
 node_modules/
 public/
-.idea/sonarlint
-.idea/copilot*.xml
+.idea/
 test-results/
 playwright-report/
+.DS_Store
+*.log
