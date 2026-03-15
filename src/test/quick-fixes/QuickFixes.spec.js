@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import QuickFixes from "../../lib/quick-fixes/QuickFixes";
 import { TOGGLE_MODE_EVENT } from "../../lib/counter-example-visualization/util/EventHelper";
+import {
+  PROPERTY_NO_DEAD_ACTIVITIES,
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_SAFENESS,
+} from "../../lib/analysis/PropertyConstants";
 import { createMockShape, createMockConnection } from "./test-utils";
 
 /**
@@ -331,7 +337,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "Safeness",
+            property: PROPERTY_SAFENESS,
             fulfilled: false,
             problematic_elements: ["unsafe_flow"],
           },
@@ -358,7 +364,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -385,7 +391,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -422,7 +428,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "NoDeadActivities",
+            property: PROPERTY_NO_DEAD_ACTIVITIES,
             fulfilled: false,
             problematic_elements: ["dead_activity_1"],
           },
@@ -441,7 +447,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "Safeness",
+            property: PROPERTY_SAFENESS,
             fulfilled: true,
             problematic_elements: [],
           },
@@ -486,7 +492,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "NoDeadActivities",
+            property: PROPERTY_NO_DEAD_ACTIVITIES,
             fulfilled: false,
             problematic_elements: ["dead_activity"],
           },
@@ -519,7 +525,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "NoDeadActivities",
+            property: PROPERTY_NO_DEAD_ACTIVITIES,
             fulfilled: false,
             problematic_elements: ["dead_activity"],
           },
@@ -574,7 +580,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "NoDeadActivities",
+            property: PROPERTY_NO_DEAD_ACTIVITIES,
             fulfilled: false,
             problematic_elements: ["receive_task"],
           },
@@ -595,7 +601,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "OptionToComplete",
+            property: PROPERTY_OPTION_TO_COMPLETE,
             fulfilled: false,
             problematic_elements: [],
             counter_example: null,
@@ -632,7 +638,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "OptionToComplete",
+            property: PROPERTY_OPTION_TO_COMPLETE,
             fulfilled: false,
             problematic_elements: [],
             counter_example: {
@@ -717,7 +723,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "Safeness",
+            property: PROPERTY_SAFENESS,
             fulfilled: false,
             problematic_elements: ["unsafe_flow"],
           },
@@ -777,7 +783,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "OptionToComplete",
+            property: PROPERTY_OPTION_TO_COMPLETE,
             fulfilled: false,
             problematic_elements: [],
             counter_example: {
@@ -831,7 +837,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -888,7 +894,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -929,7 +935,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -981,7 +987,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -1033,7 +1039,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "ProperCompletion",
+            property: PROPERTY_PROPER_COMPLETION,
             fulfilled: false,
             problematic_elements: ["end_event_1"],
           },
@@ -1089,7 +1095,7 @@ describe("QuickFixes", () => {
       const analysisResult = {
         property_results: [
           {
-            property: "NoDeadActivities",
+            property: PROPERTY_NO_DEAD_ACTIVITIES,
             fulfilled: false,
             problematic_elements: [],
           },

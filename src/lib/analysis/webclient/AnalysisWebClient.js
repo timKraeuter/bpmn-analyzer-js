@@ -1,3 +1,10 @@
+import {
+  PROPERTY_NO_DEAD_ACTIVITIES,
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_SAFENESS,
+} from "../PropertyConstants";
+
 export default function AnalysisWebClient(eventBus) {
   let checker_port = getCheckerPort();
 
@@ -55,6 +62,9 @@ async function doAnalysis(checker_port, diagramXML, eventBus) {
   const startTime = performance.now();
 
   const response = await requestAnalysis(checker_port, diagramXML);
+  if (!response) {
+    return;
+  }
   jsonObjectToMap(response);
 
   const endTime = performance.now();
@@ -80,10 +90,10 @@ async function requestAnalysis(checker_port, diagramXML) {
         body: JSON.stringify({
           bpmn_file_content: diagramXML,
           properties_to_be_checked: [
-            "Safeness",
-            "OptionToComplete",
-            "ProperCompletion",
-            "NoDeadActivities",
+            PROPERTY_SAFENESS,
+            PROPERTY_OPTION_TO_COMPLETE,
+            PROPERTY_PROPER_COMPLETION,
+            PROPERTY_NO_DEAD_ACTIVITIES,
           ],
         }),
         headers: {
@@ -91,6 +101,14 @@ async function requestAnalysis(checker_port, diagramXML) {
         },
       },
     );
+    if (!response.ok) {
+      console.error(
+        "Analysis request failed:",
+        response.status,
+        response.statusText,
+      );
+      return undefined;
+    }
     return await response.json();
   } catch (error) {
     console.error("Error:", error);

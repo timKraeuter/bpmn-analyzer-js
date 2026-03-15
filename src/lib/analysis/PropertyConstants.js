@@ -1,0 +1,11 @@
+export const PROPERTY_SAFENESS = "Safeness";
+export const PROPERTY_OPTION_TO_COMPLETE = "OptionToComplete";
+export const PROPERTY_PROPER_COMPLETION = "ProperCompletion";
+export const PROPERTY_NO_DEAD_ACTIVITIES = "NoDeadActivities";
+
+export const ALL_PROPERTIES = [
+  PROPERTY_SAFENESS,
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_NO_DEAD_ACTIVITIES,
+];
