@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
       outDir,
       emptyOutDir: true,
       sourcemap: !isProduction,
-      rollupOptions: {
+      rolldownOptions: {
         input: resolve(__dirname, "index.html"),
         output: {
           entryFileNames: "app.js",
