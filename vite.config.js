@@ -1,10 +1,6 @@
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { resolve } from "path";
 
 const SOURCE_VERSION =
   process.env.SOURCE_VERSION || process.env.npm_package_gitHead || "dev";
@@ -33,7 +29,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       sourcemap: !isProduction,
       rolldownOptions: {
-        input: resolve(__dirname, "index.html"),
+        input: resolve(import.meta.dirname, "index.html"),
         output: {
           entryFileNames: "app.js",
           chunkFileNames: "[name].js",
