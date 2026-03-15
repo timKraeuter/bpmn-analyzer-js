@@ -12,6 +12,12 @@ import {
   previewAddedEndEvents,
 } from "./cmd/AddEndEventsForEachIncFlowCommand";
 import { TOGGLE_MODE_EVENT } from "../counter-example-visualization/util/EventHelper";
+import {
+  PROPERTY_NO_DEAD_ACTIVITIES,
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_SAFENESS,
+} from "../analysis/PropertyConstants";
 import { hasEventDefinition } from "bpmn-js/lib/util/DiUtil";
 import { pointDistance } from "diagram-js/lib/util/Geometry";
 
@@ -70,24 +76,24 @@ export default function QuickFixes(
       result.property_results
         .filter((property) => !property.fulfilled)
         .forEach((propertyResult) => {
-          if (propertyResult.property === "Safeness") {
+          if (propertyResult.property === PROPERTY_SAFENESS) {
             addQuickFixesSafeness(
               propertyResult.problematic_elements[0],
               propertyResult,
             );
           }
-          if (propertyResult.property === "ProperCompletion") {
+          if (propertyResult.property === PROPERTY_PROPER_COMPLETION) {
             addQuickFixesProperCompletion(
               propertyResult.problematic_elements[0],
             );
           }
-          if (propertyResult.property === "OptionToComplete") {
+          if (propertyResult.property === PROPERTY_OPTION_TO_COMPLETE) {
             addQuickFixesOptionToComplete(
               propertyResult,
               result.property_results,
             );
           }
-          if (propertyResult.property === "NoDeadActivities") {
+          if (propertyResult.property === PROPERTY_NO_DEAD_ACTIVITIES) {
             addQuickFixesForDeadActivities(propertyResult);
           }
         });
@@ -337,10 +343,15 @@ export default function QuickFixes(
    */
   function tryFindBlockingMessageEventsAndAddQuickFix(tokens, propertyResults) {
     const noDeadActivitiesProperty = propertyResults.find(
-      (propertyResult) => propertyResult.property === "NoDeadActivities",
+      (propertyResult) =>
+        propertyResult.property === PROPERTY_NO_DEAD_ACTIVITIES,
     );
     tokens.forEach((_, id) => {
-      const blockingElement = elementRegistry.get(id).target;
+      const element = elementRegistry.get(id);
+      if (!element) {
+        return;
+      }
+      const blockingElement = element.target;
       if (
         is(blockingElement, "bpmn:IntermediateCatchEvent") &&
         hasEventDefinition(blockingElement, "bpmn:MessageEventDefinition") &&
@@ -359,9 +370,13 @@ export default function QuickFixes(
    * @param {Map<string, number>} tokens
    */
   function findBlockingPGs(tokens) {
-    let blockingPGs = [];
+    const blockingPGs = [];
     tokens.forEach((_, id) => {
-      const blockingElement = elementRegistry.get(id).target;
+      const element = elementRegistry.get(id);
+      if (!element) {
+        return;
+      }
+      const blockingElement = element.target;
       if (
         is(blockingElement, "bpmn:ParallelGateway") &&
         blockingElement.incoming.length > 1
@@ -468,13 +483,19 @@ export default function QuickFixes(
 
   /**
    * @param {Connection} inFlow
-   * @param {Shape[]} choices
+   * @param {Shape[]} results
    * @param {Connection[]} seenFlows
+   * @param {function(Shape): boolean} predicate
    */
-  function findAllPrecedingSFChoices(inFlow, choices, seenFlows) {
+  function findAllPrecedingSFByPredicate(
+    inFlow,
+    results,
+    seenFlows,
+    predicate,
+  ) {
     const source = inFlow.source;
-    if (source.outgoing.length > 1 && source.type === "bpmn:ExclusiveGateway") {
-      choices.push(source);
+    if (source.outgoing.length > 1 && predicate(source)) {
+      results.push(source);
     }
     if (source.incoming) {
       for (const inFlow of source.incoming) {
@@ -482,32 +503,10 @@ export default function QuickFixes(
           continue;
         }
         seenFlows.push(inFlow);
-        findAllPrecedingSFChoices(inFlow, choices, seenFlows);
+        findAllPrecedingSFByPredicate(inFlow, results, seenFlows, predicate);
       }
     }
-    return choices;
-  }
-
-  /**
-   * @param {Connection} inFlow
-   * @param {Shape[]} splits
-   * @param {Connection[]} seenFlows
-   */
-  function findAllPrecedingSFSplits(inFlow, splits, seenFlows) {
-    const source = inFlow.source;
-    if (source.outgoing.length > 1 && source.type !== "bpmn:ExclusiveGateway") {
-      splits.push(source);
-    }
-    if (source.incoming) {
-      for (const inFlow of source.incoming) {
-        if (seenFlows.includes(inFlow)) {
-          continue;
-        }
-        seenFlows.push(inFlow);
-        findAllPrecedingSFSplits(inFlow, splits, seenFlows);
-      }
-    }
-    return splits;
+    return results;
   }
 
   /**
@@ -628,7 +627,12 @@ export default function QuickFixes(
    */
   function findProperCompletionChoiceCause(pg) {
     const preceding_choices = pg.incoming.map((inFlow) =>
-      findAllPrecedingSFChoices(inFlow, [], []),
+      findAllPrecedingSFByPredicate(
+        inFlow,
+        [],
+        [],
+        (source) => source.type === "bpmn:ExclusiveGateway",
+      ),
     );
     return findCommonSplitOrChoice(preceding_choices);
   }
@@ -638,7 +642,12 @@ export default function QuickFixes(
    */
   function findUnsafeCause(ex_gateway) {
     const preceding_splits = ex_gateway.incoming.map((inFlow) =>
-      findAllPrecedingSFSplits(inFlow, [], []),
+      findAllPrecedingSFByPredicate(
+        inFlow,
+        [],
+        [],
+        (source) => source.type !== "bpmn:ExclusiveGateway",
+      ),
     );
     return findCommonSplitOrChoice(preceding_splits);
   }
@@ -700,14 +709,18 @@ export default function QuickFixes(
            </div>`,
     });
 
-    document.getElementById(shape.id).addEventListener("click", () => {
+    const quickFixElement = document.getElementById(shape.id);
+    if (!quickFixElement) {
+      return;
+    }
+    quickFixElement.addEventListener("click", () => {
       previewCleanupFunction();
       applyFunction();
     });
-    document.getElementById(shape.id).addEventListener("mouseenter", () => {
+    quickFixElement.addEventListener("mouseenter", () => {
       previewFunction();
     });
-    document.getElementById(shape.id).addEventListener("mouseleave", () => {
+    quickFixElement.addEventListener("mouseleave", () => {
       previewCleanupFunction();
     });
   }

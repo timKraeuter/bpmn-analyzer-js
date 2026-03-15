@@ -14,6 +14,11 @@ import {
   TRACE_EVENT,
 } from "../util/EventHelper";
 
+import {
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_SAFENESS,
+} from "../../analysis/PropertyConstants";
 import { InfoIcon, LogIcon, TimesIcon } from "../icons";
 import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 
@@ -217,11 +222,11 @@ export default function Log(
 
 function mapProperty(propertyName) {
   switch (propertyName) {
-    case "ProperCompletion":
+    case PROPERTY_PROPER_COMPLETION:
       return "Unique end event execution";
-    case "Safeness":
+    case PROPERTY_SAFENESS:
       return "Synchronization";
-    case "OptionToComplete":
+    case PROPERTY_OPTION_TO_COMPLETE:
       return "Guaranteed termination";
   }
   return "";

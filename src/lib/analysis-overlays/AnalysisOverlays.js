@@ -1,4 +1,10 @@
 import { START_COUNTER_EXAMPLE_VISUALIZATION } from "../counter-example-visualization/util/EventHelper";
+import {
+  PROPERTY_NO_DEAD_ACTIVITIES,
+  PROPERTY_OPTION_TO_COMPLETE,
+  PROPERTY_PROPER_COMPLETION,
+  PROPERTY_SAFENESS,
+} from "../analysis/PropertyConstants";
 
 export const ANALYSIS_NOTE_TYPE = "analysis-note";
 
@@ -14,23 +20,26 @@ export default function AnalysisOverlays(eventBus, overlays) {
     }
 
     for (const propertyResult of result.property_results) {
-      if (propertyResult.property === "Safeness" && !propertyResult.fulfilled) {
+      if (
+        propertyResult.property === PROPERTY_SAFENESS &&
+        !propertyResult.fulfilled
+      ) {
         addOverlaysForUnsafe(propertyResult);
       }
       if (
-        propertyResult.property === "ProperCompletion" &&
+        propertyResult.property === PROPERTY_PROPER_COMPLETION &&
         !propertyResult.fulfilled
       ) {
         addOverlaysForProperCompletion(propertyResult);
       }
       if (
-        propertyResult.property === "NoDeadActivities" &&
+        propertyResult.property === PROPERTY_NO_DEAD_ACTIVITIES &&
         !propertyResult.fulfilled
       ) {
         addOverlaysForNoDeadActivities(propertyResult);
       }
       if (
-        propertyResult.property === "OptionToComplete" &&
+        propertyResult.property === PROPERTY_OPTION_TO_COMPLETE &&
         !propertyResult.fulfilled
       ) {
         addOverlaysForOptionToComplete(propertyResult);
@@ -39,57 +48,31 @@ export default function AnalysisOverlays(eventBus, overlays) {
   }
 
   function addOverlaysForUnsafe(propertyResult) {
-    for (const problematicElement of propertyResult.problematic_elements) {
-      addPropertyOverlay(
-        problematicElement,
-        {
-          bottom: -5,
-          left: 5,
-        },
-        "Two or more tokens",
-        "small-note clickable",
-      );
-      document
-        .getElementById(problematicElement + "_counter")
-        .addEventListener("click", () => {
-          eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
-            propertyResult,
-          });
-        });
-    }
+    addClickableOverlaysForElements(
+      propertyResult,
+      { bottom: -5, left: 5 },
+      "Two or more tokens",
+      "small-note",
+    );
   }
 
   function addOverlaysForProperCompletion(propertyResult) {
-    for (const problematicElement of propertyResult.problematic_elements) {
-      addPropertyOverlay(
-        problematicElement,
-        {
-          bottom: 50,
-          right: -5,
-        },
-        "Consumes two or more tokens",
-        "big-note clickable",
-      );
-      document
-        .getElementById(problematicElement + "_counter")
-        .addEventListener("click", () => {
-          eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
-            propertyResult,
-          });
-        });
-    }
+    addClickableOverlaysForElements(
+      propertyResult,
+      { bottom: 50, right: -5 },
+      "Consumes two or more tokens",
+      "big-note",
+    );
   }
 
   function addOverlaysForNoDeadActivities(propertyResult) {
     for (const problematicElement of propertyResult.problematic_elements) {
       addPropertyOverlay(
         problematicElement,
-        {
-          bottom: -5,
-          left: 17.5,
-        },
+        { bottom: -5, left: 17.5 },
         "Dead Activity",
         "big-note",
+        false,
       );
     }
   }
@@ -100,32 +83,47 @@ export default function AnalysisOverlays(eventBus, overlays) {
       overlays.remove({
         element: problematicElement,
       });
-      addPropertyOverlay(
-        problematicElement,
-        {
-          bottom: -5,
-          left: 5,
-        },
-        "Flow can contain more than 50 tokens.",
-        "big-note clickable",
-      );
-      document
-        .getElementById(problematicElement + "_counter")
-        .addEventListener("click", () => {
+    }
+    addClickableOverlaysForElements(
+      propertyResult,
+      { bottom: -5, left: 5 },
+      "Flow can contain more than 50 tokens.",
+      "big-note",
+    );
+  }
+
+  function addClickableOverlaysForElements(
+    propertyResult,
+    position,
+    text,
+    cssClasses,
+  ) {
+    for (const problematicElement of propertyResult.problematic_elements) {
+      addPropertyOverlay(problematicElement, position, text, cssClasses, true);
+      const element = document.getElementById(problematicElement + "_counter");
+      if (element) {
+        element.addEventListener("click", () => {
           eventBus.fire(START_COUNTER_EXAMPLE_VISUALIZATION, {
             propertyResult,
           });
         });
+      }
     }
   }
 
-  function addPropertyOverlay(problematicElement, position, text, cssClasses) {
+  function addPropertyOverlay(
+    problematicElement,
+    position,
+    text,
+    cssClasses,
+    clickable,
+  ) {
     overlays.add(problematicElement, ANALYSIS_NOTE_TYPE, {
       position,
-      html: `<div id="${problematicElement}_counter" class="property-note tooltip ${cssClasses}">
+      html: `<div id="${problematicElement}_counter" class="property-note tooltip ${cssClasses}${clickable ? " clickable" : ""}">
                ${text}
                ${
-                 cssClasses.includes("clickable")
+                 clickable
                    ? '<span class="tooltipText">Click to visualize an execution example.</span>'
                    : ""
                }

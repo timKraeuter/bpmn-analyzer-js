@@ -1,5 +1,6 @@
 import { domify } from "min-dom";
 import { ANALYSIS_NOTE_TYPE } from "../analysis-overlays/AnalysisOverlays";
+import { ALL_PROPERTIES } from "../analysis/PropertyConstants";
 
 const WARNING_BASE64 =
   "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiB3aWR0aD0iMjQiPg0KICA8cGF0aCBkPSJtNDAtMTIwIDQ0MC03NjAgNDQwIDc2MEg0MFptMTM4LTgwaDYwNEw0ODAtNzIwIDE3OC0yMDBabTMwMi00MHExNyAwIDI4LjUtMTEuNVQ1MjAtMjgwcTAtMTctMTEuNS0yOC41VDQ4MC0zMjBxLTE3IDAtMjguNSAxMS41VDQ0MC0yODBxMCAxNyAxMS41IDI4LjVUNDgwLTI0MFptLTQwLTEyMGg4MHYtMjAwaC04MHYyMDBabTQwLTEwMFoiIHN0cm9rZT0id2hpdGUiIGZpbGw9IndoaXRlIi8+DQo8L3N2Zz4NCg==";
@@ -21,7 +22,7 @@ export default function PropertiesSummary(
       return;
     }
 
-    if (result.property_results.length !== 4) {
+    if (result.property_results.length !== ALL_PROPERTIES.length) {
       resetPropertiesSummary();
     }
 
@@ -49,17 +50,17 @@ export default function PropertiesSummary(
   }
 
   function resetPropertiesSummary() {
-    const properties = [
-      "Safeness",
-      "OptionToComplete",
-      "ProperCompletion",
-      "NoDeadActivities",
-    ];
-    for (const property of properties) {
+    for (const property of ALL_PROPERTIES) {
       const propertyElement = document.getElementById(property);
+      if (!propertyElement) {
+        continue;
+      }
       propertyElement.classList.remove("violated", "fulfilled");
 
       const propertyIcon = document.getElementById(`${property}-icon`);
+      if (!propertyIcon) {
+        continue;
+      }
       propertyIcon.classList.add("icon-question");
       propertyIcon.classList.remove(
         "icon-check",
@@ -71,11 +72,13 @@ export default function PropertiesSummary(
   }
 
   function setPropertyColorAndIcon(propertyResult) {
-    // Set the property somehow with jquery
-    let elementById = document.getElementById(`${propertyResult.property}`);
-    let elementIconById = document.getElementById(
+    const elementById = document.getElementById(`${propertyResult.property}`);
+    const elementIconById = document.getElementById(
       `${propertyResult.property}-icon`,
     );
+    if (!elementById || !elementIconById) {
+      return;
+    }
     if (propertyResult.fulfilled) {
       elementById.classList.remove("violated");
       elementById.classList.add("fulfilled");

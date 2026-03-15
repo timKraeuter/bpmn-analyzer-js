@@ -41,6 +41,9 @@ export default function CounterExampleVisualizer(
 
   function addClickListenerIfNotFulfilled(propertyResult) {
     const property = document.getElementById(propertyResult.property);
+    if (!property) {
+      return;
+    }
 
     property.removeEventListener(
       "click",
@@ -111,8 +114,13 @@ export default function CounterExampleVisualizer(
       return;
     }
     const transition = transitions[index];
+    const element = elementRegistry.get(transition.label);
+    if (!element) {
+      visualizeNextState(property, previousState, transitions, index + 1);
+      return;
+    }
     eventBus.fire(TRACE_EVENT, {
-      element: elementRegistry.get(transition.label),
+      element,
       property,
     });
 
@@ -200,6 +208,9 @@ export default function CounterExampleVisualizer(
     snapshotsDelta.forEach((snapshot) => {
       snapshot.tokens.forEach((tokenAmount, key) => {
         const element = elementRegistry.get(key);
+        if (!element) {
+          return;
+        }
         const scope = { element, colors: tokenColors.getColor(snapshot.id) };
         for (let i = 0; i < tokenAmount; i++) {
           semaphore++;
