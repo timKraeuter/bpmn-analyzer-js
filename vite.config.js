@@ -63,8 +63,8 @@ export default defineConfig(({ mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: "node_modules/bpmn-js/dist/assets/bpmn-font",
-            dest: ".",
+            src: "node_modules/bpmn-js/dist/assets/bpmn-font/font",
+            dest: "bpmn-font",
           },
           {
             src: "src/favicon.ico",

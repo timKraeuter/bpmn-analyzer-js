@@ -36,18 +36,18 @@
   "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.0",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.8.1",
     "vite": "^8.0.3",
-    "vite-plugin-static-copy": "^3.3.0",
+    "vite-plugin-static-copy": "^4.0.0",
     "vitest": "^4.1.2"
   },
   "dependencies": {
-    "bpmn-js": "^18.13.1",
-    "diagram-js": "^15.9.1",
+    "bpmn-js": "^18.14.0",
+    "diagram-js": "^15.11.0",
     "min-dash": "^5.0.0",
     "min-dom": "^5.3.0",
     "randomcolor": "^0.6.2",
