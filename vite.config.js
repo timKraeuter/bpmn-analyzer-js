@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 import { resolve } from "path";
 
 const SOURCE_VERSION =
@@ -59,24 +58,7 @@ export default defineConfig(({ mode }) => {
     define: {
       "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION),
     },
-    plugins: [
-      viteStaticCopy({
-        targets: [
-          {
-            src: "node_modules/bpmn-js/dist/assets/bpmn-font/font",
-            dest: "bpmn-font",
-          },
-          {
-            src: "src/favicon.ico",
-            dest: ".",
-          },
-          {
-            src: "src/css/font-awesome-5",
-            dest: ".",
-          },
-        ],
-      }),
-    ],
+    plugins: [],
     assetsInclude: ["**/*.bpmn"],
   };
 });
