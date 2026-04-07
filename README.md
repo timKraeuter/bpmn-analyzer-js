@@ -30,7 +30,7 @@ Model checking is provided using the WebAssembly module cross-compiled from the 
 
 As an alternative, one can use the **rust_bpmn_analyzer** natively to provide a model checking web service on port **3001**.
 
-To switch between the implementations one can change the `AnalysisClientModule` **import** in `app.js`.
+To switch between the implementations one can change the `AnalysisModule` **import** in `src/lib/modeler.js`.
 
 There are two ways to run the **rust_bpmn_analyzer** webservice for this project:
 

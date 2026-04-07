@@ -58,7 +58,6 @@ export default defineConfig(({ mode }) => {
     define: {
       "process.env.SOURCE_VERSION": JSON.stringify(SOURCE_VERSION),
     },
-    plugins: [],
     assetsInclude: ["**/*.bpmn"],
   };
 });
