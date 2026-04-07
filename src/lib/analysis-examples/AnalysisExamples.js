@@ -16,7 +16,7 @@ import deadTasksConnected from "../../../resources/dead_tasks_connected.bpmn?raw
 import orderHandling from "../../../resources/order_handling.bpmn?raw";
 import orderHandlingSynchronization from "../../../resources/order_handling_synchronization.bpmn?raw";
 
-const example_boards = {
+const exampleBoards = {
   taskSplit,
   taskMerge,
   showcase,
@@ -77,21 +77,21 @@ AnalysisExamples.prototype._init = function () {
     .getElementById("example-select")
     .addEventListener("change", (event) => {
       const value = event.currentTarget.value;
-      const xml = example_boards[value];
+      const xml = exampleBoards[value];
       this._eventBus.fire("example.import", { xml });
     });
 
   // Respond to the init event using
   const modelValue = new URLSearchParams(window.location.search).get("model");
-  if (modelValue && example_boards[modelValue]) {
+  if (modelValue && exampleBoards[modelValue]) {
     this._eventBus.on("example.init", () => {
-      const xml = example_boards[modelValue];
+      const xml = exampleBoards[modelValue];
       this._eventBus.fire("example.import", { xml });
       document.getElementById("example-select").value = modelValue;
     });
   } else {
     this._eventBus.on("example.init", () => {
-      const xml = example_boards["unsafeGateways"]; // matches selected above
+      const xml = exampleBoards["unsafeGateways"]; // matches selected above
       this._eventBus.fire("example.import", { xml });
     });
   }

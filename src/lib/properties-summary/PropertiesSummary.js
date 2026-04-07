@@ -32,9 +32,9 @@ export default function PropertiesSummary(
   }
 
   function addWarningForUnsupportedElements(result) {
-    for (const unsupported_id of result.unsupported_elements) {
-      const element = elementRegistry.get(unsupported_id);
-      overlays.add(unsupported_id, ANALYSIS_NOTE_TYPE, {
+    for (const unsupportedId of result.unsupported_elements) {
+      const element = elementRegistry.get(unsupportedId);
+      overlays.add(unsupportedId, ANALYSIS_NOTE_TYPE, {
         position: {
           top: -45,
           left: element.width / 2 - 17,

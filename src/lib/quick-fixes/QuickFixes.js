@@ -626,7 +626,7 @@ export default function QuickFixes(
    * @param {Shape} pg
    */
   function findProperCompletionChoiceCause(pg) {
-    const preceding_choices = pg.incoming.map((inFlow) =>
+    const precedingChoices = pg.incoming.map((inFlow) =>
       findAllPrecedingSFByPredicate(
         inFlow,
         [],
@@ -634,14 +634,14 @@ export default function QuickFixes(
         (source) => source.type === "bpmn:ExclusiveGateway",
       ),
     );
-    return findCommonSplitOrChoice(preceding_choices);
+    return findCommonSplitOrChoice(precedingChoices);
   }
 
   /**
    * @param {Shape} ex_gateway
    */
   function findUnsafeCause(ex_gateway) {
-    const preceding_splits = ex_gateway.incoming.map((inFlow) =>
+    const precedingSplits = ex_gateway.incoming.map((inFlow) =>
       findAllPrecedingSFByPredicate(
         inFlow,
         [],
@@ -649,7 +649,7 @@ export default function QuickFixes(
         (source) => source.type !== "bpmn:ExclusiveGateway",
       ),
     );
-    return findCommonSplitOrChoice(preceding_splits);
+    return findCommonSplitOrChoice(precedingSplits);
   }
 
   /**
