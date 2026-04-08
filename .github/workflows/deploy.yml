@@ -3,6 +3,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+    paths:
+      - "src/**"
+      - "index.html"
+      - "index.js"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.js"
   workflow_dispatch:
 
 permissions:
