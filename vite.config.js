@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     outDir = "../rust_bpmn_analyzer/webserver/public";
   }
   if (mode === "ghPages") {
-    outDir = "docs";
+    outDir = "dist";
   }
 
   const isProduction = mode === "rust" || mode === "ghPages";

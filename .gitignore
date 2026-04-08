@@ -1,5 +1,7 @@
 node_modules/
 public/
+dist/
+docs/
 .idea/
 test-results/
 playwright-report/
