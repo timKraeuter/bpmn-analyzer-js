@@ -57,11 +57,18 @@ function jsonObjectToMap(response) {
  * @param eventBus
  */
 async function doAnalysis(checkerPort, diagramXML, eventBus) {
+  const startTime = performance.now();
+
   const response = await requestAnalysis(checkerPort, diagramXML);
   if (!response) {
     return;
   }
   jsonObjectToMap(response);
+
+  const endTime = performance.now();
+  const runtime = endTime - startTime;
+
+  console.log("BPMN analysis runtime (webservice): " + runtime + " ms");
 
   eventBus.fire("analysis.done", response);
 }
