@@ -105,7 +105,6 @@ function createMockDependencies() {
 
 describe("QuickFixes", () => {
   let deps;
-  let _quickFixes;
 
   // Mock document for DOM operations
   beforeEach(() => {
@@ -126,7 +125,7 @@ describe("QuickFixes", () => {
       })),
     };
 
-    _quickFixes = new QuickFixes(
+    new QuickFixes(
       deps.bpmnReplace,
       deps.elementRegistry,
       deps.eventBus,
@@ -278,15 +277,8 @@ describe("QuickFixes", () => {
 
     it("should process unfulfilled Safeness property", () => {
       // Arrange
-      // Create a proper chain: startEvent -> task1 -> exclusiveGateway
-      //                        startEvent -> task2 -> exclusiveGateway
-      const _startEvent = createMockShape({
-        id: "start",
-        type: "bpmn:StartEvent",
-        x: 50,
-        incoming: [],
-        outgoing: [],
-      });
+      // Create a proper chain: task1 -> exclusiveGateway
+      //                        task2 -> exclusiveGateway
       const task1 = createMockShape({
         id: "task_1",
         type: "bpmn:Task",
@@ -903,19 +895,16 @@ describe("QuickFixes", () => {
 
       // Act
       deps.eventBus.fire("analysis.done", analysisResult);
-      if (clickHandler) {
-        clickHandler();
-      }
+      expect(clickHandler).toBeDefined();
+      clickHandler();
 
       // Assert
-      if (clickHandler) {
-        expect(deps.commandStack.execute).toHaveBeenCalledWith(
-          "addEndEventsForEachIncFlowCommand",
-          expect.objectContaining({
-            problematicEndEvent: endEvent,
-          }),
-        );
-      }
+      expect(deps.commandStack.execute).toHaveBeenCalledWith(
+        "addEndEventsForEachIncFlowCommand",
+        expect.objectContaining({
+          problematicEndEvent: endEvent,
+        }),
+      );
     });
   });
 
@@ -996,14 +985,11 @@ describe("QuickFixes", () => {
 
       // Act
       deps.eventBus.fire("analysis.done", analysisResult);
-      if (mouseleaveHandler) {
-        mouseleaveHandler();
-      }
+      expect(mouseleaveHandler).toBeDefined();
+      mouseleaveHandler();
 
       // Assert
-      if (mouseleaveHandler) {
-        expect(deps.complexPreview.cleanUp).toHaveBeenCalled();
-      }
+      expect(deps.complexPreview.cleanUp).toHaveBeenCalled();
     });
 
     it("should call previewAddedEndEvents on mouseenter for ProperCompletion quick fix", () => {
@@ -1048,14 +1034,11 @@ describe("QuickFixes", () => {
 
       // Act
       deps.eventBus.fire("analysis.done", analysisResult);
-      if (mouseenterHandler) {
-        mouseenterHandler();
-      }
+      expect(mouseenterHandler).toBeDefined();
+      mouseenterHandler();
 
       // Assert
-      if (mouseenterHandler) {
-        expect(deps.complexPreview.create).toHaveBeenCalled();
-      }
+      expect(deps.complexPreview.create).toHaveBeenCalled();
     });
   });
 

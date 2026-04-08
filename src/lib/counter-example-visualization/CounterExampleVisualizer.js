@@ -6,6 +6,9 @@ import {
   TRACE_EVENT,
 } from "./util/EventHelper";
 
+const MESSAGE_PRIMARY_COLOR = "#999";
+const MESSAGE_AUXILIARY_COLOR = "#FFF";
+
 export default function CounterExampleVisualizer(
   animation,
   eventBus,
@@ -15,8 +18,6 @@ export default function CounterExampleVisualizer(
   notifications,
   tokenColors,
 ) {
-  this._notifications = notifications;
-
   eventBus.on(START_COUNTER_EXAMPLE_VISUALIZATION, (data) => {
     if (data.propertyResult) {
       clearAndVisualize(data.propertyResult);
@@ -160,7 +161,10 @@ export default function CounterExampleVisualizer(
     messageRemovals.forEach((count, key) => {
       const element = elementRegistry.get(key);
       if (element && element.target) {
-        const colors = { primary: "#999", auxiliary: "#FFF" };
+        const colors = {
+          primary: MESSAGE_PRIMARY_COLOR,
+          auxiliary: MESSAGE_AUXILIARY_COLOR,
+        };
         for (let i = 0; i < count; i++) {
           messageCount.decreaseMessageCount(element.target, colors);
         }
@@ -185,8 +189,8 @@ export default function CounterExampleVisualizer(
       const scope = {
         element,
         colors: {
-          primary: "#999",
-          auxiliary: "#FFF",
+          primary: MESSAGE_PRIMARY_COLOR,
+          auxiliary: MESSAGE_AUXILIARY_COLOR,
         },
       };
       for (let i = 0; i < messageAmount; i++) {

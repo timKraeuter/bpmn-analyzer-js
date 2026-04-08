@@ -14,23 +14,21 @@ export default function ToggleModeling(
   this._eventBus = eventBus;
   this._tokenSimulationPalette = tokenSimulationPalette;
 
-  this.canvasParent = canvas.getContainer().parentNode;
-
-  this.isPaused = false;
+  this._canvasParent = canvas.getContainer().parentNode;
 
   this._init();
 }
 
 ToggleModeling.prototype._init = function () {
-  this.paletteEntry = domify(`
+  this._paletteEntry = domify(`
     <div class="bts-entry" title="Back to modeling">
       ${MODELING_MARKUP}
     </div>
   `);
 
-  domEvent.bind(this.paletteEntry, "click", this.toggle.bind(this));
+  domEvent.bind(this._paletteEntry, "click", this.toggle.bind(this));
 
-  this._tokenSimulationPalette.addEntry(this.paletteEntry, 0);
+  this._tokenSimulationPalette.addEntry(this._paletteEntry, 0);
 };
 
 ToggleModeling.prototype.toggle = function () {

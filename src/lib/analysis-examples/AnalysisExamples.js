@@ -35,8 +35,7 @@ const exampleBoards = {
   orderHandlingSynchronization,
 };
 
-export default function AnalysisExamples(eventBus, canvas) {
-  this._canvas = canvas;
+export default function AnalysisExamples(eventBus) {
   this._eventBus = eventBus;
 
   this._init();
@@ -97,4 +96,4 @@ AnalysisExamples.prototype._init = function () {
   }
 };
 
-AnalysisExamples.$inject = ["eventBus", "canvas"];
+AnalysisExamples.$inject = ["eventBus"];

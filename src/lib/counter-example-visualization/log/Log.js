@@ -296,7 +296,7 @@ Log.prototype._init = function () {
     </div>
   `);
 
-  this._placeholder = domQuery(".bts-placeholder", this._container);
+  this._placeholder = domQuery(".placeholder", this._container);
 
   this._content = domQuery(".bts-content", this._container);
 
@@ -318,17 +318,17 @@ Log.prototype._init = function () {
 
   this._canvas.getContainer().appendChild(this._container);
 
-  this.paletteEntry = domify(`
+  this._paletteEntry = domify(`
     <div class="bts-entry" title="Toggle Execution Log">
       ${LogIcon()}
     </div>
   `);
 
-  domEvent.bind(this.paletteEntry, "click", () => {
+  domEvent.bind(this._paletteEntry, "click", () => {
     this.toggle();
   });
 
-  this._tokenSimulationPalette.addEntry(this.paletteEntry, 3);
+  this._tokenSimulationPalette.addEntry(this._paletteEntry, 3);
 };
 
 Log.prototype.isShown = function () {

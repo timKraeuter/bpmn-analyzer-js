@@ -6,10 +6,10 @@ import {
 } from "../PropertyConstants";
 
 export default function AnalysisWebClient(eventBus) {
-  let checker_port = getCheckerPort();
+  let checkerPort = getCheckerPort();
 
   eventBus.on("analysis.start", (diagramXML) => {
-    doAnalysis(checker_port, diagramXML.xml, eventBus);
+    doAnalysis(checkerPort, diagramXML.xml, eventBus);
   });
 }
 
@@ -52,14 +52,14 @@ function jsonObjectToMap(response) {
 }
 
 /**
- * @param {string} checker_port
+ * @param {string} checkerPort
  * @param {string} diagramXML
  * @param eventBus
  */
-async function doAnalysis(checker_port, diagramXML, eventBus) {
+async function doAnalysis(checkerPort, diagramXML, eventBus) {
   const startTime = performance.now();
 
-  const response = await requestAnalysis(checker_port, diagramXML);
+  const response = await requestAnalysis(checkerPort, diagramXML);
   if (!response) {
     return;
   }
@@ -74,15 +74,14 @@ async function doAnalysis(checker_port, diagramXML, eventBus) {
 }
 
 /**
- *
- * @param {string} checker_port
+ * @param {string} checkerPort
  * @param {string} diagramXML
  * @return {Promise<CheckingResponse>}
  */
-async function requestAnalysis(checker_port, diagramXML) {
+async function requestAnalysis(checkerPort, diagramXML) {
   try {
     const response = await fetch(
-      `${window.location.protocol}//${window.location.hostname}${checker_port}/check_bpmn`,
+      `${window.location.protocol}//${window.location.hostname}${checkerPort}/check_bpmn`,
       {
         method: "POST",
         body: JSON.stringify({

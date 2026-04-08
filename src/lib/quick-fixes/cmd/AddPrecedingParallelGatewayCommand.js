@@ -1,5 +1,5 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
-const xShift = -75;
+const X_SHIFT = -75;
 
 export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
@@ -8,7 +8,7 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
     const pg = modeling.createShape(
       { type: "bpmn:ParallelGateway" },
       {
-        x: unsafeMerge.x + xShift,
+        x: unsafeMerge.x + X_SHIFT,
         y: getMid(unsafeMerge).y,
       },
       unsafeMerge.parent,
@@ -19,7 +19,7 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
       shapesToBeMoved, // Move these elements
       [], // Dont resize anything
       {
-        x: xShift, // Shift x by 75
+        x: X_SHIFT, // Shift x by 75
         y: 0,
       },
       "e", // Move east
@@ -49,7 +49,7 @@ export function previewPrecedingParallelGateway(
   const pg = elementFactory.createShape({
     type: "bpmn:ParallelGateway",
   });
-  pg.x = unsafeMerge.x + xShift - pg.width / 2;
+  pg.x = unsafeMerge.x + X_SHIFT - pg.width / 2;
   pg.y = getMid(unsafeMerge).y - pg.height / 2;
   created.push(pg);
   // Add new sf between pg and activity.
@@ -70,7 +70,7 @@ export function previewPrecedingParallelGateway(
     const bogus = elementFactory.createShape({
       type: inFlow.source.type,
     });
-    bogus.x = inFlow.source.x + xShift;
+    bogus.x = inFlow.source.x + X_SHIFT;
     bogus.y = inFlow.source.y;
 
     const midPG = getMid(pg);
@@ -85,7 +85,7 @@ export function previewPrecedingParallelGateway(
 
   // Move everything before unsafeMerge to make space for the preceding pg.
   const delta = {
-    x: xShift,
+    x: X_SHIFT,
     y: 0,
   };
   const shapesAndFlows = getAllPrecedingShapes(unsafeMerge, []);
