@@ -32,6 +32,6 @@ export default [
     },
   },
   {
-    ignores: ["public", "node_modules", "**/generated", "docs"],
+    ignores: ["public", "dist", "node_modules", "**/generated", "docs"],
   },
 ];

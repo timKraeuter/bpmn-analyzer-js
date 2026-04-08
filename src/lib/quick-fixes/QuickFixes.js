@@ -118,7 +118,7 @@ export default function QuickFixes(
           is(child, "bpmn:FlowNode") &&
           child.type !== "label" &&
           isStartOrConnected(child) &&
-          !isAny(child, ["bpmn:EndEvent"]) &&
+          !is(child, "bpmn:EndEvent") &&
           !deadActivityIds.includes(child.id),
       )
       .forEach((flowNode) => {
