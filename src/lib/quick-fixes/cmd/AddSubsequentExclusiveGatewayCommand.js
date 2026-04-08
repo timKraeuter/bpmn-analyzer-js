@@ -26,7 +26,7 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
       0,
     );
     // Change outgoing sfs
-    const outFlows = unsafeCause.outgoing.map((sf) => sf);
+    const outFlows = [...unsafeCause.outgoing];
     for (const outFlow of outFlows) {
       modeling.reconnectStart(outFlow, eg, getMid(eg));
     }

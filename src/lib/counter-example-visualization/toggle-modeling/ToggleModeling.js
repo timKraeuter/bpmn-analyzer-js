@@ -6,15 +6,9 @@ import { CheckCircleIcon } from "../icons";
 
 const MODELING_MARKUP = CheckCircleIcon();
 
-export default function ToggleModeling(
-  eventBus,
-  tokenSimulationPalette,
-  canvas,
-) {
+export default function ToggleModeling(eventBus, tokenSimulationPalette) {
   this._eventBus = eventBus;
   this._tokenSimulationPalette = tokenSimulationPalette;
-
-  this._canvasParent = canvas.getContainer().parentNode;
 
   this._init();
 }
@@ -35,4 +29,4 @@ ToggleModeling.prototype.toggle = function () {
   this._eventBus.fire(TOGGLE_MODE_EVENT, { active: false });
 };
 
-ToggleModeling.$inject = ["eventBus", "tokenSimulationPalette", "canvas"];
+ToggleModeling.$inject = ["eventBus", "tokenSimulationPalette"];

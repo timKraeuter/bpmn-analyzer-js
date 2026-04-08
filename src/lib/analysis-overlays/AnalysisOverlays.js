@@ -82,6 +82,7 @@ export default function AnalysisOverlays(eventBus, overlays) {
       // Remove other overlay from Safeness, otherwise they will clash.
       overlays.remove({
         element: problematicElement,
+        type: ANALYSIS_NOTE_TYPE,
       });
     }
     addClickableOverlaysForElements(

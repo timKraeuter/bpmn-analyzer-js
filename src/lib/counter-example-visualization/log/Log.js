@@ -25,7 +25,7 @@ import { getBusinessObject, is } from "bpmn-js/lib/util/ModelUtil";
 const ICON_INFO = InfoIcon();
 
 function getElementName(element) {
-  const name = element.di.bpmnElement.name;
+  const name = getBusinessObject(element).name;
   if (name) {
     return escapeHTML(name);
   }
@@ -242,7 +242,7 @@ function getIconForIntermediateEvent(element, throwOrCatch) {
 
 function getEventTypeString(element) {
   const bo = getBusinessObject(element);
-  if (bo.eventDefinitions.length === 0) {
+  if (!bo.eventDefinitions || bo.eventDefinitions.length === 0) {
     return "none";
   }
   const eventDefinition = bo.eventDefinitions[0];

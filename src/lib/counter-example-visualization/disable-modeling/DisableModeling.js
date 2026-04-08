@@ -42,43 +42,33 @@ export default function DisableModeling(
     });
   }
 
-  function throwIfModelingDisabled(obj, fnName) {
-    intercept(obj, fnName, function (fn, args) {
-      if (modelingDisabled) {
-        return;
-      }
-
-      return fn.apply(this, args);
-    });
-  }
-
   ignoreIfModelingDisabled(contextPad, "open");
 
   ignoreIfModelingDisabled(dragging, "init");
 
   ignoreIfModelingDisabled(directEditing, "activate");
 
-  throwIfModelingDisabled(modeling, "moveShape");
-  throwIfModelingDisabled(modeling, "updateAttachment");
-  throwIfModelingDisabled(modeling, "moveElements");
-  throwIfModelingDisabled(modeling, "moveConnection");
-  throwIfModelingDisabled(modeling, "layoutConnection");
-  throwIfModelingDisabled(modeling, "createConnection");
-  throwIfModelingDisabled(modeling, "createShape");
-  throwIfModelingDisabled(modeling, "createLabel");
-  throwIfModelingDisabled(modeling, "appendShape");
-  throwIfModelingDisabled(modeling, "removeElements");
-  throwIfModelingDisabled(modeling, "distributeElements");
-  throwIfModelingDisabled(modeling, "removeShape");
-  throwIfModelingDisabled(modeling, "removeConnection");
-  throwIfModelingDisabled(modeling, "replaceShape");
-  throwIfModelingDisabled(modeling, "pasteElements");
-  throwIfModelingDisabled(modeling, "alignElements");
-  throwIfModelingDisabled(modeling, "resizeShape");
-  throwIfModelingDisabled(modeling, "createSpace");
-  throwIfModelingDisabled(modeling, "updateWaypoints");
-  throwIfModelingDisabled(modeling, "reconnectStart");
-  throwIfModelingDisabled(modeling, "reconnectEnd");
+  ignoreIfModelingDisabled(modeling, "moveShape");
+  ignoreIfModelingDisabled(modeling, "updateAttachment");
+  ignoreIfModelingDisabled(modeling, "moveElements");
+  ignoreIfModelingDisabled(modeling, "moveConnection");
+  ignoreIfModelingDisabled(modeling, "layoutConnection");
+  ignoreIfModelingDisabled(modeling, "createConnection");
+  ignoreIfModelingDisabled(modeling, "createShape");
+  ignoreIfModelingDisabled(modeling, "createLabel");
+  ignoreIfModelingDisabled(modeling, "appendShape");
+  ignoreIfModelingDisabled(modeling, "removeElements");
+  ignoreIfModelingDisabled(modeling, "distributeElements");
+  ignoreIfModelingDisabled(modeling, "removeShape");
+  ignoreIfModelingDisabled(modeling, "removeConnection");
+  ignoreIfModelingDisabled(modeling, "replaceShape");
+  ignoreIfModelingDisabled(modeling, "pasteElements");
+  ignoreIfModelingDisabled(modeling, "alignElements");
+  ignoreIfModelingDisabled(modeling, "resizeShape");
+  ignoreIfModelingDisabled(modeling, "createSpace");
+  ignoreIfModelingDisabled(modeling, "updateWaypoints");
+  ignoreIfModelingDisabled(modeling, "reconnectStart");
+  ignoreIfModelingDisabled(modeling, "reconnectEnd");
 
   intercept(editorActions, "trigger", function (fn, args) {
     const action = args[0];

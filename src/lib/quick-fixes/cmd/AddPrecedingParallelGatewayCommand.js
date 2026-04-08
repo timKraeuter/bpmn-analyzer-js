@@ -27,9 +27,9 @@ export function AddPrecedingParallelGatewayCommand(modeling, spaceTool) {
     );
     // Change incoming sfs
     const midPG = getMid(pg);
-    unsafeMerge.incoming
-      .map((inFlow) => inFlow)
-      .forEach((inFlow) => modeling.reconnectEnd(inFlow, pg, midPG));
+    [...unsafeMerge.incoming].forEach((inFlow) =>
+      modeling.reconnectEnd(inFlow, pg, midPG),
+    );
     // Add new sf between pg and activity.
     modeling.connect(pg, unsafeMerge);
   };

@@ -17,6 +17,9 @@ export default function Palette(eventBus, canvas) {
   });
 
   eventBus.on(TOGGLE_MODE_EVENT, function (context) {
+    if (!self._canvasParent || !self._palette) {
+      return;
+    }
     const active = context.active;
 
     if (active) {
