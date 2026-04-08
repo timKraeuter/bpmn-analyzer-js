@@ -45,7 +45,7 @@ export default function DisableModeling(
   function throwIfModelingDisabled(obj, fnName) {
     intercept(obj, fnName, function (fn, args) {
       if (modelingDisabled) {
-        throw new Error("model is read-only");
+        return;
       }
 
       return fn.apply(this, args);
@@ -53,10 +53,6 @@ export default function DisableModeling(
   }
 
   ignoreIfModelingDisabled(contextPad, "open");
-
-  ignoreIfModelingDisabled(dragging, "init");
-
-  ignoreIfModelingDisabled(directEditing, "activate");
 
   ignoreIfModelingDisabled(dragging, "init");
 
@@ -113,6 +109,12 @@ export default function DisableModeling(
   });
 }
 
+// helpers //////////
+
+function isAnyAction(actions, action) {
+  return actions.indexOf(action) > -1;
+}
+
 DisableModeling.$inject = [
   "eventBus",
   "contextPad",
@@ -122,9 +124,3 @@ DisableModeling.$inject = [
   "modeling",
   "palette",
 ];
-
-// helpers //////////
-
-function isAnyAction(actions, action) {
-  return actions.indexOf(action) > -1;
-}

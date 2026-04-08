@@ -11,7 +11,6 @@ import {
   RESTART_COUNTER_EXAMPLE_VISUALIZATION,
   PLAY_EXECUTION_EVENT,
   PAUSE_EXECUTION_EVENT,
-  ANIMATION_CREATED_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
   TOGGLE_MODE_EVENT,
 } from "../util/EventHelper";
@@ -65,7 +64,7 @@ export default function Animation(canvas, eventBus) {
   this._eventBus = eventBus;
   this._canvas = canvas;
 
-  this._randomize = true; // TODO: understand why we removed config for now and where it came from
+  this._randomize = true;
 
   this._animations = new Set();
   this._speed = 1;
@@ -130,10 +129,6 @@ Animation.prototype.createAnimation = function (
   animation.element = connection;
 
   this._animations.add(animation);
-
-  this._eventBus.fire(ANIMATION_CREATED_EVENT, {
-    animation,
-  });
 
   animation.play();
 

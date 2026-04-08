@@ -1,5 +1,5 @@
 import { getMid } from "diagram-js/lib/layout/LayoutUtil";
-const xShift = 75;
+const X_SHIFT = 75;
 
 export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
   this.preExecute = function (context) {
@@ -8,7 +8,7 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
     const eg = modeling.createShape(
       { type: "bpmn:ExclusiveGateway" },
       {
-        x: unsafeCause.x + unsafeCause.width + xShift,
+        x: unsafeCause.x + unsafeCause.width + X_SHIFT,
         y: getMid(unsafeCause).y,
       },
       unsafeCause.parent,
@@ -19,7 +19,7 @@ export function AddSubsequentExclusiveGatewayCommand(modeling, spaceTool) {
       shapesToBeMoved,
       [], // Dont resize anything
       {
-        x: xShift,
+        x: X_SHIFT,
         y: 0,
       },
       "e", // Move east
@@ -67,7 +67,7 @@ export function previewSubsequentExclusiveGateway(
   const exG = elementFactory.createShape({
     type: "bpmn:ExclusiveGateway",
   });
-  exG.x = unsafeCause.x + unsafeCause.width + xShift - exG.width / 2;
+  exG.x = unsafeCause.x + unsafeCause.width + X_SHIFT - exG.width / 2;
   exG.y = getMid(unsafeCause).y - exG.height / 2;
   created.push(exG);
   // Add new sf between ex g and flow node.
@@ -88,7 +88,7 @@ export function previewSubsequentExclusiveGateway(
     const bogus = elementFactory.createShape({
       type: outFlow.target.type,
     });
-    bogus.x = outFlow.target.x + xShift;
+    bogus.x = outFlow.target.x + X_SHIFT;
     bogus.y = outFlow.target.y;
 
     const midEG = getMid(exG);
@@ -103,7 +103,7 @@ export function previewSubsequentExclusiveGateway(
 
   // Move everything after unsafeCause to make space for the ex g
   const delta = {
-    x: xShift,
+    x: X_SHIFT,
     y: 0,
   };
   const shapesAndFlows = getAllFollowingShapes(unsafeCause, []);

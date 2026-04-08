@@ -27,6 +27,9 @@ import { pointDistance } from "diagram-js/lib/util/Geometry";
  */
 
 const QUICK_FIX_NOTE_TYPE = "quick-fix-note";
+const OVERLAY_TOP_OFFSET = -45;
+const GATEWAY_LEFT_OFFSET = 7.5;
+const NOTE_WIDTH = 40;
 const LIGHT_BULB_BASE64 =
   "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgLTk2MCA5NjAgOTYwIiB3aWR0aD0iMjQiIGZpbGw9IndoaXRlIj48cGF0aCBkPSJNNDgwLTgwcS0zMyAwLTU2LjUtMjMuNVQ0MDAtMTYwaDE2MHEwIDMzLTIzLjUgNTYuNVQ0ODAtODBaTTMyMC0yMDB2LTgwaDMyMHY4MEgzMjBabTEwLTEyMHEtNjktNDEtMTA5LjUtMTEwVDE4MC01ODBxMC0xMjUgODcuNS0yMTIuNVQ0ODAtODgwcTEyNSAwIDIxMi41IDg3LjVUNzgwLTU4MHEwIDgxLTQwLjUgMTUwVDYzMC0zMjBIMzMwWm0yNC04MGgyNTJxNDUtMzIgNjkuNS03OVQ3MDAtNTgwcTAtOTItNjQtMTU2dC0xNTYtNjRxLTkyIDAtMTU2IDY0dC02NCAxNTZxMCA1NCAyNC41IDEwMXQ2OS41IDc5Wm0xMjYgMFoiLz48L3N2Zz4=";
 
@@ -103,10 +106,10 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} activity
-   * @param {string[]} dead_activity_ids
+   * @param {string[]} deadActivityIds
    * @returns {Shape | undefined}
    */
-  function findNearestConnectedFlowNode(activity, dead_activity_ids) {
+  function findNearestConnectedFlowNode(activity, deadActivityIds) {
     let nearest = undefined;
     activity.parent.children
       .filter(
@@ -116,7 +119,7 @@ export default function QuickFixes(
           child.type !== "label" &&
           isStartOrConnected(child) &&
           !isAny(child, ["bpmn:EndEvent"]) &&
-          !dead_activity_ids.includes(child.id),
+          !deadActivityIds.includes(child.id),
       )
       .forEach((flowNode) => {
         if (!nearest) {
@@ -139,18 +142,18 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} activity
-   * @param {string[]} dead_activities
+   * @param {string[]} deadActivities
    */
-  function proposeAddIncomingSequenceFlowQuickFix(activity, dead_activities) {
+  function proposeAddIncomingSequenceFlowQuickFix(activity, deadActivities) {
     const nearestFlowNode = findNearestConnectedFlowNode(
       activity,
-      dead_activities,
+      deadActivities,
     );
     if (nearestFlowNode) {
       addQuickFixForShape(
         activity,
         {
-          top: -45,
+          top: OVERLAY_TOP_OFFSET,
           left: getLeftPositionForShape(activity),
         },
         "Click to add an incoming sequence flow to fix the dead Activity.",
@@ -176,17 +179,17 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} flowNode
-   * @param {string[]} dead_activity_ids
+   * @param {string[]} deadActivityIds
    * @param {string} message
    */
   function proposeAddIncomingMessageFlowQuickFix(
     flowNode,
-    dead_activity_ids,
+    deadActivityIds,
     message,
   ) {
     const nearestMessageProducer = findNearestMessageProducer(
       flowNode,
-      dead_activity_ids,
+      deadActivityIds,
     );
     if (nearestMessageProducer) {
       let context = {
@@ -199,7 +202,7 @@ export default function QuickFixes(
       addQuickFixForShape(
         flowNode,
         {
-          top: -45,
+          top: OVERLAY_TOP_OFFSET,
           left: getLeftPositionForShape(flowNode),
         },
         `Click to add incoming message flow to fix ${message}`,
@@ -224,10 +227,10 @@ export default function QuickFixes(
   /**
    *
    * @param {Shape} activity
-   * @param {string[]} dead_activity_ids
+   * @param {string[]} deadActivityIds
    * @returns {Shape | undefined}
    */
-  function findNearestMessageProducer(activity, dead_activity_ids) {
+  function findNearestMessageProducer(activity, deadActivityIds) {
     if (!activity.parent.parent) {
       return undefined; // We are not in a collaboration.
     }
@@ -242,7 +245,7 @@ export default function QuickFixes(
             isAny(flowNode, ["bpmn:IntermediateThrowEvent", "bpmn:EndEvent"]) &&
             hasEventDefinition(flowNode, "bpmn:MessageEventDefinition")) ||
           (is(flowNode, "bpmn:SendTask") &&
-            !dead_activity_ids.includes(flowNode.id)),
+            !deadActivityIds.includes(flowNode.id)),
       );
 
     let nearest = undefined;
@@ -302,8 +305,8 @@ export default function QuickFixes(
     addQuickFixForShape(
       exclusiveGateway,
       {
-        top: -45,
-        left: 7.5,
+        top: OVERLAY_TOP_OFFSET,
+        left: GATEWAY_LEFT_OFFSET,
       },
       "Click to change gateway to parallel to guarantee termination.",
       () => {
@@ -407,8 +410,8 @@ export default function QuickFixes(
     addQuickFixForShape(
       problematicPG,
       {
-        top: -45,
-        left: 7.5,
+        top: OVERLAY_TOP_OFFSET,
+        left: GATEWAY_LEFT_OFFSET,
       },
       "Click to change gateway to exclusive to guarantee termination.",
       () => {
@@ -430,7 +433,7 @@ export default function QuickFixes(
     addQuickFixForShape(
       problematicEndEvent,
       {
-        top: -45,
+        top: OVERLAY_TOP_OFFSET,
         left: 0,
       },
       "Click to create additional end events.",
@@ -540,7 +543,7 @@ export default function QuickFixes(
   }
 
   function getLeftPositionForShape(unsafeMerge) {
-    return unsafeMerge.width / 2 - 17; // 17 is roughly half the size of the note (40 / 2)
+    return unsafeMerge.width / 2 - NOTE_WIDTH / 2;
   }
 
   /**
@@ -550,7 +553,7 @@ export default function QuickFixes(
     addQuickFixForShape(
       unsafeMerge,
       {
-        top: -45,
+        top: OVERLAY_TOP_OFFSET,
         left: getLeftPositionForShape(unsafeMerge),
       },
       "Click to add preceding parallel gateway to fix synchronization.",
@@ -573,7 +576,7 @@ export default function QuickFixes(
     addQuickFixForShape(
       unsafeCause,
       {
-        top: -45,
+        top: OVERLAY_TOP_OFFSET,
         left: getLeftPositionForShape(unsafeCause),
       },
       "Click to add subsequent exclusive gateway to fix synchronization.",
@@ -611,8 +614,8 @@ export default function QuickFixes(
     addQuickFixForShape(
       gateway,
       {
-        top: -45,
-        left: 7.5,
+        top: OVERLAY_TOP_OFFSET,
+        left: GATEWAY_LEFT_OFFSET,
       },
       "Click to change gateway to exclusive to fix synchronization.",
       () => {
@@ -638,10 +641,10 @@ export default function QuickFixes(
   }
 
   /**
-   * @param {Shape} ex_gateway
+   * @param {Shape} exGateway
    */
-  function findUnsafeCause(ex_gateway) {
-    const precedingSplits = ex_gateway.incoming.map((inFlow) =>
+  function findUnsafeCause(exGateway) {
+    const precedingSplits = exGateway.incoming.map((inFlow) =>
       findAllPrecedingSFByPredicate(
         inFlow,
         [],
@@ -653,11 +656,11 @@ export default function QuickFixes(
   }
 
   /**
-   * @param {Shape[][]} preceding_pgs
+   * @param {Shape[][]} precedingPGs
    */
-  function findCommonSplitOrChoice(preceding_pgs) {
-    for (const pg of preceding_pgs[0]) {
-      if (preceding_pgs.every((pgs) => pgs.includes(pg))) {
+  function findCommonSplitOrChoice(precedingPGs) {
+    for (const pg of precedingPGs[0]) {
+      if (precedingPGs.every((pgs) => pgs.includes(pg))) {
         return pg;
       }
     }
@@ -671,8 +674,8 @@ export default function QuickFixes(
     addQuickFixForShape(
       exclusiveGateway,
       {
-        top: -45,
-        left: 7.5,
+        top: OVERLAY_TOP_OFFSET,
+        left: GATEWAY_LEFT_OFFSET,
       },
       "Click to change gateway to parallel to fix synchronization.",
       () => {

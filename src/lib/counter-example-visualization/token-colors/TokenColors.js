@@ -22,8 +22,6 @@ export default function TokenColors(eventBus) {
   });
 }
 
-TokenColors.$inject = ["eventBus"];
-
 TokenColors.prototype.getColor = function getColor(snapshotID) {
   let color = snapshotColorMap.get(snapshotID);
   if (color) {
@@ -47,3 +45,5 @@ TokenColors.prototype.getColorForElement = function getColorForElement(
     return this.getColor(element.parent.id);
   }
 };
+
+TokenColors.$inject = ["eventBus"];

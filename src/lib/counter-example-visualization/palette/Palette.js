@@ -7,7 +7,7 @@ export default function Palette(eventBus, canvas) {
 
   this._canvas = canvas;
 
-  this.entries = [];
+  this._entries = [];
 
   this._init();
 
@@ -20,11 +20,11 @@ export default function Palette(eventBus, canvas) {
     const active = context.active;
 
     if (active) {
-      domClasses(self.container).remove("hidden");
+      domClasses(self._container).remove("hidden");
       domClasses(self._canvasParent).add("simulation");
       domClasses(self._palette).add("hidden");
     } else {
-      domClasses(self.container).add("hidden");
+      domClasses(self._container).add("hidden");
       domClasses(self._canvasParent).remove("simulation");
       domClasses(self._palette).remove("hidden");
     }
@@ -32,23 +32,23 @@ export default function Palette(eventBus, canvas) {
 }
 
 Palette.prototype._init = function () {
-  this.container = domify('<div class="bts-palette hidden"></div>');
+  this._container = domify('<div class="bts-palette hidden"></div>');
 
-  this._canvas.getContainer().appendChild(this.container);
+  this._canvas.getContainer().appendChild(this._container);
 };
 
 Palette.prototype.addEntry = function (entry, index) {
   let childIndex = 0;
 
-  this.entries.forEach(function (entry) {
+  this._entries.forEach(function (entry) {
     if (index >= entry.index) {
       childIndex++;
     }
   });
 
-  this.container.insertBefore(entry, this.container.childNodes[childIndex]);
+  this._container.insertBefore(entry, this._container.childNodes[childIndex]);
 
-  this.entries.push({
+  this._entries.push({
     entry: entry,
     index: index,
   });

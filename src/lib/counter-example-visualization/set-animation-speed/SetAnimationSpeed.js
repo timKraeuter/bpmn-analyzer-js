@@ -9,14 +9,13 @@ import {
   TOGGLE_MODE_EVENT,
   ANIMATION_SPEED_CHANGED_EVENT,
 } from "../util/EventHelper";
+import { TachometerIcon, AngleRightIcon } from "../icons";
 
 const SPEEDS = [
   ["Slow", 0.5],
   ["Normal", 1],
   ["Fast", 2],
 ];
-
-import { TachometerIcon, AngleRightIcon } from "../icons";
 
 export default function SetAnimationSpeed(canvas, animation, eventBus) {
   this._canvas = canvas;

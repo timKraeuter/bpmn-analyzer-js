@@ -25,7 +25,7 @@ const DEFAULT_AUXILIARY_COLOR = "--token-simulation-white";
  */
 export default function MessageCount(eventBus, overlays) {
   this._overlays = overlays;
-  this.overlayIdsAndCount = {};
+  this._overlayIdsAndCount = {};
 
   eventBus.on(RESTART_COUNTER_EXAMPLE_VISUALIZATION, () => {
     this.clearMessageCounts();
@@ -62,7 +62,7 @@ MessageCount.prototype.addMessageCountOverlay = function (
 
 MessageCount.prototype.increaseMessageCount = function (element, colors) {
   let messageCount = 1;
-  const existingOverlayIDAndCount = this.overlayIdsAndCount[element.id];
+  const existingOverlayIDAndCount = this._overlayIdsAndCount[element.id];
   if (existingOverlayIDAndCount) {
     this._overlays.remove(existingOverlayIDAndCount.id);
     messageCount = existingOverlayIDAndCount.count + 1;
@@ -70,7 +70,7 @@ MessageCount.prototype.increaseMessageCount = function (element, colors) {
 
   const overlayID = this.addMessageCountOverlay(element, messageCount, colors);
 
-  this.overlayIdsAndCount[element.id] = {
+  this._overlayIdsAndCount[element.id] = {
     id: overlayID,
     count: messageCount,
   };
@@ -80,7 +80,7 @@ MessageCount.prototype.clearMessageCounts = function () {
   this._overlays.remove({
     type: MESSAGE_COUNT_OVERLAY_TYPE,
   });
-  this.overlayIdsAndCount = {};
+  this._overlayIdsAndCount = {};
 };
 
 MessageCount.prototype.decreaseMessageCountBy = function (
@@ -88,7 +88,7 @@ MessageCount.prototype.decreaseMessageCountBy = function (
   amount,
   colors,
 ) {
-  const overlayIdAndCount = this.overlayIdsAndCount[element.id];
+  const overlayIdAndCount = this._overlayIdsAndCount[element.id];
 
   if (!overlayIdAndCount) {
     return;
@@ -101,12 +101,12 @@ MessageCount.prototype.decreaseMessageCountBy = function (
       decreasedCount,
       colors,
     );
-    this.overlayIdsAndCount[element.id] = {
+    this._overlayIdsAndCount[element.id] = {
       id: overlayID,
       count: decreasedCount,
     };
   } else {
-    delete this.overlayIdsAndCount[element.id];
+    delete this._overlayIdsAndCount[element.id];
   }
 };
 

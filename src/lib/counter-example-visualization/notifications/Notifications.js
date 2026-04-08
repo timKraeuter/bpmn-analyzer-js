@@ -8,6 +8,7 @@ import {
 import { InfoIcon } from "../icons";
 
 const NOTIFICATION_TIME_TO_LIVE = 2000; // ms
+const MAX_NOTIFICATIONS = 5;
 
 const INFO_ICON = InfoIcon();
 
@@ -26,9 +27,9 @@ export default function Notifications(eventBus, canvas) {
 }
 
 Notifications.prototype._init = function () {
-  this.container = domify('<div class="bts-notifications"></div>');
+  this._container = domify('<div class="bts-notifications"></div>');
 
-  this._canvas.getContainer().appendChild(this.container);
+  this._canvas.getContainer().appendChild(this._container);
 };
 
 Notifications.prototype.showNotification = function (options) {
@@ -56,11 +57,11 @@ Notifications.prototype.showNotification = function (options) {
     </div>
   `);
 
-  this.container.appendChild(notification);
+  this._container.appendChild(notification);
 
-  // prevent more than 5 notifications at once
-  while (this.container.children.length > 5) {
-    this.container.children[0].remove();
+  // prevent more than MAX_NOTIFICATIONS notifications at once
+  while (this._container.children.length > MAX_NOTIFICATIONS) {
+    this._container.children[0].remove();
   }
 
   setTimeout(function () {
@@ -69,8 +70,8 @@ Notifications.prototype.showNotification = function (options) {
 };
 
 Notifications.prototype.clear = function () {
-  while (this.container.children.length) {
-    this.container.children[0].remove();
+  while (this._container.children.length) {
+    this._container.children[0].remove();
   }
 };
 
