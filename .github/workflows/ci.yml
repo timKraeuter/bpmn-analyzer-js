@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
@@ -37,7 +37,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.60.0-noble
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Use Node.js 22
         uses: actions/setup-node@v6
         with:
