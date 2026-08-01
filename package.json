@@ -41,7 +41,7 @@
     "eslint-config-prettier": "^10.1.8",
     "npm-run-all2": "^9.0.2",
     "prettier": "^3.9.4",
-    "vite": "^8.0.16",
+    "vite": "^8.1.5",
     "vitest": "^4.1.9"
   },
   "dependencies": {
