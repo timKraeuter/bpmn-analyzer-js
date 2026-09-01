@@ -37,7 +37,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
-    "eslint": "^10.6.0",
+    "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "npm-run-all2": "^9.0.3",
     "prettier": "^3.9.6",
