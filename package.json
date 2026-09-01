@@ -37,12 +37,12 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
-    "eslint": "^10.6.0",
+    "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
-    "npm-run-all2": "^9.0.2",
+    "npm-run-all2": "^9.0.3",
     "prettier": "^3.9.6",
-    "vite": "^8.1.5",
-    "vitest": "^4.1.9"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "bpmn-js": "^18.22.0",
