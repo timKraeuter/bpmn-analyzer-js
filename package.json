@@ -42,7 +42,7 @@
     "npm-run-all2": "^9.0.3",
     "prettier": "^3.9.9",
     "vite": "^8.3.4",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "bpmn-js": "^18.30.1",
